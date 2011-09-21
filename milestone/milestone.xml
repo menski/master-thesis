@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE tudu SYSTEM "tudu.dtd">
+<?xml-stylesheet type="text/xsl" href="tudu.xsl" ?>
+<todo>
+	<todo done="no" collapse="no">
+		<title>Erster Milestone</title>
+		<deadline>
+			<day>1</day>
+			<month>11</month>
+			<year>2011</year>
+		</deadline>
+		<text>
+</text>
+		<todo done="no" collapse="no">
+			<title>DNS RFC lesen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>DNS verstehen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Related Work</title>
+			<text>
+</text>
+			<todo done="no" collapse="no">
+				<title>Global DNS</title>
+				<text>
+</text>
+			</todo>
+			<todo done="no" collapse="no">
+				<title>Anycast root DNS</title>
+				<text>
+</text>
+			</todo>
+			<todo done="no" collapse="no">
+				<title>DNS Clustering</title>
+				<text>
+</text>
+			</todo>
+		</todo>
+		<todo done="yes" collapse="no">
+			<title>Von Klemens logging auf dem CS DNS einschalten</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Ordner für Arbeit im svn/Diplomarbeiten anlegen lassen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Titel finden</title>
+			<text>
+</text>
+		</todo>
+	</todo>
+	<todo done="no" collapse="no">
+		<title>Zweiter Milestone</title>
+		<deadline>
+			<day>1</day>
+			<month>12</month>
+			<year>2011</year>
+		</deadline>
+		<text>
+</text>
+		<todo done="no" collapse="no">
+			<title>Arbeit erfolgreich angemeldet</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>BIND lokal aufsetzen und testen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>BIND Konfiguration verstehen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Von Klemens Zonen vom CS DNS kopieren</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Inhaltsverzeichniss fertiggestellt</title>
+			<text>
+</text>
+		</todo>
+	</todo>
+	<todo done="no" collapse="no">
+		<title>Dritter Milestone</title>
+		<deadline>
+			<day>1</day>
+			<month>1</month>
+			<year>2012</year>
+		</deadline>
+		<text>
+</text>
+		<todo done="no" collapse="no">
+			<title>Implementierung von servload DNS</title>
+			<text>
+</text>
+		</todo>
+	</todo>
+	<todo done="no" collapse="no">
+		<title>Vierter Milestone</title>
+		<deadline>
+			<day>1</day>
+			<month>2</month>
+			<year>2012</year>
+		</deadline>
+		<text>
+</text>
+		<todo done="no" collapse="no">
+			<title>Forschung zu salbd abgeschlossen</title>
+			<text>
+</text>
+		</todo>
+	</todo>
+	<todo done="no" collapse="no">
+		<title>Fünfter Milestone</title>
+		<deadline>
+			<day>1</day>
+			<month>3</month>
+			<year>2012</year>
+		</deadline>
+		<text>
+</text>
+		<todo done="no" collapse="no">
+			<title>Implementierung abgeschlossen</title>
+			<text>
+</text>
+		</todo>
+		<todo done="no" collapse="no">
+			<title>Bereit für Messungen</title>
+			<text>
+</text>
+		</todo>
+	</todo>
+</todo>
