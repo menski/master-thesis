@@ -1,1 +1,11 @@
 .svn
+*.pdf
+*.aux
+*.bbl
+*.blg
+*.lof
+*.log
+*.lot
+*.out
+*.pdflatexf
+*.toc

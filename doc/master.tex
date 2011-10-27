@@ -1,0 +1,167 @@
+\documentclass[a4paper, 11pt, toc=bibliography, toc=listof]{scrbook}
+
+% Preamble {{{
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage[%
+  colorlinks=false,
+  pdfborder={0 0 0},
+]{hyperref}
+\usepackage{epstopdf}
+\usepackage{bibgerm}
+\usepackage{setspace}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{scrpage2}
+
+% Titlepage {{{
+\usepackage[absolute]{textpos}
+\usepackage{color}
+
+\newlength{\TitleMargin}
+\newlength{\TitleWidth}
+
+\setlength{\TitleMargin}{2cm}
+\setlength{\TitleWidth}{\paperwidth}
+\addtolength{\TitleWidth}{-\TitleMargin}
+\addtolength{\TitleWidth}{-\TitleMargin}
+
+\definecolor{uniblue}{rgb}{0.062745,0.17647,0.34118}
+
+\newcommand{\TitleUni}{Universität Potsdam}
+\newcommand{\TitleInstitut}{Mathematisch-Naturwissenschaftliche Fakultät\\Institut für Informatik}
+\newcommand{\TitleTitel}{Selbst-adaptive Lastverteilung für DNS-Clusters}
+\newcommand{\TitleTyp}{Masterarbeit}
+\newcommand{\TitleAutor}{Sebastian Menski}
+\newcommand{\TitleBetreuerText}{Betreuer}
+\newcommand{\TitleBetreuer}{Prof. Dr. Bettina Schnor\\ &M.Sc. Jörg Zinke}
+\newcommand{\TitleAbschlussText}{zur Erlangung des akademischen Grades\\Master of Science\\in Informatik}
+\newcommand{\TitleOrt}{Potsdam}
+\newcommand{\TitleDatum}{25. Mai 2012}
+\hypersetup
+{
+  pdfauthor={Sebastian Menski},
+  pdftitle={\TitleTitel},
+}
+
+\renewcommand{\maketitle}{
+  \thispagestyle{empty}
+  \begin{textblock*}{\TitleWidth}(\TitleMargin,\TitleMargin)
+    ~\hfill\includegraphics[height=2.5cm]{images/uni-logo}\\[3mm]
+    {\color{uniblue}\rule{\TitleWidth}{1mm}}\\[5mm]
+    {
+      \centering
+      \sffamily\Large
+      {\LARGE\TitleUni}\\[0.5\baselineskip]
+      {\large\TitleInstitut}\\[5\baselineskip]
+      {\Huge\TitleTitel}\\[3\baselineskip]
+
+      {\TitleTyp}\\
+      \TitleAbschlussText\\[3\baselineskip]
+
+      \TitleAutor\\[6\baselineskip]
+      \begin{tabular}{rl}
+        \TitleBetreuerText: & \TitleBetreuer
+      \end{tabular}\\[3\baselineskip]
+      \TitleOrt, \TitleDatum\par
+    }
+  \end{textblock*}
+  ~\clearpage
+}
+
+% Titlepage }}}
+
+% Preamble }}}
+
+
+\begin{document}
+  % Frontmatter {{{
+  \frontmatter
+  \maketitle{}
+  \tableofcontents{}
+  % Frontmatter }}}
+
+  % Mainmatter {{{
+  \onehalfspacing{}
+  \mainmatter
+  \pagestyle{scrheadings}
+
+  \chapter{Einleitung} % {{{
+  \label{cha:Einleitung}
+
+  % chapter Einleitung }}}
+
+  \chapter{Grundlagen} % {{{
+  \label{cha:Grundlagen}
+
+  \section{Domain Name System} % {{{
+  \label{sec:Domain Name System}
+
+  % section Domain Name System }}}
+
+  \section{Lastverteilung} % {{{
+  \label{sec:Lastverteilung}
+
+  % section Lastverteilung }}}
+
+  \section{servload} % {{{
+  \label{sec:servload}
+
+  % section servload }}}
+
+  \section{salbnet} % {{{
+  \label{sec:salbnet}
+
+  % section salbnet }}}
+
+  % chapter Grundlagen }}}
+
+  \chapter{Verwandte Arbeiten} % {{{
+  \label{cha:Verwandte Arbeiten}
+
+  % chapter Verwandte Arbeiten }}}
+
+  \chapter{Implementierung} % {{{
+  \label{cha:Implementierung}
+
+  % chapter Implementierung }}}
+
+  \chapter{Messungen} % {{{
+  \label{cha:Messungen}
+
+  % chapter Messungen }}}
+
+  \chapter{Fazit} % {{{
+  \label{cha:Fazit}
+
+  % chapter Fazit }}}
+
+  % Content }}}
+
+  % Appendix {{{
+  \appendix
+
+  \chapter{Messumgebung} % {{{
+  \label{cha:Messumgebung}
+
+  % chapter Messumgebung }}}
+
+  % Appendix }}}
+
+  % Backmatter {{{
+  \backmatter
+  \pagenumbering{Roman}
+
+  \listoffigures{}
+  \listoftables{}
+
+  % Bibliography {{{
+  \nocite{*}
+  \bibliographystyle{gerplain}
+  \bibliography{references}
+  % }}}
+
+  % Backmatter }}}
+
+\end{document}
