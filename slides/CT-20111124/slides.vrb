@@ -1,0 +1,21 @@
+\verb +huhu+
+  \end{frame}
+
+
+  \appendix{}
+  \newcounter{finalframe}
+  \setcounter{finalframe}{\value{framenumber}}
+  \pagestyle{empty}
+  \renewcommand{\mytitle}{Literaturverzeichnis}
+  \frame[allowframebreaks]{\frametitle{\mytitle}
+   \bibliographystyle{gerplain}
+    \bibliography{references}
+  }
+  \setcounter{framenumber}{\value{finalframe}}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
