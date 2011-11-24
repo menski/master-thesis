@@ -27,6 +27,7 @@ clean:
 	$(RM) $(MASTER).toc
 	$(RM) $(MASTER).nav
 	$(RM) $(MASTER).snm
+	$(RM) $(MASTER).vrb
 
 clean-all: clean
 	$(RM) $(MASTER).bbl
