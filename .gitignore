@@ -9,3 +9,5 @@
 *.out
 *.pdflatexf
 *.toc
+*.nav
+*.snm
