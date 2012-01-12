@@ -147,7 +147,7 @@
         \begin{description}
           \item[ID] Kennung für die Anfrage
           \item[QR] 0: Anfrage; 1: Antwort
-          \item[Opcode] 0: Standard; 1: Inverse; 2: Status (siehe RFC 6195 \cite{rfc6195})
+          \item[Opcode] 0: Standard; 1: Inverse; 2: Status; 4: Notify\footnote{RFC 1996 \cite{rfc1996}}; 5: Update\footnote{RFC 2136 \cite{rfc2136}}
           \item[AA] Nameserver ist zuständig für die gefragte Domain
           \item[TC] Nachricht wurde abgeschnitten (siehe RFC 2181 \cite{rfc2181})
           \item[RD] Rekursion gefordert (Client)
@@ -282,7 +282,7 @@
       \column{7cm}
         \footnotesize{
        \begin{description}
-          \item[QTYPE] Welche RR Typ wird gesucht
+          \item[QTYPE] Welcher RR Typ wird gesucht
           \item[1] A
           \item[2] NS
           \item[5] CNAME
