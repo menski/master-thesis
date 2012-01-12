@@ -1,0 +1,769 @@
+\documentclass{beamer}
+
+\usepackage[ngerman]{babel}
+\usepackage{epstopdf}
+\usepackage{bibgerm}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{ifthen}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\newcommand*{\fvr}[1]{\textcolor{red}{#1}}
+\newcommand*{\fvb}[1]{\textcolor{blue}{#1}}
+\newcommand*{\fvp}[1]{\textcolor{purple}{#1}}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\title{Details zum DNS-Protokoll}
+\author{Sebastian Menski\\menski@uni-potsdam.de}
+\institute{Institut für Informatik\\Universität Potsdam}
+\date{12. Januar 2012}
+
+\begin{document}
+
+  \frame{\thispagestyle{empty}\titlepage}
+  \frame{\thispagestyle{empty}\frametitle{Gliederung}\tableofcontents{}}
+
+  \newcommand{\mytitle}{}
+
+  \newcommand{\mysection}[1]{
+    \renewcommand{\mytitle}{#1}
+    \section{#1}
+    \frame{\thispagestyle{empty}
+      \begin{center}
+        \textcolor{beamer@blendedblue}{\LARGE\mytitle}
+      \end{center}
+    }
+  }
+
+  \newcommand{\myframe}[2][\empty]{
+    \frame{\frametitle{\mytitle}
+      \ifthenelse{\equal{#1}{\empty}}
+      {#2}
+      {\framesubtitle{#1}#2}
+    }
+  }
+
+  \newcommand{\mybreakframe}[2][\empty]{
+    \frame[allowframebreaks]{\frametitle{\mytitle}
+      \ifthenelse{\equal{#1}{\empty}}
+      {#2}
+      {\framesubtitle{#1}#2}
+    }
+  }
+
+  \frame{\thispagestyle{empty}
+      \frametitle{Hinweis}
+      \begin{center}
+          \LARGE  Quelle für alle Folien ist RFC 1035 \cite{rfc1035}.
+      \end{center}
+  }
+
+  \mysection{Einführung}
+
+  \begin{frame}[fragile]{\mytitle{}}{Typische lokale Konfiguration}
+\footnotesize{
+      \begin{verbatim}
+             Local Host                        |  Foreign
+                                               |
++---------+               +----------+         |  +--------+
+|         | user queries  |          |queries  |  |        |
+|  User   |-------------->|          |---------|->|Foreign |
+| Program |               | Resolver |         |  |  Name  |
+|         |<--------------|          |<--------|--| Server |
+|         | user responses|          |responses|  |        |
++---------+               +----------+         |  +--------+
+                            |     A            |
+            cache additions |     | references |
+                            V     |            |
+                          +----------+         |
+                          |  cache   |         |
+                          +----------+         |
+  \end{verbatim}}
+\end{frame}
+
+  \myframe[Konventionen]{
+  \begin{itemize}
+    \item Erklärung auf Basis von Oktetts (8 Bit)
+    \item Vergleich: keine Unterscheidung zwischen Groß- und Kleinschreibung
+    \item Speicherung: wenn möglich Erhalt der originalen Schreibweise
+    \item Antwort enthält immer die Frage
+    \item Limits:
+    \begin{description}
+        \item[Label] 63 Oktetts
+        \item[Name] 255 Oktetts
+        \item[TTL] positive Werte einer vorzeichenbehafteten\\32 Bit Zahl
+        \item[Nachricht] 512 Oktetts (nur UDP)
+    \end{description}
+  \end{itemize}
+
+  }
+
+  \mysection{DNS-Nachrichten}
+
+  \myframe[Format]{
+      \begin{itemize}
+        \item Besteht aus 5 Abschnitten
+            \begin{description}
+                \item[Header] Immer vorhanden / Bestimmt den Aufbau der restlichen Nachricht
+                    \begin{itemize}
+                      \item Art der Nachricht
+                      \item Welche Abschnitte sind vorhanden und wieviel Datensätze enthalten sie
+                      \item Errorcodes
+                    \end{itemize}
+                \item[Question] Anfrage an den Nameserver
+                \item[Answer] Resource Records (RRs) als Antwort auf die Anfrage
+                \item[Authority] RRs die auf eine Autorität verweisen
+                \item[Additional] RRs mit zusätzlichen Informationen
+            \end{description}
+      \end{itemize}
+  }
+
+  \begin{frame}[fragile]{\mytitle}{Header-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      } 
+      \column{7cm}
+      \footnotesize{
+        \begin{description}
+          \item[ID] Kennung für die Anfrage
+          \item[QR] 0: Anfrage; 1: Antwort
+          \item[Opcode] 0: Standard; 1: Inverse; 2: Status (siehe RFC 6195 \cite{rfc6195})
+          \item[AA] Nameserver ist zuständig für die gefragte Domain
+          \item[TC] Nachricht wurde abgeschnitten (siehe RFC 2181 \cite{rfc2181})
+          \item[RD] Rekursion gefordert (Client)
+          \item[RA] Rekursion möglich (Server)
+          \item[Z] Reserviert und sollte 0 sein\\(siehe RFC 2535 \cite{rfc2535})
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Header-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{7cm}
+      \footnotesize{
+        \begin{description}
+          \item[RC] Response Code:
+          \item[0] Kein Fehler
+          \item[1] Format Error
+          \item[2] Server Failure
+          \item[3] Name Error
+          \item[4] Not Implemented
+          \item[5] Refused
+          \item Erweiterungen siehe RFC 6195 \cite{rfc6195}
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Header-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      ID                       |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    QDCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ANCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    NSCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                    ARCOUNT                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{7cm}
+        \footnotesize{
+        \begin{description}
+          \item[QDCOUNT] Anzahl der Einträge im Question-Abschnitt
+          \item[ANCOUNT] Anzahl der Einträge im Answer-Abschnitt
+          \item[NSCOUNT] Anzahl der Einträge im Authority-Abschnitt
+          \item[ARCOUNT] Anzahl der Einträge im Additional-Abschnitt
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Question-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                     QNAME                     /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QTYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QCLASS                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{1cm}
+      \column{6cm}
+        \footnotesize{
+        \begin{itemize}
+          \item[QNAME] Kodierter Domain-Name
+          \item Label-Länge + Label
+          \item Root-Label hat die Länge 0
+          \item Bsp: www.google.de $\Rightarrow$ 3www6google2de0
+      \end{itemize}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Question-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                     QNAME                     /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QTYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QCLASS                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{7cm}
+        \footnotesize{
+       \begin{description}
+          \item[QTYPE] Welche RR Typ wird gesucht
+          \item[1] A
+          \item[2] NS
+          \item[5] CNAME
+          \item[6] SOA
+          \item[12] PTR
+          \item[15] MX
+          \item[28] AAAA (siehe RFC 3596 \cite{rfc3596})
+          \item[252] AXFR
+          \item[255] * (alle RRs)
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Question-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                     QNAME                     /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QTYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     QCLASS                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{7cm}
+        \footnotesize{
+       \begin{description}
+          \item[QCLASS] Welche Klasse wird gesucht
+          \item[1] IN - Internet
+          \item[2] CS - CSNET
+          \item[3] CH - CHAOS
+          \item[4] HS - Hesiod
+          \item[255] * (alle Klassen)
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer/Authority/Additional-Format}
+    \begin{columns}[c]
+      \column{5cm}
+      \tiny{
+        \begin{verbatim}
+                                1  1  1  1  1  1
+  0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                                               |
+/                                               /
+/                      NAME                     /
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TYPE                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                     CLASS                     |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                      TTL                      |
+|                                               |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+|                   RDLENGTH                    |
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+/                     RDATA                     /
+/                                               /
++--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+        \end{verbatim}
+      }
+      \column{7cm}
+        \footnotesize{
+       \begin{description}
+          \item[NAME] Domain-Name des RR
+          \item[TYPE] Typ des RR
+          \item[CLASS] Klasse des RR
+          \item[TTL] Cache-Zeit (0: nicht cachen)
+          \item[RDLENGTH] Oktett-Anzahl im RDATE Feld
+          \item[RDATA] Resource (variable Länge)
+        \end{description}
+      }
+    \end{columns}
+\end{frame}
+
+  \myframe[RDATA]{
+    \begin{description}
+      \item[A] IP-Adresse (4 Oktetts)
+      \item[CNAME, NS] Kodierter Domain-Name
+      \item[MX] Präferenz (2 Oktetts), kodierter Domain-Name
+      \item[SOA]
+        \begin{itemize}
+          \item Kodierter Domain-Name
+          \item Mail-Adresse des Admins als kodierter Domain-Name
+          \item Serialnummer (4 Oktetts)
+          \item Refresh-Intervall (4 Oktetts)
+          \item Retry-Intervall (4 Oktetts)
+          \item Expire-Intervall (4 Oktetts)
+          \item Minimum-TTL (4 Oktetts)
+        \end{itemize}
+    \end{description}
+  }    
+
+  \mysection{Kompression}
+
+  \begin{frame}[fragile]{\mytitle}{Beispiel}
+      \begin{tiny}
+      \begin{verbatim}
+; <<>> DiG 9.7.3 <<>> @8.8.8.8 www.google.com -t A
+; (1 server found)
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 21675
+;; flags: qr rd ra; QUERY: 1, ANSWER: 7, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;www.google.com.      IN  A
+
+;; ANSWER SECTION:
+www.google.com.   86399 IN  CNAME www.l.google.com.
+www.l.google.com. 299 IN  A 173.194.69.106
+www.l.google.com. 299 IN  A 173.194.69.104
+www.l.google.com. 299 IN  A 173.194.69.103
+www.l.google.com. 299 IN  A 173.194.69.147
+www.l.google.com. 299 IN  A 173.194.69.105
+www.l.google.com. 299 IN  A 173.194.69.99
+      \end{verbatim}
+  \end{tiny}
+Theoretische Größe: 268 Oktetts
+\begin{itemize}
+  \item 12 Oktetts (Header)
+  \item 16 Oktetts + 4 Oktetts (Question)
+  \item 16 Oktetts + 10 Oktetts + 18 Oktetts (Answer CNAME)
+  \item 6 $\cdot$ (18 Oktetts + 10 Oktetts + 4 Oktetts) (Answer A)
+\end{itemize}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Beispiel}
+    \tiny
+    \begin{verbatim}
+; <<>> DiG 9.7.3 <<>> www.google.com -t A
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 176
+;; flags: qr rd ra; QUERY: 1, ANSWER: 7, AUTHORITY: 4, ADDITIONAL: 4
+
+;; QUESTION SECTION:
+;www.google.com.      IN  A
+
+;; ANSWER SECTION:
+www.google.com.   111235  IN  CNAME www.l.google.com.
+www.l.google.com. 176 IN  A 173.194.69.99
+www.l.google.com. 176 IN  A 173.194.69.103
+www.l.google.com. 176 IN  A 173.194.69.104
+www.l.google.com. 176 IN  A 173.194.69.105
+www.l.google.com. 176 IN  A 173.194.69.106
+www.l.google.com. 176 IN  A 173.194.69.147
+
+;; AUTHORITY SECTION:
+google.com.   21423 IN  NS  ns2.google.com.
+google.com.   21423 IN  NS  ns1.google.com.
+google.com.   21423 IN  NS  ns3.google.com.
+google.com.   21423 IN  NS  ns4.google.com.
+
+;; ADDITIONAL SECTION:
+ns1.google.com.   24823 IN  A 216.239.32.10
+ns2.google.com.   24823 IN  A 216.239.34.10
+ns3.google.com.   24823 IN  A 216.239.36.10
+ns4.google.com.   24823 IN  A 216.239.38.10
+
+;; Query time: 6 msec
+;; MSG SIZE  rcvd: 284
+    \end{verbatim}
+\end{frame}
+
+
+  \myframe{
+    \begin{itemize}
+      \item Eliminiert Wiederholungen von Domain-Namen in der Nachricht
+      \item Dabei kann der komplette Domain-Name oder mehrere Label am Ende durch einen Pointer ersetzt werden
+      \item Pointer: 2 Oktetts (Bit 1-2: 11; Bit 3-16: Offset)
+      \item Normale Längenangabe für ein Label (Bit 1-2: 00)
+      \item Mögliche Vorkommen:
+        \begin{itemize}
+          \item Eine Sequenz von Länge/Label-Paaren endend mit einem 0 Oktett
+          \item Ein Pointer
+          \item Eine Sequenz von Länge/Label-Paaren endend mit einem Pointer
+          \end{itemize}
+    \end{itemize}
+  }
+
+  \mysection{Beispiel}
+
+  \begin{frame}[fragile]{\mytitle}
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Header}
+    \textbf{ID} 0xf2e2
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvr[f2 e2] \fvb[81 80   .Y...5.. ...}\fvr[..]..]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Header}
+    \textbf{Flags} 1000 0001 1000 0000b
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 \fvr[81 80]   .Y...5.. ...}..\fvr[..]]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Header}
+    \textbf{QDCOUNT} 1\\
+    \textbf{ANCOUNT} 7\\
+    \textbf{NSCOUNT} 0\\
+    \textbf{ARCOUNT} 0\\
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  \fvr[00 01 00 07 00 00 00 00]  03 77 77 77 06 67 6f 6f   \fvr[........] .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Question}
+    \textbf{QNAME} 3www6google3com0
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  \fvr[03 77 77 77 06 67 6f 6f]   ........ \fvr[.www.goo]]
+\fvb[0040  \fvr[67 6c 65 03 63 6f 6d 00]  00 01 00 01 c0 0c 00 05   \fvr[gle.com.] ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Question}
+    \textbf{QTYPE} 1: A \\
+    \textbf{QCLASS} 1: IN
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  \fvr[00 01 00 01] c0 0c 00 05   gle.com. \fvr[....]....]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer 1}
+    \textbf{NAME} 0xc00c (Pointer Offset: 12)
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 \fvr[c0 0c] 00 05   gle.com. ....\fvr[..]..]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer 1}
+    \textbf{NAME} 0xc00c (Pointer Offset: 12)\\
+    3www6google3com0
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  \fvp[03 77 77 77 06 67 6f 6f]   ........ \fvp[.www.goo]]
+\fvb[0040  \fvp[67 6c 65 03 63 6f 6d 00]  00 01 00 01 \fvr[c0 0c] 00 05   \fvp[gle.com.] ....\fvr[..]..]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer 1}
+    \textbf{TYPE} 5: CNAME\\
+    \textbf{CLASS} 1: IN\\
+    \textbf{TTL} 0x0001517f (23:59:59)\\
+    \textbf{RDLENGTH} 8\\
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c \fvr[00 05]   gle.com. ......\fvr[..]]
+\fvb[0050  \fvr[00 01 00 01 51 7f 00 08]  03 77 77 77 01 6c c0 10   \fvr[....Q...] .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer 1}
+    \textbf{RDATA} 3www1l + Pointer (Offset: 16)
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  \fvr[03 77 77 77 01 6c c0 10]   ....Q... \fvr[.www.l..]]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+  \begin{frame}[fragile]{\mytitle}{Answer 1}
+    \textbf{RDATA} 3www1l + Pointer (Offset: 16)\\
+    3www1l6google3com
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 \fvp[06 67 6f 6f]   ........ .www\fvp[.goo]]
+\fvb[0040  \fvp[67 6c 65 03 63 6f 6d 00]  00 01 00 01 c0 0c 00 05   \fvp[gle.com.] ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  \fvr[03 77 77 77 01 6c c0 10]   ....Q... \fvr[.www.l..]]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 93   .,...... .+....E.]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 67   .,...... .+....Eg]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 63   .,...... .+....Ec]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 68   .,...... .+....Eh]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 6a   .,...... .+....Ej]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 ad c2 45 69   .,...... .+....Ei]
+    \end{Verbatim}
+\end{frame}
+
+
+  \begin{frame}[fragile]{\mytitle}{Answer 2-7}
+    \textbf{Name} Pointer (Offset: 44) $\rightarrow$ 3www1l + Pointer (Offset: 16) $\rightarrow$ 6google3com0 = 3www1l6goole3com0\\
+    \textbf{TYPE} 1: A\\
+    \textbf{CLASS} 1: IN\\
+    \textbf{TTL} 0x12b (00:04:59)\\
+    \textbf{RDLENGTH} 4\\
+    \vfill
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 \fvp[06 67 6f 6f]   ........ .www\fvp[.goo]]
+\fvb[0040  \fvp[67 6c 65 03 63 6f 6d 00]  00 01 00 01 c0 0c 00 05   \fvp[gle.com.] ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  \fvp[03 77 77 77 01 6c c0 10]   ....Q... \fvp[.www.l..]]
+\fvb[0060  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 93   \fvr[.,...... .+..]..E.]
+\fvb[0070  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 67   \fvr[.,...... .+..]..Eg]
+\fvb[0080  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 63   \fvr[.,...... .+..]..Ec]
+\fvb[0090  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 68   \fvr[.,...... .+..]..Eh]
+\fvb[00a0  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 6a   \fvr[.,...... .+..]..Ej]
+\fvb[00b0  \fvr[c0 2c 00 01 00 01 00 00  01 2b 00 04] ad c2 45 69   \fvr[.,...... .+..]..Ei]
+    \end{Verbatim}
+\end{frame}
+  
+  \begin{frame}[fragile]{\mytitle}{Answer 2-7}
+    \textbf{RDATA}\\
+    173.194.69.147 \\
+    173.194.69.103 \\
+    173.194.69.99  \\
+    173.194.69.104 \\
+    173.194.69.106 \\
+    173.194.69.105 \\
+    \tiny
+    \begin{Verbatim}[commandchars=\\\[\]]
+0000  00 00 ff fe 00 00 00 00  00 00 00 00 00 00 08 00   ........ ........
+0010  45 00 00 b0 3e 43 00 00  33 11 7c ed 08 08 08 08   E...>C.. 3.|.....
+0020  8d 59 2e a4 00 35 bc 81  00 9c ea 7d \fvb[f2 e2 81 80   .Y...5.. ...}....]
+\fvb[0030  00 01 00 07 00 00 00 00  03 77 77 77 06 67 6f 6f   ........ .www.goo]
+\fvb[0040  67 6c 65 03 63 6f 6d 00  00 01 00 01 c0 0c 00 05   gle.com. ........]
+\fvb[0050  00 01 00 01 51 7f 00 08  03 77 77 77 01 6c c0 10   ....Q... .www.l..]
+\fvb[0060  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 93]   .,...... .+..\fvr[..E.]]
+\fvb[0070  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 67]   .,...... .+..\fvr[..Eg]]
+\fvb[0080  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 63]   .,...... .+..\fvr[..Ec]]
+\fvb[0090  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 68]   .,...... .+..\fvr[..Eh]]
+\fvb[00a0  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 6a]   .,...... .+..\fvr[..Ej]]
+\fvb[00b0  c0 2c 00 01 00 01 00 00  01 2b 00 04 \fvr[ad c2 45 69]   .,...... .+..\fvr[..Ei]]
+    \end{Verbatim}
+\end{frame}
+
+  \appendix{}
+  \newcounter{finalframe}
+  \setcounter{finalframe}{\value{framenumber}}
+  \pagestyle{empty}
+  \renewcommand{\mytitle}{Literaturverzeichnis}
+  \frame[allowframebreaks]{\frametitle{\mytitle}
+   \bibliographystyle{gerplain}
+    \bibliography{references}
+  }
+  \setcounter{framenumber}{\value{finalframe}}
+
+\end{document}
