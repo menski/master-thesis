@@ -363,7 +363,7 @@
           \item[TYPE] Typ des RR
           \item[CLASS] Klasse des RR
           \item[TTL] Cache-Zeit (0: nicht cachen)
-          \item[RDLENGTH] Oktett-Anzahl im RDATE Feld
+          \item[RDLENGTH] Oktett-Anzahl im RDATA Feld
           \item[RDATA] Resource (variable Länge)
         \end{description}
       }
@@ -707,7 +707,7 @@ ns4.google.com.   24823 IN  A 216.239.38.10
 
 
   \begin{frame}[fragile]{\mytitle}{Answer 2-7}
-    \textbf{Name} Pointer (Offset: 44) $\rightarrow$ 3www1l + Pointer (Offset: 16) $\rightarrow$ 6google3com0 = 3www1l6goole3com0\\
+    \textbf{Name} Pointer (Offset: 44) $\rightarrow$ 3www1l + Pointer (Offset: 16) $\rightarrow$ 6google3com0 = 3www1l6google3com0\\
     \textbf{TYPE} 1: A\\
     \textbf{CLASS} 1: IN\\
     \textbf{TTL} 0x12b (00:04:59)\\
