@@ -6,8 +6,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[pdftex]{graphicx}
 \usepackage[%
-  colorlinks=false,
-  pdfborder={0 0 0},
+	colorlinks=false,
+	pdfborder={0 0 0},
 ]{hyperref}
 \usepackage{epstopdf}
 \usepackage{bibgerm}
@@ -38,36 +38,36 @@
 \newcommand{\TitleBetreuer}{Prof. Dr. Bettina Schnor\\ &M.Sc. Jörg Zinke}
 \newcommand{\TitleAbschlussText}{zur Erlangung des akademischen Grades\\Master of Science\\in Informatik}
 \newcommand{\TitleOrt}{Potsdam}
-\newcommand{\TitleDatum}{25. Mai 2012}
+\newcommand{\TitleDatum}{21. Juni 2012}
 \hypersetup
 {
-  pdfauthor={Sebastian Menski},
-  pdftitle={\TitleTitel},
+	pdfauthor={Sebastian Menski},
+	pdftitle={\TitleTitel},
 }
 
 \renewcommand{\maketitle}{
-  \thispagestyle{empty}
-  \begin{textblock*}{\TitleWidth}(\TitleMargin,\TitleMargin)
-    ~\hfill\includegraphics[height=2.5cm]{images/uni-logo}\\[3mm]
-    {\color{uniblue}\rule{\TitleWidth}{1mm}}\\[5mm]
-    {
-      \centering
-      \sffamily\Large
-      {\LARGE\TitleUni}\\[0.5\baselineskip]
-      {\large\TitleInstitut}\\[5\baselineskip]
-      {\Huge\TitleTitel}\\[3\baselineskip]
+	\thispagestyle{empty}
+	\begin{textblock*}{\TitleWidth}(\TitleMargin,\TitleMargin)
+		~\hfill\includegraphics[height=2.5cm]{images/uni-logo}\\[3mm]
+		{\color{uniblue}\rule{\TitleWidth}{1mm}}\\[5mm]
+		{
+			\centering
+			\sffamily\Large
+			{\LARGE\TitleUni}\\[0.5\baselineskip]
+			{\large\TitleInstitut}\\[5\baselineskip]
+			{\Huge\TitleTitel}\\[3\baselineskip]
 
-      {\TitleTyp}\\
-      \TitleAbschlussText\\[3\baselineskip]
+			{\TitleTyp}\\
+			\TitleAbschlussText\\[3\baselineskip]
 
-      \TitleAutor\\[6\baselineskip]
-      \begin{tabular}{rl}
-        \TitleBetreuerText: & \TitleBetreuer
-      \end{tabular}\\[3\baselineskip]
-      \TitleOrt, \TitleDatum\par
-    }
-  \end{textblock*}
-  ~\clearpage
+			\TitleAutor\\[6\baselineskip]
+			\begin{tabular}{rl}
+				\TitleBetreuerText: & \TitleBetreuer
+			\end{tabular}\\[3\baselineskip]
+			\TitleOrt, \TitleDatum\par
+		}
+	\end{textblock*}
+	~\clearpage
 }
 
 % Titlepage }}}
@@ -76,92 +76,142 @@
 
 
 \begin{document}
-  % Frontmatter {{{
-  \frontmatter
-  \maketitle{}
-  \tableofcontents{}
-  % Frontmatter }}}
+	 % Frontmatter {{{
+	\frontmatter
+	\maketitle{}
+	\tableofcontents{}
+	% Frontmatter }}}
 
-  % Mainmatter {{{
-  \onehalfspacing{}
-  \mainmatter
-  \pagestyle{scrheadings}
+	% Mainmatter {{{
+	\onehalfspacing{}
+	\mainmatter
+	\pagestyle{scrheadings}
 
-  \chapter{Einleitung} % {{{
-  \label{cha:Einleitung}
+	\chapter{Einleitung} % {{{
+	\label{cha:Einleitung}
 
-  % chapter Einleitung }}}
+		\section{Motivation} % {{{
+		\label{sec:Motivation}
+			
+		% section Motivation }}}
 
-  \chapter{Grundlagen} % {{{
-  \label{cha:Grundlagen}
+		\section{Aufgabenstellung} % {{{
+		\label{sec:Aufgabenstellung}
+			
+		% section Aufgabenstellung }}}
 
-  \section{Domain Name System} % {{{
-  \label{sec:Domain Name System}
+		\section{Gliederung der Arbeit} % {{{
+		\label{sec:Gliederung der Arbeit}
+			
+		% section Gliederung der Arbeit }}}
 
-  % section Domain Name System }}}
+	% chapter Einleitung }}}
 
-  \section{Lastverteilung} % {{{
-  \label{sec:Lastverteilung}
+	\chapter{Grundlagen} % {{{
+	\label{cha:Grundlagen}
 
-  % section Lastverteilung }}}
+		\section{Domain Name System (DNS)} % {{{
+		\label{sec:Domain Name System (DNS)}
+			
+		% section Domain Name System (DNS) }}}
 
-  \section{servload} % {{{
-  \label{sec:servload}
+		\section{Lastverteilung} % {{{
+		\label{sec:Lastverteilung}
+			
+		% section Lastverteilung }}}
 
-  % section servload }}}
+		\section{salbnet} % {{{
+		\label{sec:salbnet}
+			
+			\subsection{salbd} % {{{
+			\label{sub:salbd}
+				
+			% subsection salbd }}}
 
-  \section{salbnet} % {{{
-  \label{sec:salbnet}
+			\subsection{servload} % {{{
+			\label{sub:servload}
+				
+			% subsection servload }}}
 
-  % section salbnet }}}
+		% section salbnet }}}
 
   % chapter Grundlagen }}}
 
-  \chapter{Verwandte Arbeiten} % {{{
-  \label{cha:Verwandte Arbeiten}
+	\chapter{Verwandte Arbeiten} % {{{
+	\label{cha:Verwandte Arbeiten}
+		
+	% chapter Verwandte Arbeiten }}}
 
-  % chapter Verwandte Arbeiten }}}
+	\chapter{Implementation} % {{{
+	\label{cha:Implementation}
+		
+		\section{Anforderungen} % {{{
+		\label{sec:Anforderungen}
+			
+		% section Anforderungen }}}
 
-  \chapter{Implementierung} % {{{
-  \label{cha:Implementierung}
+		\section{Erweiterung von servload} % {{{
+		\label{sec:Erweiterung von servload}
+			
+		% section Erweiterung von servload }}}
 
-  % chapter Implementierung }}}
+		\section{Erweiterung von salbd} % {{{
+		\label{sec:Erweiterung von salbd}
+			
+		% section Erweiterung von salbd }}}
 
-  \chapter{Messungen} % {{{
-  \label{cha:Messungen}
+	% chapter Implementation }}}
 
-  % chapter Messungen }}}
+	\chapter{Funktionstest} % {{{
+	\label{cha:Funktionstest}
+	
+		\section{Testumgebung} % {{{
+		\label{sec:Testumgebung}
+			
+		% section Testumgebung }}}
 
-  \chapter{Fazit} % {{{
-  \label{cha:Fazit}
+		\section{Messplan} % {{{
+		\label{sec:Messplan}
+			
+		% section Messplan }}}
 
-  % chapter Fazit }}}
+		\section{Auswerterung} % {{{
+		\label{sec:Auswerterung}
+			
+		% section Auswerterung }}}
 
-  % Content }}}
+	% chapter Funktionstest }}}
 
-  % Appendix {{{
-  \appendix
+	\chapter{Zusammenfassung} % {{{
+	\label{cha:Zusammenfassung}
+	
+	% chapter Zusammenfassung }}}
 
-  \chapter{Messumgebung} % {{{
-  \label{cha:Messumgebung}
+	% Content }}}
 
-  % chapter Messumgebung }}}
+	% Appendix {{{
+	\appendix
 
-  % Appendix }}}
+	\chapter{Messumgebung} % {{{
+	\label{cha:Messumgebung}
 
-  % Backmatter {{{
-  \backmatter
-  \pagenumbering{Roman}
+	% chapter Messumgebung }}}
 
-  \listoffigures{}
-  \listoftables{}
+	% Appendix }}}
 
-  % Bibliography {{{
-  \nocite{*}
-  \bibliographystyle{gerplain}
-  \bibliography{references}
-  % }}}
+	% Backmatter {{{
+	\backmatter
+	\pagenumbering{Roman}
 
-  % Backmatter }}}
+	\listoffigures{}
+	\listoftables{}
+
+	% Bibliography {{{
+	\nocite{*}
+	\bibliographystyle{gerplain}
+	\bibliography{references}
+	% }}}
+
+	% Backmatter }}}
 
 \end{document}
