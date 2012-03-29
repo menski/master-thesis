@@ -15,6 +15,9 @@
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{scrpage2}
 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
 % Titlepage {{{
 \usepackage[absolute]{textpos}
 \usepackage{color}
@@ -105,6 +108,11 @@
 			
 		% section Gliederung der Arbeit }}}
 
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
+
 	% chapter Einleitung }}}
 
 	\chapter{Grundlagen} % {{{
@@ -112,12 +120,98 @@
 
 		\section{Domain Name System (DNS)} % {{{
 		\label{sec:Domain Name System (DNS)}
+
+			\subsection{Bedeutung} % {{{
+			\label{sub:Bedeutung}
+			
+			% subsection Bedeutung }}}
+
+			\subsection{Infrastruktur} % {{{
+			\label{sub:Infrastruktur}
+
+				\subsubsection{Topologie} % {{{
+				\label{sub:Topologie}
+				
+				% subsubsection Topologie }}}
+				
+				\subsubsection{DNS-Server Arten} % {{{
+				\label{sub:DNS-Server Arten}
+				
+				% subsubsection DNS-Server Arten }}}
+
+				\subsubsection{Zonefile-Aufbau} % {{{
+				\label{sub:Zonefile-Aufbau}
+				
+				% subsubsection Zonefile-Aufbau }}}
+
+				\subsubsection{Nachrichtenformat} % {{{
+				\label{sub:Nachrichtenformat}
+				
+				% subsubsection Nachrichtenformat }}}
+
+			% subsection Infrastruktur }}}
+
+			\subsection{DNS-Server Software} % {{{
+			\label{sub:DNS-Server Software}
+			
+				\subsubsection{BIND} % {{{
+				\label{sub:BIND}
+				
+				% subsubsection BIND }}}
+
+				\subsubsection{Microsoft DNS} % {{{
+				\label{ssub:Microsoft DNS}
+				
+				% subsubsection Microsoft DNS }}}
+
+				\subsubsection{Djbdns} % {{{
+				\label{ssub:Djbdns}
+				
+				% subsubsection Djbdns }}}
+
+				\subsubsection{Dnsmasq} % {{{
+				\label{ssub:Dnsmasq}
+				
+				% subsubsection Dnsmasq }}}
+
+			% subsection DNS-Server Software }}}
+
 			
 		% section Domain Name System (DNS) }}}
 
 		\section{Lastverteilung} % {{{
 		\label{sec:Lastverteilung}
+	
+			\subsection{Verwendung} % {{{
+			\label{sub:Verwendung}
 			
+			% subsection Verwendung }}}	
+
+			\subsection{Verfahren} % {{{
+			\label{sub:Verfahren}
+
+				\subsubsection{Server-Lastverteilung (LVS, pf)} % {{{
+				\label{ssub:Server Lastverteilung (LVS, pf)}
+				
+				% subsubsection Server Lastverteilung (LVS, pf) }}}
+
+				\subsubsection{Anwendungs-Lastverteilung (perlbal, mod\_proxy\_balancer)} % {{{
+				\label{ssub:Anwendungs-Lastverteilung}
+				
+				% subsubsection Anwendungs-Lastverteilung }}}
+
+				\subsubsection{Lastverteilung mit DNS (RoundRobin, anycast, GeoDNS)} % {{{
+				\label{ssub:Lastverteilung mit DNS (RoundRobin, anycast, GeoDNS)}
+				
+				% subsubsection Lastverteilung mit DNS (RoundRobin, anycast, GeoDNS) }}}
+
+			% subsection Verfahren }}}
+			
+			\subsection{Lastverteilung von DNS-Verkehr} % {{{
+			\label{sub:Lastverteilung von DNS-Verkehr}
+			
+			% subsection Lastverteilung von DNS-Verkehr }}}
+
 		% section Lastverteilung }}}
 
 		\section{salbnet} % {{{
@@ -135,15 +229,65 @@
 
 		% section salbnet }}}
 
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
+
   % chapter Grundlagen }}}
 
 	\chapter{Verwandte Arbeiten} % {{{
 	\label{cha:Verwandte Arbeiten}
+
+		\section{Lastverteilung: Jörg, Paper} % {{{
+		\label{sec:Lastverteilung: Jörg, Paper}
 		
+		% section Lastverteilung: Jörg, Paper }}}
+
+		\section{servload: Jan Diplom} % {{{
+		\label{sec:servload: Jan Diplom}
+		
+		% section servload: Jan Diplom }}}
+
+		\section{salbd: Jörg, Lars, salbd Paper } % {{{
+		\label{sec:salbd: Jörg}
+		
+		% section salbd: Jörg }}}
+
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
+
 	% chapter Verwandte Arbeiten }}}
 
-	\chapter{Implementation} % {{{
-	\label{cha:Implementation}
+	\chapter{Konzept} % {{{
+	\label{cha:Konzept}
+
+		\section{Ansätze} % {{{
+		\label{sec:Ansätze}
+		
+		% section Ansätze }}}
+
+		\section{Auswahl} % {{{
+		\label{sec:Auswahl}
+		
+		% section Auswahl }}}
+
+		\section{Entwurf} % {{{
+		\label{sec:Entwurf}
+		
+		% section Entwurf }}}
+
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
+
+	% chapter Konzept }}}
+
+	\chapter{Implementierung} % {{{
+	\label{cha:Implementierung}
 		
 		\section{Anforderungen} % {{{
 		\label{sec:Anforderungen}
@@ -160,30 +304,50 @@
 			
 		% section Erweiterung von salbd }}}
 
-	% chapter Implementation }}}
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
 
-	\chapter{Funktionstest} % {{{
+	% chapter Implementierung }}}
+
+	\chapter{Funktionstest / Messung} % {{{
 	\label{cha:Funktionstest}
 	
-		\section{Testumgebung} % {{{
-		\label{sec:Testumgebung}
+		\section{Messumgebung} % {{{
+		\label{sec:Messumgebung}
 			
-		% section Testumgebung }}}
+		% section Messumgebung }}}
 
 		\section{Messplan} % {{{
 		\label{sec:Messplan}
 			
 		% section Messplan }}}
 
-		\section{Auswerterung} % {{{
-		\label{sec:Auswerterung}
+		\section{Auswertung} % {{{
+		\label{sec:Auswertung}
 			
-		% section Auswerterung }}}
+		% section Auswertung }}}
+
+		\section{Fazit} % {{{
+		\label{sec:Fazit}
+		
+		% section Fazit }}}
 
 	% chapter Funktionstest }}}
 
-	\chapter{Zusammenfassung} % {{{
+	\chapter{Zusammenfassung und Ausblick} % {{{
 	\label{cha:Zusammenfassung}
+
+		\section{Zusammenfassung} % {{{
+		\label{sec:Zusammenfassung}
+			
+		% section Zusammenfassung }}}
+
+		\section{Ausblick} % {{{
+		\label{sec:Ausblick}
+		
+		% section Ausblick }}}
 	
 	% chapter Zusammenfassung }}}
 
