@@ -19,7 +19,7 @@
 \subtitle{Implementation und Messung}
 \author{Sebastian Menski\\menski@uni-potsdam.de}
 \institute{Institut für Informatik\\Universität Potsdam}
-\date{09. Mai 2012}
+\date{10. Mai 2012}
 
 \begin{document}
 
@@ -179,7 +179,7 @@ server is able to handle.\footnote{\url{http://salbnet.org}}
 			\item wrr vs. salbd (dpr)
 			\item Gewichte: ib4$\rightarrow$788  ib6$\rightarrow$623 ib8$\rightarrow$1181 (UnixBench)
 			\item Log: 5min (29-Sep-2011 5:55:00-6:00:00)
-			\item Verstärkung: modify 400, 800, 1600
+			\item Verstärkung: multiply 400, 800, 1600
 			\item je 51 Durchläufe
 		\end{itemize}
 	}
@@ -270,7 +270,39 @@ server is able to handle.\footnote{\url{http://salbnet.org}}
 		  RT & 4,05& 0,64 & 4,33 & 0,61 & 4,24 & 0,60 \\
 			CT & 0,31& 0,15 & 0,57 & 0,14 & 0,61 & 0,13\\
 			\end{tabular}
+			\caption{Median der Messergebnisse}
 		\end{table}
+	}
+
+	\myframe[Ergebnisse] {
+		\footnotesize{
+		\begin{table}
+			\centering
+			\begin{tabular}{r|cc|cc|cc}
+				& \multicolumn{2}{c}{multiply 400}
+				& \multicolumn{2}{c}{multiply 800}
+				& \multicolumn{2}{c}{multiply 1600} \\
+		  $\sigma$		& wrr & salbd & wrr & salbd	& wrr & salbd \\\hline
+			TO & 1273,392 & 343,157  & 2038,529 & 759,863  & 2910.157  & 1612,781 \\
+			RT & 0,000 & 0,000  & 0,000  & 0,000  & 0,000  & 0,000 \\
+			CT & 0,009 & 0,009  & 0,008 & 0,008  & 0,008  & 0,008 \\
+			\end{tabular}
+			\caption{Standardabweichung der Messergebnisse}
+		\end{table}
+		\begin{table}
+			\centering
+			\begin{tabular}{r|cc|cc|cc}
+				& \multicolumn{2}{c}{multiply 400}
+				& \multicolumn{2}{c}{multiply 800}
+				& \multicolumn{2}{c}{multiply 1600} \\
+		  $\sigma^2$		& wrr & salbd & wrr & salbd	& wrr & salbd \\\hline
+			TO & 1621527,6 & 117756,6  & 4155602,2 & 577391,4  & 8469013,0  & 2601063,4 \\
+			RT & 0,000 & 0,000  & 0,000  & 0,000  & 0,000  & 0,000 \\
+			CT & 0,000 & 0,000  & 0,000 & 0,000  & 0,000  & 0,000 \\
+			\end{tabular}
+			\caption{Varianz der Messergebnisse}
+		\end{table}
+	}
 	}
 
 \end{document}
