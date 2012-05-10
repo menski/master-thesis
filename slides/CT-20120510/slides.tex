@@ -101,7 +101,7 @@ server is able to handle.\footnote{\url{http://salbnet.org}}
 	\myframe{
 		\begin{itemize}
 			\item servload: Implementierung nach RFC1035
-			\item libnetmsg: Vervollständigung der ungetesten TCP-Kommunikation
+			\item libnetmsg: Vervollständigung der ungetesteten TCP-Kommunikation
 			\item salbd (Client): ermitteln der Metriken
 				\begin{itemize}
 					\item Größe der UDP-Receive-Queue (\texttt{/proc/sys/net/core/rmem\_default})
@@ -115,7 +115,7 @@ server is able to handle.\footnote{\url{http://salbnet.org}}
 
 	\myframe[Problem Paketgröße]{
 		\begin{itemize}
-			\item \texttt{recvmsg} liefert größe der DNS-Nachricht zurück
+			\item \texttt{recvmsg} liefert Größe der DNS-Nachricht zurück
 			\item entspricht nicht Größe der Nachricht in der Receive-Queue
 			\item Daten werden mit \texttt{struct sk\_buff} organisiert
 		\end{itemize}
