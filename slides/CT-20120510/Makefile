@@ -12,7 +12,7 @@ bibtex:
 	$(BIBTEX) $(MASTER)
 	$(LATEX) $(MASTER).tex
 
-pdf: bibtex
+pdf:
 	$(LATEX) $(MASTER).tex
 	$(LATEX) $(MASTER).tex
 
