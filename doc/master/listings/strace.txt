@@ -1,0 +1,16 @@
+[root@ib4 ~]# pgrep named
+2546
+[root@ib4 ~]# strace -ff -o strace.log -p 2546
+Process 2546 attached with 4 threads - interrupt to quit
+Process 2546 detached
+Process 2547 detached
+Process 2548 detached
+Process 2549 detached
+[root@ib4 ~]# cat strace.log.2547 
+futex(0x2b4e53fcfc64, FUTEX_WAIT_PRIVATE, 63, NULL) = 0
+futex(0x2b4e53fcfc00, FUTEX_WAKE_PRIVATE, 1) = 0
+recvmsg(512, {msg_name(16)={sa_family=AF_INET, sin_port=htons(48781), sin_addr=inet_addr("127.0.0.1")}, msg_iov(1)=[{"\223\357\1\0\0\1\0\0\0\0\0\0\3www\5haiti\2cs\vuni-po"..., 4096}], msg_controllen=32, {cmsg_len=32, cmsg_level=SOL_SOCKET, cmsg_type=0x1d /* SCM_??? */, ...}, msg_flags=0}, 0) = 45
+sendmsg(512, {msg_name(16)={sa_family=AF_INET, sin_port=htons(48781), sin_addr=inet_addr("127.0.0.1")}, msg_iov(1)=[{"\223\357\205\0\0\1\0\1\0\4\0\4\3www\5haiti\2cs\vuni-po"..., 200}], msg_controllen=0, msg_flags=0}, 0) = 200
+recvmsg(512, 0x40ca3660, 0)             = -1 EAGAIN (Resource temporarily unavailable)
+write(7, "\0\2\0\0\375\377\377\377", 8) = 8
+futex(0x2b4e53fcfc64, FUTEX_WAIT_PRIVATE, 65, NULL

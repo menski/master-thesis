@@ -1,0 +1,1325 @@
+\documentclass[a4paper, 12pt, BCOR10mm, DIV12, toc=bibliography, toc=listof, german]{scrbook}
+
+% Preamble {{{
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage[%
+	colorlinks=false,
+	pdfborder={0 0 0},
+]{hyperref}
+\usepackage{epstopdf}
+\usepackage{bibgerm}
+\usepackage{setspace}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{scrpage2}
+\usepackage{units}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{xcolor}
+
+\definecolor{uniblue}{rgb}{0.062745,0.17647,0.34118}
+\definecolor{tblue}{HTML}{204A87}
+\definecolor{tgreen}{HTML}{4E9A06}
+\definecolor{tred}{HTML}{CC0000}
+
+\lstset{
+	language=C,
+	numbers=left,
+	frame=single,
+	basicstyle=\footnotesize,
+	captionpos=b,
+	breaklines=true,
+	breakatwhitespace=false,
+	keywordstyle=\color{tblue},
+	commentstyle=\color{tgreen},
+	stringstyle=\color{tred}
+}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% Titlepage {{{
+\usepackage[absolute]{textpos}
+
+\newlength{\TitleMargin}
+\newlength{\TitleWidth}
+
+\setlength{\TitleMargin}{2cm}
+\setlength{\TitleWidth}{\paperwidth}
+\addtolength{\TitleWidth}{-\TitleMargin}
+\addtolength{\TitleWidth}{-\TitleMargin}
+
+
+\newcommand{\TitleUni}{Universität Potsdam}
+\newcommand{\TitleInstitut}{Mathematisch-Naturwissenschaftliche Fakultät\\Institut für Informatik}
+\newcommand{\TitleTitel}{Selbst-adaptive Lastverteilung für DNS-Cluster}
+\newcommand{\TitleTyp}{Masterarbeit}
+\newcommand{\TitleAutor}{Sebastian Menski}
+\newcommand{\TitleBetreuerText}{Betreuer}
+\newcommand{\TitleBetreuer}{Prof. Dr. Bettina Schnor\\ &M.Sc. Jörg Zinke}
+\newcommand{\TitleAbschlussText}{zur Erlangung des akademischen Grades\\Master of Science\\in Informatik}
+\newcommand{\TitleOrt}{Potsdam}
+\newcommand{\TitleDatum}{21. Juni 2012}
+\hypersetup
+{
+	pdfauthor={Sebastian Menski},
+	pdftitle={\TitleTitel},
+}
+
+\renewcommand{\maketitle}{
+	\thispagestyle{empty}
+	\begin{textblock*}{\TitleWidth}(\TitleMargin,\TitleMargin)
+		~\hfill\includegraphics[height=2.5cm]{images/uni-logo}\\[3mm]
+		{\color{uniblue}\rule{\TitleWidth}{1mm}}\\[5mm]
+		{
+			\centering
+			\sffamily\Large
+			{\LARGE\TitleUni}\\[0.5\baselineskip]
+			{\large\TitleInstitut}\\[5\baselineskip]
+			{\Huge\TitleTitel}\\[3\baselineskip]
+
+			{\TitleTyp}\\
+			\TitleAbschlussText\\[3\baselineskip]
+
+			\TitleAutor\\[6\baselineskip]
+			\begin{tabular}{rl}
+				\TitleBetreuerText: & \TitleBetreuer
+			\end{tabular}\\[3\baselineskip]
+			\TitleOrt, \TitleDatum\par
+		}
+	\end{textblock*}
+	~\clearpage
+}
+
+\def \dns {Domain Name System (DNS)}
+
+% Titlepage }}}
+
+% Preamble }}}
+
+
+\begin{document}
+	 % Frontmatter {{{
+	\frontmatter
+	\maketitle{}
+	\tableofcontents{}
+	% Frontmatter }}}
+
+	% Mainmatter {{{
+	\onehalfspacing{}
+	\mainmatter
+	\pagestyle{scrheadings}
+
+	\chapter{Einleitung} % {{{
+	\label{cha:einleitung}
+
+		Das \dns{} \cite{rfc1034, rfc1035} ist eine fundamentale Komponente des heutigen Internets. Es
+		ermöglicht die Abbildung von Domain-Namen, wie sie von Menschen genutzt werden, auf die dazu
+		gehörige IP-Adressen, welche von Computer-Systemen benötigt werden. Ohne diese Abbildung wäre
+		die einfache und schnelle Nutzung des Internets nicht möglich. Jeder Aufruf einer Website oder
+		das Versenden einer E-Mail führt zu einer DNS-Anfrage. Aus diesem Grund ist ein stabiles System
+		mit schnellen Antwortzeiten unerlässlich.
+		
+		Die DNS-Informationen sind in einer verteilten, baumartigen Struktur gespeichert.  Dabei sind für
+		die verschieden Knoten im Baum unterschiedliche DNS-Server zuständig. Die kritischste
+		Infrastruktur ist deshalb die Wurzel des Baums, die Root-Server, und die erste Ebene unter
+		ihnen, den Top-Level-Domains. Diese beiden Ebenen sind die am häufigsten frequentierten
+		Nameserver des DNS. Sie werden von großen Organisationen bereitgestellt und tragen die größte
+		Last des Systems. (TODO: Grafik)
+
+		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
+		auch von vielen anderen Netzwerk-Diensten gefordert sind. Um diese Anforderungen zu erfüllen
+		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last einer Ressource dadurch
+		verringert, dass die Gesamtlast auf mehrere identische Ressourcen verteilt wird. Dadurch ist die
+		Last je Ressource geringer und besser handhabbar. Dieses Konzept findet allgemein in Netzwerken
+		und bei Server-Systemen Anwendung \cite{bourke2001, kopparapu2002}. Aber auch speziellere
+		Anwendungsgebiete wie die Verteilung von Last auf Webservern sind besonders interessant für
+		Websites mit hohen Lastanforderungen \cite{meplho2012}. Hierbei wird die anfallende Last auf ein
+		Cluster aus Backend-Servern verteilt, welche alle	die gleiche Anwendung bereitstellen. Die
+		Aufgabe der Verteilung übernimmt dabei meist ein Lastverteiler, welcher vor den Backend-Server
+		in das Netzwerk eingefügt wird. Jede Anfrage wird somit durch den Lastverteiler geleitet,
+		welcher dann diese an die verfügbaren Backend-Server verteilt.  Somit ist es naheliegend diese
+		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
+
+		Daher beschäftigt sich diese Arbeite mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu
+		wird ein bestehendes System \cite{scsczile2008} zur selbst-adaptiven Lastverteilung von
+		HTTP-Anfragen erweitert, welches einen Credit-basierten Ansatz der Lastverteilung realisiert.
+		Die Webserver, welche die Anfragen abarbeiten sollen, melden dem Lastverteiler ihre aktuelle
+		Last.  Danach kann der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um
+		dieses Konzept für den DNS-Anwendungsfall zu nutzen, müssen die Unterschiede zwischen HTTP und
+		DNS-Anfragen analysiert werden. Anschließend muss eine Metrik erstellt werden, welche auf dem
+		DNS-Server genutzt wird um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits
+		sollen dann per TCP an den Lastverteiler gemeldet werden.
+
+		Im Kapitel \ref{cha:grundlagen} wird auf die Grundlagen dieser Arbeit eingegangen. Dazu wird die
+		Entstehung und die Grundlagen des \dns{} erläutert. Darüber hinaus werden verschiedene
+		Möglichkeiten der Lastverteilung besprochen. Wobei auf Besonderheiten der Lastverteilung im DNS
+		eingegangen wird. Abschließend wird das zu erweiternde System zur selbst-adaptiven
+		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten
+		aufgeführt, welche in Verbindung mit dieser Arbeit stehen. In Kapitel \ref{cha:konzept} wird das
+		Konzept der erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.  Darauf
+		folgend ist in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher dargestellten
+		Konzepts beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der Implementation
+		eingegangen. Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer
+		Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit
+		folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine Einschätzung
+		und Bewertung der erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
+
+	% chapter Einleitung }}}
+
+	\chapter{Grundlagen} % {{{
+	\label{cha:grundlagen}
+
+		Dieses Kapitel soll eine Einführung in die Verfahren und Techniken geben, die dieser Arbeit
+		zugrundeliegen.  Dazu wird zu Beginn des Kapitels in Abschnitt \ref{sec:dns} auf die Entstehung,
+		Bedeutung und Funktionsweise des \dns{} eingegangen. Daran anschließend soll in Abschnitt
+		\ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der allgemeinen
+		Lastverteilung aufgezeigt werden. Wobei auf Besonderheiten der Lastverteilung für das DNS
+		eingegangen wird. Zum Abschluss wird das System zur selbst-adaptiven Lastverteilung vorgestellt,
+		welches als Grundlage dieser Arbeit dient. Damit später verständlicher ist, an welchen
+		Stellen des Systemes Anpassungen vorgenommen werden müssen, werden die einzelnen Komponenten des
+		Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
+
+		\section{Domain Name System (DNS)} % {{{
+		\label{sec:dns}
+
+		In diesem Abschnitt wird das \dns{} \cite{rfc1034,rfc1035} beschrieben. Dazu wird im ersten Teil
+		auf die Entstehung des DNS eingegangen und die Notwendigkeit eines solchen Systems dargestellt.
+		Anschließend folgt eine Erläuterung des heutigen Aufbaus des DNS und wie dieses zur
+		Informationsverteilung genutzt wird.  Abschließend wird auf die bekanntesten und verbreitetsten
+		Softwaresysteme eingegangen, welche aktuell zur Bereitstellung eines DNS-Servers genutzt werden.
+
+			\subsection{Entstehung und Bedeutung} % {{{
+			\label{sub:entstehung}
+
+			Um die Entstehung des \dns{} zu verstehen ist es entscheidend zu wissen wie das Internet
+			entstanden und aufgebaut ist.
+			
+			Das sogenannte ARPANET ist ein Wide Area Network (WAN) gewesen, welches in den späten
+			sechziger Jahren von der Advanced Research Projects Agency (ARPA) des
+			Verteidigungsministeriums der USA aufgebaut und finanziert wurde. Es hat mehrere große
+			Forschungseinrichtungen in den USA verbunden und diente der Zusammenarbeit und dem Austausch
+			von Daten zwischen diesen Einrichtungen. Bereits kurze Zeit nach dem die ersten Computer an
+			das ARPANET angeschlossen wurden begann die Entwicklung der TCP/IP-Suite, einer Menge an
+			Protokollen, welche den Datenpakettransport über ein Netzwerk regeln und ermöglichen.  Die
+			beiden bekanntesten Protokolle aus dieser Protokollfamilie sind das Internet Protocol (IP) und
+			das Transmission Control Protocol (TCP). Anfang der achtziger Jahre wurde die TCP/IP-Suite
+			Standard auf dem ARPANET. Gleichzeitig führte die Entwicklung des Berkeley Software
+			Distribution (BSD) Unix Betriebssystems, welches die TCP/IP-Suite zur Verfügung stellte, dazu,
+			dass immer mehr Rechenzentren und Computersysteme an das ARPANET angeschlossen wurden. Aus
+			dieser Entwicklung resultierte, dass aus einer geringen Anzahl von verbundenen Systemen ein
+			großes Netzwerk entstand. Was sich schlussendlich mit weiteren Netzwerken zu dem heutigen
+			Internet entwickelte, einem Netzwerk von Netzwerken.
+
+			Der Sinn eines Netzwerk ist es, dass die einzelnen Teilnehmer sich kontaktieren und
+			Informationen austauschen können. Dies ist zu vergleichen mit einem Telfonnetz, wo jedem
+			Nutzer eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer kann
+			ein Kommunikationspartner mit einem anderen in Verbindung treten. Das selbe Prinzip gilt auch
+			für ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige IP-Adresse
+			erhält. Dies ist laut dem IPv4-Standard \cite{rfc791} eine 32-Bit-Adresse, welche in der Form
+			\texttt{141.89.249.102} dargestellt wird. Im neueren IPv6-Standard \cite{rfc2460} handelt es
+			sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010},
+			im Vergleich zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen
+			möglich ist sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks
+			alle IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese
+			Aufgabe abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt. Hierbei existiert
+			eine Datei im lokalen Dateisystem (bei unixoiden Systemen die Datei \texttt{/etc/hosts}),
+			welche einem privaten Adressbuch ähnelt. Sie enthält die gewünschten IP-Adressen und weißt
+			ihnen Namen zu. Dadurch ist es dem Nutzer möglich andere Netzwerk-Teilnehmer über den
+			zugewiesenen Namen zu kontaktieren. Das Betriebssystem nutzt dann die \texttt{hosts}-Datei um
+			die entsprechende IP-Adresse zu ermitteln. Für ein kleines statisches Netzwerk ist dies eine
+			durchaus ausreichende Lösung. Jedoch wuchs das ARPANET relativ schnell, was dazu führte das
+			lokale \texttt{hosts}-Dateien keine sinnvolle Lösung mehr waren. Der nächste Schritt war es
+			ein zentrales Verzeichnis bereitzustellen. Dies wurde durch die \texttt{HOSTS.TXT} realisiert,
+			welche vom Network Information Center (NIC) des Stanford Research Institute (SRI) gepflegt
+			wurde. Dieses Verzeichnis wurde zentral zur Verfügung gestellt, sodass jeder Netzwerk-Nutzer
+			immer die aktuelle Version erhalten und daraus seine lokale \texttt{hosts}-Datei generieren
+			konnte.  Dieser zentrale Ansatz hatte den Vorteil, dass schnell auf Änderungen reagiert werden
+			konnte, diese leicht zu verteilen waren und Nameskonflikte verhindert wurden.  Allerdings ist
+			auch dieser Ansatz nicht für ein Netzwerk in der Größe des heutigen Internet handhabbar.  Der
+			Zeitaufwand zum Instandhalten und der Netzwerkverkehr zum Verteilen wäre heutzutage nicht mehr
+			vertretbar. Um diese Probleme zu lösen wurde das DNS \cite{rfc1034} entwickelt, welches
+			durch einen dezentralen Ansatz die Informationen und die Last ihrer Wartung verteilt.
+
+			% subsection Entstehung und Bedeutung }}}
+
+			\subsection{Infrastruktur} % {{{
+			\label{sub:infrastruktur}
+			
+			Mit dem DNS wurde es möglich die Verwaltung und Bereitstellung der Informationen, welcher
+			Netzwerkteilnehmer über welchen Namen und welche IP-Adresse erreichbar ist, dezentral zu
+			verteilen. Dazu wird das komplette Netzwerk in sogenannte Domains aufgeteilt, welche
+			anschließend an zuständige Netzwerkbetreiber delegiert werden. Diese pflegen dann die
+			Informationen für diese Domain und können wiederum weitere Subdomains delegieren. Dadurch
+			entfällt eine zentrale Verwaltung  aller Informationen, wie z.B. durch die \texttt{HOSTS.TXT}.
+			Denn jeder Domain-Verwalter ist dann dafür verantwortlich alle Informationen über seine Domain
+			bereitzustellen. Dies schließt auch die Information mit ein, welche anderen Netzwerkbetreiber
+			für etwaige Subdomains verantwortlich sind.
+
+				\subsubsection*{Topologie} % {{{
+				
+				Das DNS ist eine verteilte Datenbank, deren Elemente (Domains) dezentral  verwaltet werden
+				und ebenfalls Subdomains besitzen können. So besteht ein vollständiger Domain-Name aus
+				mehren Subdomains, welche durch Punkte (.) getrennt sind. Die höchste Domain, welche
+				sozusagen die \textit{Wurzel} aller Domains ist, ist die Root-Domain (meist nur als
+				\glqq{}.\grqq{} notiert).
+				Diese Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
+				verwaltet. Unter der Root-Domain existieren aktuell 313
+				Top-Level-Domains (TLDs)\footnote{http://data.iana.org/TLD/tlds-alpha-by-domain.txt (Stand:
+				09.06.2012)}, welche sich hauptsächlich in drei Arten unterteilen lassen:
+
+					\begin{itemize}
+						\item länderspezifische \textit{country-code TLDs} (ccTLDs),
+						\item von verschiedene Gruppen verwaltete \textit{unsponsored TLDs} (uTLDs) und
+						\item von Unternehmen oder Organisationen verwaltete \textit{sponsored TLDs}
+							(sTLDs).
+					\end{itemize}
+					
+				Beispiele für ccTLDs sind \texttt{de} für Deutschland, \texttt{fr} für Frankreich oder
+				\texttt{ca} für Kanada. Die bekanntesten uTLDs sind \texttt{com} ursprünglich für
+				kommerzielle Unternehmen und \texttt{org} für nichtkommerzielle Organisationen. Die
+				Verbreitung von sTLDs ist noch sehr gering, dies könnte sich aber in naher Zukunft ändern,
+				da entsprechende Infrastruktur bereitstellen kann. Nach den TLDs folgen die
+				Second-Level-Domains (SLDs), welche meist schon zu den eigentlichen Netzteilnehmern gehören
+				oder noch eine weitere Einteilungsebene einführen. So gibt es zum Beispiel in der englischen
+				\texttt{uk}-Domain noch die \texttt{co}-Domain für Firmen oder die \texttt{ac}-Domain für
+				akademische Einrichtungen. Die \texttt{uni-potsdam}-Domain in der \texttt{de}-Domain wird
+				allerdings bereits direkt von der Universität Potsdam verwaltet. Die Universität Potsdam
+				unterteilt ihre eigene SLDs wiederum weiter in Subdomains, z.B. für die einzelnen Institute
+				(\texttt{cs} für das Institut für Informatik). Diese Domains können dann wiederum von den
+				einzelnen Instituten verwaltet und weiter unterteilt werden. Eine vereinfachte schematische
+				Darstellung eines Teils der DNS-Topologie ist in Abbildung \ref{fig:dns-tree} zu sehen.
+				Dabei sind die unterschiedlichen Verwaltungsbereiche verschiedener Organisationen
+				hervorgehoben.
+
+				\begin{figure}
+					\centering
+					\includegraphics[width=\textwidth]{images/dns-tree}
+					\caption{Ausschnitt aus der DNS-Topologie (TODO: schön machen)}
+					\label{fig:dns-tree}
+				\end{figure}
+
+				Dieses dezentrale System hat eine Reihe von Vorteilen. Als wichtigster Punkt ist die
+				Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch
+				zur Bereitstellung der Informationen gemeint ist. Zusätzlich ist es für die Betreiber einer
+				Domain einfacher Änderungen einzupflegen. Die Verteilung der Domain-Informationen wird durch
+				ein Netz von DNS-Servern ermöglicht. Ein DNS-Server (auch Nameserver genannt) kann
+				verschiedene Aufgaben haben. Der hauptsächliche Einsatzzweck ist das Bereitstellen von
+				Infromationen über eine Domain. Nameserver können mit sogenannten Resolvern nach bestimmten
+				Domains befragt werden. Dabei gibt es zwei Arten wie ein Nameserver auf eine Anfrage
+				antworten kann. Bei einer \textit{rekursiven} Abfrage ist der Nameserver dafür
+				verantwortlich die genaue Antwort zu ermitteln. Was dadurch realisiert wird, dass der
+				angefragte Nameserver selber Anfragen an andere Nameserver stellt, sofern er die Antwort
+				noch nicht kennt. Dies wird hauptsächlich bei lokalen DNS-Servern eingesetzt, da durch
+				solche Anfragen die ganze Last beim Nameserver liegt. Die häufigste Form ist die
+				\textit{iterative} Abfrage, dabei antwortet der Nameserver mit der genauesten Information
+				die ihm zur Verfügung steht. Das heißt die Information über einen Nameserver einer SLD ist
+				genauer als einer TLD. Durch diese Art von Anfragen verbleibt die Last beim Fragensteller
+				bleibt. Daher antworten größere Nameserver, wie für die Root-Domain oder die TLDs, nur
+				iterativ auf Anfragen. Eine beispielhafte Anfrage nach der
+				\texttt{www.cs.uni-potsdam.de}-Domain ist in Abbildung \ref{fig:bsp-request} dargestellt. Es
+				ist zu erkennen, dass nur die Anfrage des Clients an den lokalen Nameserver rekursiv ist. Die
+				Anfragen des lokalen Nameservers sind dann iterative Anfragen. Sofern der lokale DNS-Server
+				weder die Adresse der \texttt{cs}, \texttt{uni-potsdam} oder \texttt{de} Domains kennt kann
+				er nur einen Root-Server fragen.  Dieser kann ihm mitteilen wie die \texttt{de}-Nameserver
+				erreichbar sind. Welche wiederum den Nameserver für die \texttt{uni-potsdam}-Domain kennen.
+				Dieser kennt mindestens die Adresse des \texttt{cs}-Nameservers, wenn nicht sogar bereits
+				die vollständige Antwort.  Spätestens der \texttt{cs}-Nameserver besitzt die nötigen
+				Informationen für die \texttt{www.cs.uni-potsdam.de}-Adresse.
+
+				\begin{figure}
+					\centering
+					\includegraphics[width=\textwidth]{images/request}
+					\caption{DNS-Anfragen für \texttt{www.cs.uni-potsdam.de} (TODO: schön machen)}
+					\label{fig:bsp-request}
+				\end{figure}
+
+				Für eine weitere Optimierung von DNS-Abfragen können Caches eingesetzt werden. In ihnen
+				können bereits gesammelte Informationen gespeichert und somit schneller abgerufen werden.
+				Dies ist insbesondere sinnvoll bei Nameservern die häufig gleich oder sehr ähnliche Anfragen
+				erhalten, was vor allem für lokale Nameserver und Nameserver von Internet Service Providers
+				(ISPs) zutrifft. Dies sind die zwei ersten Instanzen bei einer Anfrage von einem Client. Es
+				ist davon auszugehen, dass diese Nameserver meist die aktuelle Adresse von großen Websites,
+				wie zum Beispiel \texttt{www.google.com} und \texttt{en.wikipedia.org} in ihren Caches
+				haben, da solchen Seiten stark frequentiert werden. Dadurch können die Nameserver solche
+				Anfragen direkt aus dem Cache beantworten und auf weitere Abfragen verzichten.
+
+				TODO: Masterfile erklären, was sind Ressource Records?, UDP einpflegen
+				
+				% subsubsection Topologie }}}
+				
+			% subsection Infrastruktur }}}
+
+			\subsection{DNS-Server Software} % {{{
+			\label{sub:software}
+			
+				In diesem Abschnitt werden mehrere Softwaresysteme vorgestellt, welche zum Betrieb eines
+				DNS-Server genutzt werden. Diese wurden aufgrund von zwei Studien aus den Jahren 2004 und
+				2009 zur Verteilung von DNS-Server Software ausgewählt. Die erste
+				Studie\footnote{http://mydns.bboy.net/survey/ (Stand: 09.06.2011)} wurde am 23. Mai 2004
+				abgeschlossen und untersuchte 37.836.997 SLDs unter den TLDs \texttt{com}, \texttt{net},
+				\texttt{org},	\texttt{info} und \texttt{biz}. Die zweite
+				Studie\footnote{http://dns.measurement-factory.com/surveys/200910.html (Stand: 09.06.2011)}
+				ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den TLDs \texttt{com}, \texttt{net}
+				und \texttt{org} untersucht. Es wurde jeweils versucht die eingesetze DNS-Server Software zu
+				ermitteln. Dabei wurden die Systeme BIND, djbdns, Microsoft DNS und NSD als vier der
+				häufigsten Systeme ermittelt (siehe Tabelle \ref{tab:verteilung}). Die genannten vier
+				Systeme werden im folgenden vorgestellt. Zusätzlich wird auf den dnsmasq Server eingegangen,
+			welcher eine sehr spezielle Form eines DNS-Servers darstellt.
+				
+				\begin{table}
+					\centering
+					\begin{tabular}{|c|c|c|}\hline
+						DNS-Server & 2004 & 2009 \\\hline
+						BIND & \unit[70,11]{\%} & \unit[73,85]{\%} \\
+						djbdns & \unit[15,57]{\%} & \unit[2,56]{\%} \\
+						Microsoft DNS & \unit[6,24]{\%} & \unit[0,26]{\%}\\
+						NSD & \unit[0,20]{\%} & \unit[0.03]{\%} \\\hline
+					\end{tabular}
+					\caption{Verteilung von DNS-Server Software}
+					\label{tab:verteilung}
+				\end{table}
+
+				\subsubsection*{BIND} % {{{
+
+				Die erste Version des Berkeley Internet Name Domain
+				(BIND)\footnote{http://www.isc.org/software/bind} Server wurde am Anfang der achtziger Jahre
+				an der University of California, Berkeley entwickelt und mit 4.3BSD erstmals
+				veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium (ISC)
+				weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
+				entwickelt. Er wird auf 10 der 13 Root-Server eingesetzt und ist auch sonst bei TLDs
+				weitverbreitet. Die erste Version des aktuellen BIND 9 Servers wurde 2000 veröffentlicht,
+				ein Nachfolger wird seit 2 Jahren entwickelt um die aktuellsten Standards (z.B.  DNSsec) zu
+				unterstützen.
+
+				Für diese Arbeit wurde der BIND Server als DNS-Server gewählt, da er der weitverbreitetste ist und
+				ebenfalls am Institut für Informatik eingesetzt wird. Dadurch konnten Testmessungen in einem
+				realistischen Umfeld mit realen Server-Logs ausgeführt werden. 
+				
+				% subsubsection BIND }}}
+
+				\subsubsection*{Name Server Daemon (NSD)} % {{{
+
+				Der Name Server Daemon (NSD)\footnote{http://www.nlnetlabs.nl/projects/nsd/} wird von den
+				NLnet Labs entwickelt und hat als Hauptziel die Vielfalt unter den Root-Servern zu erhöhen.
+				Das soll dazu führen, dass nicht alle Root-Server durch einen Fehler im BIND Server
+				angreifbar sind. Aktuell nutzen auch bereits 3 der 13 Root-Server den NSD als DNS-Server.
+				Mit der Zielsetzung vor allem auf Root-Server und TLD-Server eingesetzt zu werden, erklären
+				sich auch die meisten Charakteristiken des NSD. Er ist ausschließlich ein autoritativer
+				DNS-Server, das heißt er beantwortet keine rekursiven Anfragen. Was seinen Einsatz als
+				DNS-Server in einem lokalen Netzwerk ausschließt. Daher kann bei dem NSD auf unnötige
+				Funktionen verzichtet werden und somit auf hohe Belastbarkeit optimiert werden. Die erste
+				Version der aktuellen NSD 3 wurde 2006 veröffentlicht.
+				
+				% subsubsection Name Server Daemon (NSD) }}}
+
+				\subsubsection*{Microsoft DNS} % {{{
+
+				Der Microsoft DNS Server\footnote{http://technet.microsoft.com/dns} ist eine Implementation
+				von Microsoft, welche mit den Windows Server Produkten ausgeliefert wird. Er kann sowohl als
+				authoritativer und rekursiver Nameserver betrieben werden. Durch seinen Einsatz auf Windows
+				Servern kommt er vor allem in lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des
+				Microsoft DNS Servers ist, dass es nicht nur möglich ist die DNS-Informationen aus einem
+				Master-File zu erhalten sondern auch aus einem Active Directory.
+				
+				% subsubsection Microsoft DNS }}}
+
+				\subsubsection*{djbdns} % {{{
+
+				Das von Daniel J. Bernstein entwickelte Software-Paket
+				djbdns\footnote{http://cr.yp.to/djbdns.html} ist einer der verbreitetsten DNS-Server. Daniel
+				J.  Bernstein ist ein Mathematiker, Programmierer und Kryptologe aus den USA. Er
+				veröffentlichte djbdns im Jahr 2001 und setzte eine
+				Belohung\footnote{http://cr.yp.to/djbdns/guarantee.html} von \$1000 aus, für den ersten der
+				einen Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein
+				Software-Paket aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck
+				erfüllen. Somit verringert sich die Code-Basis und die Komplexität der Programme. Die
+				Hauptkomponenten sind \texttt{tinydns} ein authoritativer Nameserver und \texttt{dnscache}
+				ein rekursiver Nameserver. Für andere Funktionen wie das Austauschen von kompletten
+				Zone-Informationen oder Blacklisting existieren ebenfalls eigene Programme.
+				
+				% subsubsection Djbdns }}}
+
+				\subsubsection*{dnsmasq} % {{{
+
+				Das Programm dnsmasq\footnote{http://www.thekelleys.org.uk/dnsmasq/doc.html} wurde
+				ausschließlich für Heim-Netzwerke entwickelt. Es stellt DNS und DHCP Dienste für ein kleines
+				Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq die Netzwerkknoten im Heimnetz über
+				DNS verfügbar macht, indem es entweder die \texttt{/etc/hosts} oder DHCP Informationen
+				nutzt. Dadurch müssen die lokalen Rechner keine eigene \texttt{hosts}-Datei pflegen.
+				Zusätzlich bietet es einen simplen Cache für DNS-Anfragen, was zu einer Beschleunigung im
+				lokalen Netz führen kann. Somit ist dnsmasq kein üblicher DNS-Server und eignet sich auch
+				nicht zum Verwalten von Domains, zeigt jedoch eine alternative resourcenschonende lokale
+				Verwendung des DNS auf.
+				
+				% subsubsection Dnsmasq }}}
+
+			% subsection DNS-Server Software }}}
+
+			
+		% section Domain Name System (DNS) }}}
+
+		\section{Lastverteilung} % {{{
+		\label{sec:lastverteilung}
+
+		In diesem Abschnitt sollen Problemlösungen vorgestellt werden, welche dazu dienen die Last einer
+		einzelnen Netzwerkressource zu verringern. Dies ist immer dann nötig und sinnvoll, wenn eine
+		einzelne Ressource im Netzwerk einer so hohen Last ausgesetzt ist, dass sie diese nicht mehr
+		allein abarbeiten kann. Zu hohe Last führt dazu, dass einzelne Anfragen an die Ressource nicht
+		mehr beantwortet werden oder im ungünstigsten Fall ein Totalausfall droht. Ein häufiges Beispiel
+		für hohe Lastsituationen sind Webserver, welche ab einer gewissen Anzahl an Anfragen pro Sekunde
+		nicht mehr in der Lage sind alle Anfragen abzuarbeiten. Um die Überlastung einzelner Ressourcen
+		zu verhindern gibt es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource
+		durch eine leistungsfähigere Variante auszutauschen. Dies wird oft bei Datenbanken genutzt, wo
+		der Server durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies
+		meist die simplere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
+		die Daten konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt
+		zum Beispiel einen weiteren Server bereitzustellen. Dieses Vorgehen eignet sich oft bei
+		Webservern, welche durch die Auslieferung von dynmaischen Inhalten (z.B. PHP-Seiten) ausgelastet
+		sind. Das Skalieren in die Breite hat Vorteile gegenüber der ersten Variante und ist deshalb
+		dieser vorzuziehen, sofern es die Anwendung zulässt.  Allein durch die Bereitstellung eines
+		zusätzlichen Servers erhöht sich die Ausfallsicherheit und gleichzeitig auch die Wartbarkeit.
+		Durch diese Verteilung kann ein einzelner Server ausfallen oder überprüft werden, währende der
+		andere Server die Anwendung weiterhin zur Verfügung stellt. Zudem ist die Erweiterbarkeit und
+		weitere Skalierung sehr einfach, wenn einmal die Infrastruktur geschaffen wurde mehrere Server
+		zu nutzen. Ein weiterer nicht zu vernachlässigender Punkt sind die Kosten. So ist die
+		Anschaffung zweier identischer Systeme meist günstiger als ein einzelnes System, welches die
+		gleiche Last verarbeiten kann. Hinzu kommt die Möglichkeit gezielt Ressourcen zu entfernen um
+		Strom zu sparen. So könnten Server nur dann angeschaltet werden, wenn davon auszugehen ist, dass
+		eine hohe Last bevorsteht.  Ein Beispiel hierfür könnte eine Verkaufsplattform sein, die
+		zusätzliche Ressourcen benötigt, wenn	besonders vor Feiertagen eine hohe Anzahl an Bestellungen
+		eingeht.
+
+		Im Folgenden werden verschiede Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
+		Sie unterscheiden sich in der Umsetzung der Lastverteilung und bieten jeweils gewisse Vor- und
+		Nachteile. Der Hauptanwendungsfall für diese Systeme ist die Verteilung von HTTP-Anfragen.
+		Diese unterscheiden sich von DNS-Anfragen in mehreren Punkten, weshalb anschließend noch
+		Besonderheiten und existierende Verfahren der Lastverteilung von DNS-Verkehr erklärt werden.
+
+			\subsection*{Server-Lastverteilung} % {{{
+
+			Bei dem Konzept der Server-Lastverteilung wird von der folgenden Situation ausgegangen.  Es
+			existiert ein Cluster aus mehreren Servern, welche alle die selbe Anwendung (z.B. eine Website)
+			zur Verfügung stellen. Diese sogenannten Backend-Server sind über einen Lastverteiler, einem weiteren
+			Server, mit dem restlichen Netzwerk oder Internet verbunden. Der Lastverteiler hat die
+			folgenden Aufgaben \cite{bourke2001}:
+
+			\begin{itemize}
+				\item Entgegennehmen des kompletten Netzwerkverkehrs, welcher an die Anwendung gerichtet ist
+					(z.B. HTTP-Anfragen an eine Website).
+				\item Aufteilung des angenommenen Netzwerkverkehrs und Verteilung auf die Backend-Server.
+				\item Beobachtung der Last der Backend-Server und entsprechenden Anpassung der
+					Lastverteilung.
+			\end{itemize}
+
+			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Es kann hierbei
+			unterschieden werden ob ein Lastverteiler im Kernelspace oder Userspace des Betreibssystems
+			implementiert ist. Ansätze für Userspace-basierte Lastverteiler sind zum Beispiel das Programm
+			perlbal\footnote{http://github.com/perlbal} oder das Apache-Modul
+			mod\_proxy\_balancer\footnote{http://httpd.apache.org/docs/2.2/mod/mod\_proxy\_balancer.html}.
+			Eine Implementierung im Userspace hat den Vorteil, dass der Lastverteiler unabhängig von
+			konkreten Betriebssystemen und Kernel-Versionen ist. Außerdem benötigt dieser keine
+			\texttt{root}-Rechte um konfiguriert und gestartet zu werden. Da es sich um Anwendungen im
+			Userspace handelt, findet hier die Lastverteilung auf einer höheren OSI-Schicht
+			\cite{tanenbaum1988} statt. Dadurch stehen dem Lastverteiler anwendungsspezifischere
+			Informationen zu einer Anfrage bereit. Dies kann zum Beispiel dazu genutzt werden, die
+			Abfrage nach deren Inhalt zu filtern und so ein kontextsensitives Verteilen zu ermöglichen.
+			Ein Nachteil, welcher vor allem bei hohem Netzwerkverkehr zum Tragen kommt, ist der nötige
+			Kontextwechsel damit der Lastverteiler im Userspace die Netzwerk-Pakete auswerten kann. Dazu
+			muss das Netzwerk-Paket in den Userspace und zum Weiterversenden wiederum in den
+			Kernelspace kopiert werden. Hierzu ist jeweils ein Kontextwechsel nötig, welcher bei hohem
+			Netzwerkverkehr zu Leistungseinbußen führen kann \cite{boehme2006}.  Im Vergleich zu diesen
+			Ansätzen im Userspace gibt es im Kernelspace den Linux Virtual Server
+			(LVS)\footnote{http://www.linuxvirtualserver.org/} \cite{zhang2000} für Linux und den
+			Paketfilter pf\footnote{http://www.benzedrine.cx/pf.html} für OpenBSD als bekannteste
+			Beispiele. Indem die Pakete bereits im Kernelspace verarbeitet werden, findet kein
+			Kontextwechsel statt und die Verarbeitung kann schneller erfolgen. Allerdings findet die
+			Verarbeitung auf einer der unteren Schichten des OSI-Modells statt, was dazu führt das keine
+			anwendungsspezifischen Informationen vorliegen. Jedoch bieten dieser Ansatz eben genau dies
+			auch als Vorteil, denn so kann eine Lastverteilung unabhängig von Anwendungen statt finden.
+			Das heißt ein Lastverteiler, wie der LVS, kann so konfiguriert werden, dass er gleichzeitig
+			unterschiedlichen Netzwerkverkehr (z.B. unterschiedliche Transportprotokolle oder Portnummern)
+			separat verteilt. Dies ist mit einer anwendungsbasierten Lösung nicht ohne erheblichen
+			Aufwand realisierbar.
+
+			Unabhängig von der gewählten Software-Lösung ist der gewählte Algorithmus zur Lastverteilung
+			ein entscheidendes Kriterium. Es existieren mehrere Algorithmen für dieses Problem
+			\cite{zinke2007}, wobei es von der gewählten Software abhängt, welche zur Verfügung stehen.
+			Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
+			Least-Connection-Verfahren. Beim Round-Robin-Algorithmus wählt der Lastverteiler, aus einer
+			Liste von Servern, den nächsten aus. Dies geschieht zyklisch, was dazu führt, dass die
+			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr simpler Algorithmus der aber bei
+			homogenen Clustern und homogenen Anfragen ausreicht um Last sinnvoll zu verteilen. Handelt es
+			sich nicht um ein homogenes Cluster, so kann durch eine gewichtete Variante des Algorithmus
+			die Last entsprechend der Leistung der Server verteilt werden. Sind jedoch die Anfragen an das
+			Cluster nicht homogen, das heißt jede Anfrage erzeugt eine unterschiedliche Last bei den
+			Backend-Servern, kann dies nicht durch den Round-Robin-Algorithmus ausgeglichen werden. Der
+			zweite bekante Algorithmus ist Least-Connection. Dieser Algorithmus beachtet bei der
+			Verteilung die aktuelle Anzahl an Verbindungen zu den Backend-Servern, das heißt wenn ein
+			Server schneller seine Anfragen abarbeitet als ein anderer, erhält dieser Server früher wieder
+			Anfragen. Auch von diesem Algorithmus gibt es eine gewichtete Variante, welche die bereits
+			dynamisch getroffene Entscheidung noch einmal verbessern soll. Daher ist anzunehmen, dass
+			Least-Connection bessere Ergebnisse auf heterogenen Clustern als Round-Robin erzielt und auch
+			nicht homogene Anfragen begrenzt abfängt.
+
+			% subsection Server Lastverteilung }}}
+
+			\subsection*{DNS-basierte Lastverteilung} % {{{
+
+			Existiert kein Cluster oder es soll auf einen zusätzlichen Server verzichtet werden, bietet
+			sich eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag
+			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Dabei existiert
+			keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge er die
+			IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit eine
+			gewissen Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt das
+			Caching von lokalen Nameservern dazu, dass alle Anfragen zu der Adresse im Cache geleitet
+			werden. Weiterhin hat der DNS-Server keine Informationen über die Last der Server oder ob
+			diese überhaupt im Betrieb sind. Dadurch wird ein Server der ausgefallen ist trotzdem immer
+			wieder als Antwort zurückgeliefert. Auch ist es nicht möglich Gewichte für die Verteilung der
+			Last auf den Server anzugeben, weshalb eine Heterogenität der Server nicht ausgeglichen werden
+			kann. Dieses Problem sollte durch den Ressource Record Typen \texttt{SRV} \cite{rfc2782}
+			behoben werden. Ein Beispiel eines \texttt{SRV}-Eintrags für einen Webserver ist in Tabelle
+			\ref{tab:srv} zu sehen. Durch den Domain-Namen wird definiert, dass dieser Eintrag nur für
+			HTTP-Anfragen über TCP an die Domain \texttt{bsp.de} gilt. In dem Beispiel wird anschließend
+			den Domains \texttt{www.bsp.de} und \texttt{www2.bsp.de} eine Priorität von 0 und
+			\texttt{backup.bsp.de} von 1 zugeordnet. Dabei muss von einem Client der Server mit der
+			kleinsten Priorität gewählt werden, sofern dieser erreichbar ist. Gibt es mehrere Server mit
+			der selben Priorität (wie im Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte
+			die Wahl eines Server mit einem höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch
+			der Port für das Ziel angegeben. Diese Verfahren führt zwei Gewichtungen ein, welche auf der
+			Client-Seite ausgewertet werden. Allerdings ist dies das größte Problem. Denn die
+			Unterstützung auf der Clientseite für \texttt{SRV}-Einträge ist gering. Außerdem bleibt das
+			Problem bestehen, das der DNS-Server nicht die Last und Funktionstüchtigkeit der Server kennt.
+			Jedoch gibt es dem Client einen Anhaltspunkt, welchen Server er als nächstes kontaktieren
+			sollte, sofern ein Server nicht erreichbar ist.
+
+			\begin{table}
+				\centering
+				\begin{tabular}{|ccccccl|}\hline
+				 Domain & Klasse & RR & Priorität & Gewicht & Port & Ziel \\\hline\hline
+					\_http.\_tcp.bsp.de. & IN & SRV & 0 & 2 & 80 & www.bsp.de. \\	
+					& IN & SRV & 0 & 1 & 80 & www2.bsp.de. \\	
+					& IN & SRV & 1 & 0 & 80 & backup.bsp.de. \\\hline
+				\end{tabular}
+				\caption{Beispiel für einen \texttt{SRV}-Eintrag für einen Webserver}
+				\label{tab:srv}
+			\end{table}
+
+			Auch Kombinationen der Server-Lastverteilung und DNS-Lastverteilung sind möglich. Dabei wird ein
+			DNS-Server um Lastverteilungsfunktionen erweitert. So beschreibt \cite{chyuyi2003} ein
+			Verfahren, bei dem der DNS-Lastverteiler die Zeit überwacht, welche jeder Backend-Server für
+			die Abfrage einer Antwort benötigt. Dadurch kann die DNS-Antwort entsprechend der
+			Lastsitutation angepasst werden. Ein ähnlichen Ansatz beschreiben \cite{mookim2005}, dabei
+			werden Backend-Server die überlastet sind aus der Round-Robin-Liste des DNS-Servers entfernt
+			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben. Bei dem
+			allgemeinen Prinzip des Globalen Server-Lastverteilung \cite{bourke2001} kann der DNS-Server
+			zum Beispiel anhand der geographischen Lage einen Server auswählen.
+
+			% subsection DNS-basierte Lastverteilung }}}
+			
+			\subsection*{Lastverteilung von DNS-Verkehr} % {{{
+
+			Die Verteilung von DNS-Anfragen unterschiedet sich in mehreren Punkten von HTTP-Anfragen. So
+			ist das genutzte Transport-Protokoll UDP statt TCP und die Nachrichten dürfen nicht größer als
+			512 Bytes sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
+			HTTP-Anwendungen, wo ein Client während einer Session immer mit dem selben Server
+			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
+			als bei HTTP-Anfragen. Firmen und Organisationen haben selten einen so hohe Anzahl an
+			DNS-Anfragen, dass sie eine Lastverteilung benötigen. Dies schließt nicht aus, dass mehrere
+			DNS-Server existieren, welche aber oft nur als Schutz gegen Ausfällen und anderen Störungen
+			dienen.  In lokalen Netzwerken und kleinere Firmen reicht es daher Lastverteilung mit Hilfe
+			von DNS-Einträgen durchzuführen. Bei größeren Firmen, die eine höhere Anzahl an DNS-Anfragen
+			zu bewältigen haben ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
+			größte Last liegt bei den Betreiber von TLDs und den Root-Servern. Für diese Anwendungsfälle
+			sind DNS-Cluster nötig. Zusätzlich kommt Anycast \cite{rfc4786} zum Einsatz. Dabei werden mehrere DNS Server
+			mit der selben Anycast-IP-Adresse mit dem Internet verbunden. Sendet nun ein
+			Client eine Anfrage an diese Anycast-Adresse antwortet der Server, der als erster die Frage
+			erhält. Die Idee dahinter ist, dass durch den DNS-Server, der die kürzeste Route zum
+			Fragesteller hat, die beste Antwort gegeben werden kann. Vor allem bei den Root-Servern ist
+			dies sinnvoll. Es existieren insgesamt 13 Root-Server
+			(A-M)\footnote{http://www.root-servers.org}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
+			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA. 
+				
+			% subsection Lastverteilung von DNS-Verkehr }}}
+
+		% section Lastverteilung }}}
+
+		\section{salbnet} % {{{
+		\label{sec:salbnet}
+
+		Mit salbnet\footnote{http://salbnet.org} wird ein Credit-basierter Lastverteilungsansatz
+		realisiert. Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von HTTP-Verkehr in
+		Infiniband-Netzwerken \cite{zinke2007, scsczile2008}. Die Besonderheit an diesem
+		Lastverteilungsverfahren ist, dass es sowohl eine Komponente auf dem Lastverteiler als auch auf
+		den Backend-Servern gibt. Die Komponente auf den Backend-Servern dient dazu, durch entsprechende
+		Metriken, die aktuelle Last des Servers zu bestimmen. Aus diesen Werten wird anschließend eine
+		Anzahl an Credits berechnet. Diese Credits geben an wieviel Anfragen der Backend-Server zu
+		diesem Zeitpunkt noch abarbeiten könnte ohne überlastet zu sein. Dabei entspricht ein Credit
+		einer Anfrage. Diese Credits werden dann von den Backend-Servern an den Lastverteiler
+		übermittelt. Der Lastverteiler wählt anschließend anhand der gemeldeten Credits die
+		Backend-Server aus. Dieses System ist in dem Sinne selbst-adaptiv, dass Server deren Credits
+		verbraucht sind und die keine neuen Credits melden, durch den Lastverteiler ausgelassen werden.
+		Denn es ist davon auszugehen, dass der Server überlastet oder ausgefallen ist. Sollte sich ein
+		Server von einer Überlastsituation erholen und dem Lastverteiler neue Credits übermitteln, wird
+		dieser wieder in die Lastverteilung mit aufgenommen.
+
+		Durch dieses Verfahren kann auf dem Lastverteiler ein einfacher Algorithmus wie Round-Robin
+		angewandt werden und es müssen keine Gewichte für die Verteilung bestimmt werden. Damit ist
+		dieses System durch seine eigene Anpassung besonders bei heterogenen Clustern geeignet.
+
+		Im Folgenden werden kurz die einzelnen Komponenten von salbnet vorgestellt.
+
+			\subsection*{libnethook} % {{{
+
+			Die dynmaische Biblothek libnethook dient zur Bestimmung der Lastsituation auf einem
+			Backend-Server. Sie wird mit dem zu überwachenden Dienst geladen. Vor dieser Arbeit wurde nur
+			der Apache Webserver\footnote{http://httpd.apache.org/} unterstützt. Die Biblothek überwacht,
+			wann der Webserver eine Anfrage abarbeitet. Dadurch kann die Berechnung neuer Credits
+			ausgelöst werden.
+			
+			% subsection libnethook }}}
+
+			\subsection*{libnetmsg} % {{{
+
+			Die libnetmsg ist eine Bibliothek die zum Austausch der Credits über das Netzwerk genutzt
+			wird. 
+			
+			% subsection libnetmsg }}}
+			
+			\subsection*{salbd} % {{{
+
+			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
+			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler dient salbd als Algorithmus für
+			den LVS und wählt die Server Round-Robin nach den gemeldeten Credits aus. Im Backend ist salbd
+			zur Bestimmung der Credits anhand der aktuellen Last der Webserver verantwortlich.
+				
+			% subsection salbd }}}
+
+		% section salbnet }}}
+
+		\section{Fazit} % {{{
+		\label{sec:grundlagen-fazit}
+		
+		% section Fazit }}}
+
+  % chapter Grundlagen }}}
+
+	\chapter{Verwandte Arbeiten} % {{{
+	\label{cha:arbeiten}
+
+	Die Arbeiten \cite{scsczile2008} und \cite{schneidenbach2009} bilden die theoretische Grundlage
+	für salbnet. Die Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das
+	bedeutet, dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die
+	Backend-Server eine Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welchezum
+	aktuellen Zeitpunkt zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits
+	werden dem Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen
+	Round-Robin-Verfahren, welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche
+	noch Credits besitzen durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen
+	Credits um eins verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine
+	neuen Credits, fällt der Server aus der Liste der verfügbaren Server heraus. Meldet ein Server,
+	dessen Credits bereits auf 0 gefallen waren, erneut Credits wird er wieder in die Verteilung
+	mitaufgenommen. Die beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur
+	Berechnung der Credits und die Meldestrategie der Backend-Server.
+
+	Die Metrik hat folgende Anforderungen zu erfüllen \cite{scsczile2008}:
+
+	\begin{itemize}
+		\item Sie sollte einfach zu berechnen sein.
+		\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
+		\item Sie sollte Applikationsunabhängig sein.
+		\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
+	\end{itemize}
+	
+	Die Version von salbnet vor dieser Arbeit war auf HTTP-Anfragen begrenzt. Dazu wurde eine Metrik
+	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
+	Anforderungen an eine gute Metrik. Sie ist simple zu berechnen, da der aktuelle Füllstand und der
+	maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers entspricht einer
+	Warteschlange für den Server. Solange die Backlog leer ist kann der Webserver alle Anfragen sofort
+	beantworten.  Sobald Anfragen in der Backlog gespeichert werden, ist der Server nicht mehr zu
+	einer sofortigen Abarbeitung in der Lage, daher werden die wartenden Anfragen in der Backlog
+	gespeichert. Das heißt, die Anzahl der noch freien Plätze in der Backlog gibt die Anzahl der noch
+	möglichen Verbindungen an, bevor die Backlog voll ist. Wenn die Backlog voll ist und weitere
+	Anfragen eintreffen, werden diese fallen gelassen. Somit kann die Anfrage nicht beantwortet
+	werden.  Daher entspricht der aktuelle Füllstand der Backlog genau den aktuell zur Verfügung
+	stehenden Ressourcen des Servers. Dadurch, dass die TCP-Backlog überwacht wird, ist diese Methode
+	allgemein für alle Webserver nutzbar und somit Applikationsunabhängig. Außerdem benötigt die
+	Metrik keine besonderen Ressource, das heißt sie ist weder Speicher noch CPU-intensiv, und somit
+	beeinflusst sie nicht die Leistung des Webservers. 
+
+	Die Betrachtung der Backlog zeigt auch zwei wichtige Metriken zur Bewertung einer Lastverteilung
+	für Webserver. Das Verwerfen einer Anfrage muss mit allen Möglichkeiten verhindert werden. Jede
+	verworfene Anfrage kann einem verloren Nutzer oder Kunden entsprechen. Muss eine Anfrage sehr
+	lange in der Backlog warten, ist dies zwar nicht so ungünstig, wie eine verworfene Anfrage, aber es
+	bedeute eine längere Wartezeit für den Nutzer. Wenn dieser nicht bereit ist so lange auf eine
+	Antwort zu warten, ist dies ebenfalls ein verlorener Nutzer oder Kunde. Das heißt eine gute
+	Lastverteilung sollte zu einer gering Zahl an verworfenen Anfragen und eine minimalen Antwortzeit
+	führen.
+
+	Als zweiter wichtiger Faktor des Credit-Ansatzes zählt neben der Metrik die Meldestrategie. Dabei
+	ist es entscheident wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
+	könnte eine zusätzliche Last auf den Backend-Servern erzeugen. Werden Credits zu selten gemeldet
+	kann es sein, dass der Backend-Server beim Lastverteiler aussortiert wird, weil seine Credits auf
+	0 gefallen sind. Folgend werden 4 mögliche Meldestrategien vorgestellt \cite{scsczile2008,
+	schneidenbach2009}.
+	
+	\paragraph{Plain} % {{{
+	\label{par:plain}
+
+		Plain stellt die einfachste Lösung vor. Dabei wird immer nach einem fixen Intervall die
+		Differenz zwischen der maximalen Größe der Backlog und dem aktuellen Füllstand der Backlog
+		gemeldet. Dies entspricht allen aktuell verfügbaren Ressourcen.
+
+	% paragraph Plain }}}
+
+	\paragraph{Soft + Hard Credits} % {{{
+	\label{par:soft-hard-credits}
+
+	Bei diesem Algorithmus werden dem Lastverteiler zweimal Credits mitgeteilt. Die Hard-Credits
+	entsprechen den aktuell verfügbaren Ressourcen wie schon beim Plain-Algorithmus. Die Soft-Credits
+	sind eine Empfehlung vom Backend-Server an den Lastverteiler. Sie ergeben sich aus den
+	Hard-Credits und der aktuellen Lastsitutation, das heißt wenn der Server Probleme hat die Backlog
+	abzuarbeiten sinken die Soft-Credits. Somit soll verhindert werden, dass zu viele Requests an den
+	schon unter Last stehenden Server gesendet werden. Für den Lastverteiler sind grundsätzlich die
+	Soft-Credits das ausschlaggebende Maß. Erst, wenn kein Server mehr über Soft-Credits verfügt
+	werden die Hard-Credits beachtet.
+	
+	% paragraph Soft + Hard Credits }}}
+
+	\paragraph{Dynamic Report} % {{{
+	\label{par:dynamic-report}
+
+	Dynamic Report ersetzt das feste Meldeintervall des vorherigen Algorithmus durch ein dynamisch
+	berechnetes. Dabei bildet ein festes Intervall eine Untergrenze. Dies verhindert eine Meldung nach
+	jeder abgearbeitet Anfrage. Dieser Algorithmus meldet oft Credits, wenn die Backlog nur leicht
+	gefüllt ist und eine geringe Last	auf dem Server ist. Ist die Backlog stark gefüllt und der
+	Server mit der Abarbeitung der Anfragen beschäftigt, werden die Credits seltener gemeldet. Das
+	führt dazu, dass bei vielen Anfragen keine zusätzliche Last durch unnötige Credit-Meldungen entsteht
+	und bei geringer Last der Lastverteiler immer aktuelle Werte vom Backend-Server besitzt.
+	
+	% paragraph Dynamic Report }}}
+
+	\paragraph{Dynamic Pressure Relieve} % {{{
+	\label{par:dynamic-pressure-relieve}
+	
+	Der Dynamic Pressure Relive Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
+	wiederum Hard und Soft-Credits. Allerdings werden die Hard-Credits spätestens nach einem fixen
+	Intervall gemeldet. Die Soft-Credits werden nach dem dynamischen Intervall aus dem Dynamic Report
+	Algorithmus gemeldet. Allerdings werden falls die Soft-Credits gemeldet werden gleichzeitig auch
+	die Hard-Credits gemeldet, da es eh schon zu einer Kommunikation zwischen Backend-Server und
+	Lastverteiler kommt. Dieses Vorgehen soll verhindern, dass zu selten Hard-Credits bei hoher Last
+	gemeldet werden und somit die Anzahl der Verworfenen Anfragen verringern.
+
+	% paragraph Dynamic Pressure Relieve }}}
+$~$\\
+
+	Bei einer Simulation der verschiedenen Meldestrategien hat der Dynamic Pressure Relieve
+	Algorithmus die besten Ergebnisse erzielt \cite{scsczile2008}.
+
+	Um salbnet auf Webclustern zu testen wurde der Benchmark servprep/servload \cite{habenschuss2011}
+	entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und
+	diese modifizieren kann. So können alle Anfragen vervielfacht werden, Spitzenlasten verstärkt
+	werden oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die
+	Charakteristik des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche
+	Benchmark, welcher das von servprep vorbereitet Log wieder einspielt. Dabei ist servprep in der
+	Programmiersprache Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks,
+	wurde servprep in servload integriert. Dadurch konnte eine noch bessere Leistung erziehlt werden
+	und der Ressourcenverbrauch minimiert werden. In einer dieser Arbeit vorgestellten Arbeit
+	\cite{menski2012} wurde servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten
+	und DNS-Anfragen über UDP versenden kann. Somit ist es möglich servload in dieser Arbeits als
+	Benchmark einzusetzen.
+
+	In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
+	Meldealgorithmen von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
+	Kapitel ein Konzept erarbeitet, wie sich salbnet auf DNS-Anfragen anpassen lässt. Außerdem wurde
+	ein Benchmark vorgestellt, welcher dazu geeignet ist die Erweiterung von salbnet auf seine
+	Funktion zu testen und mit bestehenden Algorithmen zu vergleichen. 
+
+	% chapter Verwandte Arbeiten }}}
+
+	\chapter{Konzept} % {{{
+	\label{cha:konzept}
+
+	In diesem Kapitel sollen mögliche Konzepte zur Erweiterung von salbnet für DNS-Anfragen
+	vorgestellt werden. Danach wird eines der Konzept ausgewählt und ein Entwurf zur Implementierung
+	präsentiert. Die Implementierung des gewählten Entwurfs wird dann im Kapitel
+	\ref{cha:implementierung} beschrieben.
+
+
+		\section{Ansätze} % {{{
+		\label{sec:ansaetze}
+
+		Wie in Kapitel \ref{cha:arbeiten} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendung
+		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
+		des TCP-Sockets des Webservers erstellt. Diese gibt konkret die Anzahl der Anfragen an, welche
+		noch in der Backlog Platz finden würden. Das heißt, mehr als diese Anzahl an Anfragen sollten an
+		den Server nicht gestellt werden, sonst existiert die Gefahr, dass die Anfragen verworfen
+		werden. Aufgabe dieses Kapitels ist es verschiedene Ansätze zu beschrieben, welche eine ähnlich
+		gute Metrik für UDP-Anfragen erzeugen. 
+
+		\subsection*{Last-Metrik} % {{{
+
+		Wenn sich ein Server in einer Überlastsitutation befindet, kann dies oft daran erkannt werden
+		das bestimmte Ressource aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung dafür
+		sprechen, dass der Server an seine Grenzen gekommen ist. Daher wäre eine mögliche Metrik die
+		Sammlung entsprechender Daten und ein anschließende Abschätzung bezüglich der verbleibenden
+		Ressourcen.
+		
+		% subsection Last-Metrik }}}
+
+		\subsection*{Verkehr-Metrik} % {{{
+
+		Die Last eines Servers hängt von der Anzahl an einkommenden Anfragen und der Anzahl an
+		abgearbeiteten (ausgehenden) Anfragen ab. Daher wäre es eine Möglichkeit alle eingehenden und
+		ausgehenden Anfragen bzw. Antworten zu zählen. Anschließend kann abgeschätzt werden ob der
+		Server zur Zeit mehr Anfragen abarbeitet als ihn neue erreichen. Oder ob zu viele Anfragen
+		eintreffen, welche er nicht mehr schnell genug abarbeiten kann.
+		
+		% subsection Verkehr-Metrik }}}
+
+		\subsection*{Receive-Queue-Metrik} % {{{
+	
+		Ein Ansatz ähnlich des TCP-Ansatzes wäre es die Receive-Queue des UDP-Sockets des DNS-Servers zu
+		überwachen. Anders als beim TCP-Fall werden aber in der Receive-Queue keine Verbindungen
+		verwaltet, sondern Pakete eingeordnet. Das heißt die Receive-Queue hat eine maximale Größe und
+		ist bis zu einem bestimmten Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in
+		der Receive-Queue aus. Trotzdem könnte eine Metrik darin bestehen, den verbleibenden Platz in
+		der Receive-Queue zu bestimmen. Und daraus eine Abschätzung zu treffen, wieviele weitere
+		Anfragen aufgenommen werden könnten.
+
+		% subsection Receive-Queue-Metrik }}}
+		
+		% section Ansätze }}}
+
+		\section{Auswahl} % {{{
+		\label{sec:auswahl}
+
+		Nachdem mehrere Ansätze vorgestellt wurden, sollen diese nun bewertet werden. Danach wird ein
+		Ansatz gewählt, welcher dann weiter verfeinert wird. Die Bewertung der Ansätze erfolgt nach den
+		in Kapitel \ref{cha:arbeiten} aufgeführten Anforderungen an eine Metrik:
+
+		\begin{itemize}
+			\item Sie sollte einfach zu berechnen sein.
+			\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
+			\item Sie sollte Applikationsunabhängig sein.
+			\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
+		\end{itemize}
+
+		\subsection*{Last-Metrik} % {{{
+
+		Die Last-Metrik ist Applikationsunabhängig und wird auch nicht durch die Anzahl der Clients
+		beeinflusst. Jedoch ist es schwer aus den Faktoren wie der CPU-Last, RAM-Auslastung und Load
+		eines Servers Aussagen über die noch zur Verfügung stehenden Ressourcen des Servers zu geben.
+		Der Vergleich von CPU-Lasten ist vor allem in heterogenen Clustern schwer, dazu müsste eine
+		Normalisierung durchgeführt werden, welche auf die entsprechenden Server ausgelegt ist. Daher
+		ist diese Metrik nicht einfach zu berechnen und erfüllt die Anforderung nicht.
+		
+		% subsection Last-Metrik }}}
+	
+		\subsection*{Verkehr-Metrik} % {{{
+
+		Die Verkehr-Metrik ist ebenfalls Applikationsunabhängig und simple zu berechnen. Es wird die
+		Differenz der eingehenden und ausgehenden Anfragen ermittelt. Ist diese Differenz negativ ist
+		der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich 0 ist der
+		Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort beantworten kann.
+		Ist die Differenz positiv stauen sich Anfragen beim Server. Steigt diese Differenz immer
+		weiter an, kann davon ausgegangen werden, dass der Server Probleme hat weitere Anfragen
+		abzuarbeiten. Die Probleme dieser Metrik sind jedoch die Abbildung der Differenz auf die
+		verfügbaren Ressourcen des Servers. Das heißt was sagen die eingehenden und ausgehenden Anfragen
+		über die Anzahl der noch zusätzlich möglichen Anfragen aus. Außerdem kann davon ausgegangen
+		werden, das ein zählen aller ein- und ausgehenden Anfragen nicht gut skaliert. Das heißt, wenn
+		eine hohe Anzahl an Anfragen auf den Server abgegeben werden, erzeugt das Überwachen aller
+		Verbindungen einen zusätzliche Last. Daher erfüllt diese Metrik ebenfalls nicht die
+		Anforderungen.
+		
+		% subsection Verkehr-Metrik }}}
+
+		\subsection*{Receive-Queue-Metrik} % {{{
+
+		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen, Applikationsunabhängig. Sie
+		erzeugt auch keine zusätzliche Last, wenn die Client-Anzahl ansteigt. Die Berechnung ist etwas
+		schwieriger als beim TCP-Anwendungsfall, da wie bereits erwähnt, keine Verbindungen gespeichert
+		werden, sondern Pakete. Allerdings kann aus dem verbleibenden Platz in der Receive-Queue und
+		einer Abschätzung über die durchschnittliche Paketgröße eine Vorhersage getroffen werden, welche
+		zusätzliche Anzahl an Anfragen der Server verarbeiten könnte. Damit erfüllt die Metrik auch die
+		Anforderungen der einfachen Berechnung und der Angabe von verfügbaren Ressourcen.
+		
+		% subsection Receive-Queue-Metrik }}}
+
+		Wie bereits durch die vorhergehenden Bewertung zu erkennen, hat nur die Receive-Queue-Metrik die
+		Anforderung aus \cite{scsczile2008} an eine Metrik für salbnet erfüllt. Diese wird in Abschnitt
+		\ref{sec:entwurf} genauer beschrieben und in Kapitel \ref{cha:implementierung} wird die
+		konkrete Implementierung in salbnet erläutert.
+
+		% section Auswahl }}}
+
+		\section{Entwurf} % {{{ 
+		\label{sec:entwurf}
+
+		Die ausgewählte Metrik (Receive-Queue-Metrik) wird in diesem Abschnitt im Detail beschrieben.
+		Dazu werden alle nötigen Messwerte identifiziert und eine Formel entwickelt, welche aus den
+		Messwerten die Credits des Servers berechnen. Die Metrik soll den Server anhand der
+		UDP-Receive-Queue des DNS-Servers bewerten. Daher werden folgende Messwerte benötigt: $~$\\
+		
+		\begin{tabular}{rl}
+			$q_{max}$		  & die maximale Kapazität der UDP-Receive-Queue\\
+			$q_{current}$ &	der aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
+			$p_{median}$  &	der Median der Paket-Größen in der UDP-Receive-Queue\\
+		\end{tabular}
+		
+		$~$\\
+		Mit Hilfe dieser Messwerte kann eine Abschätzung getroffen werden, wieviel weitere Pakete
+		$p_{additional}$ (Anfragen) noch angenommen werden können, ohne das eine Anfrage verworfen wird.
+		Die Abschätzung ist in der Formel \ref{eq:additional} dargestellt. 
+
+		\begin{equation}
+			p_{additional} = \frac{q_{max} - q_{current}}{p_{median}}
+			\label{eq:additional}
+		\end{equation}
+
+		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
+		\ref{cha:arbeiten} beschrieben existieren verschiedene Meldestrategie in salbnet. Bei den
+		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve werden die Credits in
+		dynamisch berechneten Intervallen gemeldet. Das heißt zwischen zwei Credit-Meldungen kann sich
+		die Receive-Queue stark verändern. Die Abschätzung enthält aber keinen Faktor, welcher die
+		Tendenz seit der letzten Credit-Berechnung darstellt. Eine Lösung wäre, bei jeder Abarbeitung
+		einer Anfrage Credits zu berechnen und diese zu speichern. Dadurch könnte der Verlauf mit in der
+		Abschätzung genutzt werden. Allerdings würde dies besonders bei einer hohen Last auf dem Server
+		zu einem zusätzlichen Aufwand führen, welcher die Leistung des Servers negativ beeinflussen
+		kann. Als Kompromiss, zwischen ständiger Credit-Berechnung und Vernachlässigung des Verlaufs,
+		gibt es die Möglichkeit nur auf Überlastsituationen zu reagieren. Das heißt es wird überprüft ob
+		der Server sich zwischen zwei Credit-Meldungen in einer Überlastsitutation befunden hat. Dies
+		kann zum Beispiel daran erkannt werden, ob Paket verworfen worden. Dies geschieht, wenn die
+		maximale Kapazität der Receive-Queue erreicht wurde. Sind seit der letzten Credit-Meldung
+		Anfragen verworfen wurden, sollte dies bei der Berechnung der aktuellen Credits beachtet werden.
+		Dabei ist die Frage, wie das Verwerfen von Anfragen bewertet wird. In \cite{scsczile2008} wird
+		eine nicht beantwortete Anfrage als ein verlorener Nutzer und potential als ein verlorener Kunde
+		bewertet. Dabei ist zu beachtet, dass die Aussage für den HTTP-Anwendungsfall getroffen wurde.
+		Allerdings ist es auch bei DNS ein sinnvolles Ziel die verworfenen Anfragen zu minimieren. Daher
+		sollen dem Lastverteiler 0 Credits gemeldet werden, wenn seit der letzten Credits-Meldung
+		Anfragen verworfen wurde. Somit kann der Server die aktuellen Anfragen abarbeiten ohne weitere
+		Anfragen zu erhalten. Dadurch wird sich die Last des Servers bis zur nächsten Credit-Meldung
+		verringern. Anschließend können wieder Credits entsprechend der aktuellen Situation gemeldet
+		werden.
+		
+		Wird nun die Anzahl der verworfenen Anfrage seit der letzten Credit-Meldung $p_{drop}$
+		in der Abschätzung beachtet ergibt sich Formel \ref{eq:credits} zur Berechnung der Credits des
+		DNS-Servers.
+
+		\begin{equation}
+			Credits = \begin{cases}0 & p_{drop}>0\\ \frac{\displaystyle q_{max} - q_{current}}{\displaystyle p_{median}}
+			  & \text{sonst}\end{cases}
+			\label{eq:credits}
+		\end{equation}
+
+
+		% section Entwurf }}}
+
+		\section{Fazit} % {{{
+		\label{sec:konzept-fazit}
+		
+		% section Fazit }}}
+
+	% chapter Konzept }}}
+
+	\chapter{Implementierung} % {{{
+	\label{cha:implementierung}
+
+	Dieses Kapitel beschriebt die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Metrik.
+	Dazu wird in Abschnitt \ref{sec:anforderungen} die Frage geklärt, wie die in Abschnitt
+	\ref{sec:entwurf} definierte Metrik berechnet werden. Das heißt, es wird gezeigt welche
+	Möglichkeiten existieren die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
+	Messwerte bewerten und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
+	eingegangen. Nachdem feststeht wie alle Messwerte ermittelt werden können, wird in Abschnitt
+	\ref{sec:erweiterung} auf die konkrete Implementierung in salbd eingegangen. In Kapitel
+	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
+	einem Standard-Algorithmus vergleicht.
+		
+		\section{Anforderungen} % {{{
+		\label{sec:anforderungen}
+
+		In diesem Abschnitt sollen Möglichkeiten diskutiert werden, mit deren Hilfe die einzelnen
+		Messwerte, für die in Abschnitt \ref{sec:entwurf} beschriebe Metrik, ermittelt werden können. Es
+		werden dabei folgende Werte benötigt: $~$\\
+		
+		\begin{tabular}{rl}
+			$q_{max}$		  & die maximale Kapazität der UDP-Receive-Queue\\
+			$q_{current}$ &	der aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
+			$p_{median}$  &	der Median der Paket-Größen in der UDP-Receive-Queue\\
+			$p_{drop}$    &	die Anzahl der verworfenen Paket (Anfrage) seit der letzten Credit-Meldung\\
+		\end{tabular}
+
+		$~$\\
+		\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
+		
+		\lstinputlisting[lastline=4,caption={Standard-Queue-Größe für UDP-Sockets},label=lst:default-queue]{listings/proc-rmem.txt}
+		\lstinputlisting[firstline=6,caption={Erhöhen der Queue-Größe für UDP-Sockets},label=lst:test-queue]{listings/proc-rmem.txt}
+		% subsection Maximale Kapazität der UDP-Receive-Queue }}}
+
+		\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
+		
+		Netlink UDP commit\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
+		in Kernel 3.3 aufgenommen.
+		\lstinputlisting[caption={/proc/net/udp Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
+		% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
+
+		\subsection*{Median der Paket-Größen in der UDP-Receive-Queue} % {{{
+		
+		\lstinputlisting[caption={strace-Ausgabe für den BIND-Server bei der Abfrage von
+	\texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
+		% subsection Median der Paket-Größen in der UDP-Receive-Queue }}}
+
+		\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
+		
+		\lstinputlisting[caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
+		% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
+
+			
+		% section Anforderungen }}}
+
+
+		\section{Erweiterung von salbd} % {{{
+		\label{sec:erweiterung}
+			
+		% section Erweiterung von salbd }}}
+
+		\section{Fazit} % {{{
+		\label{sec:implementierung-fazit}
+		
+		% section Fazit }}}
+
+	% chapter Implementierung }}}
+
+	\chapter{Messungen} % {{{
+	\label{cha:messungen}
+
+		In diesem Kapitel werden die durchgeführten Funktionsmessungen dargestellt. Es soll gezeigt
+		werden, dass die Implementation funktionstüchtig und zum Verteilen von DNS-Anfragen geeignet
+		ist. Außerdem wurde ein Vergleich zum Round-Robin-Verfahren des LVS durchgeführt. Dieser soll
+		zeigen, dass das salbnet Verfahren eine bessere Verteilung der Last auf den Backend-Servern
+		erzeugt. In Abschnitt \ref{sec:Messumgebung} wird der Aufbau der Messumgebung erläutert. Danach
+		wird in Abschnitt \ref{sec:Messplan} der Ablauf der Messung beschrieben und in Abschnitt
+		\ref{sec:Auswertung} folgt eine Auswertung.
+
+		\section{Messumgebung} % {{{
+		\label{sec:messumgebung}
+	
+		Die Messumgebung soll ein realistisches Lastszenario wiederspiegeln. Dazu wurden aus dem
+		IB-Cluster des Instituts für Informatik 4 Rechner ausgewählt (ib1, ib4, ib6, ib8). Die
+		relevanten technischen Merkmale dieser Server sind in der Tabelle \ref{tab:netzwerkknoten}
+		aufgeführt. Bei den	Maschinen ib1 und ib4 handelt es sich um baugleiche Server. Die Maschine ib6
+		ist die älteste und auch schwächste Maschine, da sie nur einen Single-Core Prozessor besitzt.
+		Der Aufbau soll ein DNS-Server-Cluster aus 3 Nameservern und einem Lastverteiler simulieren.
+		Dabei ist die Maschine ib1 der Lastverteiler und die 3 heterogenen Maschinen ib4, ib6 und ib8
+		stellen jeweils einen BIND Nameserver bereit.	Auf allen ib-Maschinen ist ein CentOS 5.7 mit dem
+		Kernel 2.6.18-274.12.1.el5 installiert.  Auf den Maschinen ib4, ib6 und ib8 ist BIND in der
+		Version 9.3.6-20.P1 installiert. Auf den BIND Servern wurde die
+		\texttt{haiti.cs.uni-potsdam.de}-Domain mit dem Stand vom 26. Oktober 2011 eingerichtet. Die
+		Anzahl der einzelnen Resource Record Typen ist in Tabelle \ref{tab:rr-domain} aufgeführt. Die
+		Konfiguration des BIND Servers ist in Anhang \ref{lst:bind-conf} zu finden. Um eine höhere
+		Auslastung der Nameserver zu erhalten wurde die UDP-Receive-Queue auf den Maschinen ib1, ib4,
+		ib6 und ib8 auf \unit[24]{MB} erhöht. Dadurch wird verhindert, das DNS-Anfragen verworfen
+		werden, weil die Receive-Queue voll ist, obwohl der Nameserver diese noch beantworten könnte.
+		
+		Zum Absenden der DNS-Anfragen wird die Maschine node015 aus dem Leibniz-Cluster des Institut für
+		Informatik genutzt. Sie besitzt einen Quad-Core Prozessor und 12 GB RAM (siehe Tabelle
+		\ref{tab:netzwerkknoten}). Auf ihr wird der servload Benchmark ausgeführt, da dieser eine
+		ausreichend hohe Last erzeugen muss um die 3 Nameserver zu belasten ist diese leistungsstarke
+		Maschine notwendig.
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|c|c|c|c|l|}\hline
+				Node & CPU &  Taktung & Kerne & RAM & Funktion \\\hline
+				node015 & Intel Xeon E5520 & \unit[2,27]{GHz} & 1 $\times$ 4 & \unit[12]{GB} & servload\\
+				ib1 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & LVS, salbd (Server)\\
+				ib4 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & BIND, salbd (Client)\\
+				ib6 & Intel Pentium 4 & \unit[2,8]{GHz} & 1 $\times$ 1 & \unit[4]{GB} & BIND, salbd (Client)\\
+				ib8 & Intel Xeon 3040 & \unit[1,86]{GHz} & 1 $\times$ 2 & \unit[4]{GB} & BIND, salbd (Client)\\\hline
+			\end{tabular}
+			\caption{Technische Daten der verwendeten Netzwerkknoten}
+			\label{tab:netzwerkknoten}
+		\end{table}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|c|}\hline
+				Resource Record & Anzahl \\\hline
+				A & 107 \\
+				NS & 4 \\
+				MX & 2 \\
+				CNAME & 2 \\
+				PTR & 106 \\
+				SOA & 1 \\\hline
+			\end{tabular}
+			\caption{Anzahl der Resource Record Typen in der \texttt{haiti.cs.uni-potsdam.de}-Domain}
+			\label{tab:rr-domain}
+		\end{table}
+			
+		% section Messumgebung }}}
+
+		\section{Messplan} % {{{
+		\label{sec:messplan}
+
+		Zur Durchführung der  Messung wurde ein anonymisiertes Log des authorativen Nameservers der  
+		\texttt{haiti.cs.uni-potsdam.de}-Domain verwendet. Das Log enthält den Zeitraum von 10:41 am 27.
+		September 2011 bis 6:25 am 2. Oktober 2011. Über den Zeitraum von 6944 Minuten enthält das Log
+		1003149 Anfragen, welche hauptsächlich Anfragen nach \texttt{A} und \texttt{AAAA} Resource
+		Records sind (siehe Tabelle \ref{tab:log}). Es enthält 1026 Sessions, wobei eine Session als
+		alle Anfragen eines einzelnen Users definiert ist. Dadurch ergeben sich die Verhältnisse von
+		\unit[9,33]{\nicefrac{Anfragen}{Sekunde}} und \unit[977,63]{\nicefrac{Anfragen}{Session}}. Diese
+		Last würde keinen der 3 Nameserver auslasten. Um eine höhere Last erzeugen zu können wurde ein
+		Zeitabschnitt um das Maximum des Logs ausgewählt. Dieser wurde dann durch die
+		\texttt{multiply}-Methode des servload Benchmarks verstärkt um eine ausreichend hohe Last zu
+		erzeugen. Als Zeitraum wurden 5 Minuten von 5:55 bis 6:00 am 29. September 2011 gewählt, in
+		diesem liegt das Maximum mit \unit[204]{\nicefrac{Anfragen}{Sekunde}}. In diesem Intervall
+		werden 22.594 Anfragen von 33 Sessions gestellt. Der sehr kurze Zeitraum von 5 Minuten war
+		notwendig, um durch eine hohe Verstärkung das Nameserver-Cluster auszulasten. Wäre ein
+		längerer Zeitraum gewählt worden, hätte der Arbeitspeicher des node015 Rechners nicht
+		ausgereicht um das komplette verstärkte Log vorzuhalten.
+		
+		Mit dem ausgewählten Intervall wurden jeweils 3 Messungen mit unterschiedlichen
+		Multiplikationsfaktoren durchgeführt. Es wurden die Faktoren 400, 800 und 1600 gewählt um hohe
+		Lastsitutationen zu erzeugen. Die daraus resultierende Anzahl an Anfragen, Sessions und
+		\nicefrac{Anfragen}{Sekunde} sind in der Tabelle \ref{tab:multiply} zu sehen. Eine höhere
+		Verstärkung war wiederum nicht möglich ohne an die Grenzen des Arbeitsspeicher zu stoßen.
+
+		Verglichen wurden der gewichtete Round-Robin-Algorithmus des LVS mit dem dynamic pressure
+		relieve salbd Algorithmus. Die Gewichte für den Round-Robin Algorithmus wurden mit Hilfe des
+		Benchmarks UnixBench\footnote{http://code.google.com/p/byte-unixbench/} bestimmt. Dieser
+		Benchmark führt verschieden Tests aus und ermitteln eine Gesamtbewertung des Systems. Die
+		Messergebnisse für die Machinen ib4, ib6 und ib8 sind im Anhang \ref{lst:unixbench} zu sehen. Es
+		wurden die Werte 788, 623 und 1180 für die ib4, ib6 und ib8 bestimmt. Diese Gewichte haben sich
+		bereits in anderen Messungen als sinnvoll für den Round-Robin-Algorithmus erwiesen, deshalb
+		wurden bei diesen Messungen wiederum auf sie zurückgegriffen. Bei dem salbd Algorithmus müssen
+		keine Gewichte angegeben werden. Allerdings muss eine Meldestrategie gewählt werden. Messungen
+		in einem HTTP-Szenario haben den Algorithmus dynamic pressure relieve als eine der besten
+		Meldestrategien ermittelt. Deshalb wurde auch in diesem DNS-Szenario dieser ausgewählt. Die
+		Credits werden von den Backend-Servern über TCP zum Lastverteiler übermittelt. Die salbd
+		Konfiguration für den Lastverteiler (ib1) ist in Anhang \ref{lst:salbd-server} und die
+		Konfigurationen für salbd auf den Backend-Servern (ib4, ib6 und ib8) ist in Anhang
+		\ref{lst:salbd-client} und \ref{lst:salbd-bind} angeführt.  Jede Messung wurde 51 mal
+		wiederholt, da die Messwerte stark schwanken. Somit wurden 306 Messungen durchgeführt
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|cc|}\hline
+				Anfragen & 1003149 & \\
+				Sessions & 1026 & \\
+				\nicefrac{Anfragen}{Sekunde} & 9,33 &\\
+				\nicefrac{Anfragen}{Session} & 977,73 &\\
+				A & 327861 & \unit[32,68]{\%}\\
+				AAAA & 609821 & \unit[60,79]{\%}\\
+				NS & 3575 & \unit[0,36]{\%}\\
+				MX & 669 & \unit[0,07]{\%}\\
+				PTR & 60553 & \unit[6,04]{\%} \\ \hline
+			\end{tabular}
+			\caption{Analyse des BIND Logs der \texttt{haiti.cs.uni-potsdam.de}-Domain}
+			\label{tab:log}
+		\end{table}
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{plots/requests}
+			\caption{Anfragen pro Sekunden für das Log vom 29. September 2011 von 5:55 bis 6:00}
+			\label{fig:requests}
+		\end{figure}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|lrrrr|}\hline
+				Faktor & Anfragen & Sessions & $\varnothing$ \nicefrac{Anfragen}{Sekunde} &
+				maximale \nicefrac{Anfragen}{Sekunde} \\\hline
+				1 & 22.594 & 33 & 75,31 & 204 \\
+				400 & 9.037.600 & 13.200 & 30.125,33 & 81.600 \\
+				800 & 18.075.200 & 26.400 & 60.250,67 & 163.200 \\
+				1600 & 36.150.400 & 52.800 & 120.501,33 & 326.400 \\\hline
+			\end{tabular}
+			\caption{Kennzahlen des modifizierten Log Intervalls}
+			\label{tab:multiply}
+		\end{table}
+		
+			
+		% section Messplan }}}
+
+		\section{Auswertung} % {{{
+		\label{sec:auswertung}
+
+		Um die Messungen auszuwerten wurden während der Messungen minütlich die Werte der aktuellen CPU
+		und Memory-Auslastung sowie der Load-Wert der Maschinene ib1, ib4, ib6 und ib8 abgefragt. Dies
+		wurde mit Hilfe von \texttt{net-snmp}\ durchgeführt. Außerdem wurden die Ausgaben vom servload
+		Benchmark gespeichert. 
+			
+		% section Auswertung }}}
+
+		\section{Fazit} % {{{
+		\label{sec:messungen-fazit}
+		
+		% section Fazit }}}
+
+	% chapter Messungen }}}
+
+	\chapter{Zusammenfassung und Ausblick} % {{{
+	\label{cha:zusammenfassung}
+
+		\section{Zusammenfassung} % {{{
+		\label{sec:zusammenfassung}
+			
+		% section Zusammenfassung }}}
+
+		\section{Ausblick} % {{{
+		\label{sec:ausblick}
+
+		Metrik funktioniert, aber:
+		\begin{itemize}
+			\item Ist sie zu optimistisch?
+			\item vielleicht eher abschätzung über Größe des bis jetzt größten Pakets
+			\item Kann man diese Kernel spezifische Magic allgemeiner machen
+			\item Ist es den aufwand Wert den exakten Verlauf zwischen 2 Meldungen zu betrachten und ein
+				Tendenz mit in die Berechnung der Credits mit einfließen zu lassen
+		\end{itemize}
+		
+		% section Ausblick }}}
+	
+	% chapter Zusammenfassung }}}
+
+	% Content }}}
+
+	% Appendix {{{
+	\appendix
+
+	\chapter{Messumgebung} % {{{
+	\label{cha:messumgebung}
+	
+	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1	(LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
+	
+	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
+
+	\lstinputlisting[language=sh,caption={salbd BIND Konfiguration für ib4, ib6 und	ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
+	
+	\lstinputlisting[language=sh,caption={BIND Konfiguration für ib4, ib6 und ib8},label=lst:bind-conf]{listings/named.conf}
+	
+	\lstinputlisting[language=,breaklines=true,numbers=none,caption={UnixBench Resultate für die Maschinen ib4, ib6 und
+	ib8},label=lst:unixbench]{listings/result_unixbench.dat}
+
+	% chapter Messumgebung }}}
+
+	% Appendix }}}
+
+	% Backmatter {{{
+	\backmatter
+	\pagenumbering{Roman}
+
+	\listoffigures{}
+	\listoftables{}
+
+	% Bibliography {{{
+	\nocite{*}
+	\bibliographystyle{gerplain}
+	\bibliography{references}
+	% }}}
+
+	% Backmatter }}}
+
+\end{document}

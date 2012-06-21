@@ -1,0 +1,4 @@
+[root@ib4 ~]# cat /proc/net/snmp
+  [...]
+Udp: InDatagrams NoPorts InErrors OutDatagrams
+Udp: 82 0 0 82

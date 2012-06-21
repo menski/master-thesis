@@ -1,0 +1,20 @@
+# $Id: salbd.networks.conf.sample 1175 2009-12-17 15:58:55Z yogi $
+
+# report type
+#report dynamic_pressure_relieve_quantize
+report plain
+
+# apache on ipv4
+#network 1.2.3.4
+#    protocol tcp
+#    service www
+
+# apache on ipv6 localhost
+#network ::1
+#    protocol tcp
+#    service 443
+
+# bind on localhost port 53
+#network localhost
+#    protocol udp
+#    service 53

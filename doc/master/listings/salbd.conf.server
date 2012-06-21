@@ -1,0 +1,17 @@
+# salbd loadbalancer host
+host 172.16.0.21
+
+# salbd service
+service 22222
+
+# salbd control
+control 22223
+
+# salbd report interconnect
+interconnect socket
+
+# salbd report protocol
+transport reliable
+
+# salbd networks configuration file
+file /etc/salbd/salbd.networks.conf

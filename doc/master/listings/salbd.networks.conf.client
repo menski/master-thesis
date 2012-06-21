@@ -1,0 +1,7 @@
+# report type
+report dynamic_pressure_relieve
+
+# bind on localhost port 53
+network 172.16.0.24
+    protocol udp
+    service 53

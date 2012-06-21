@@ -1,0 +1,1030 @@
+Index: src/server/server.c
+===================================================================
+--- src/server/server.c	(revision 1980)
++++ src/server/server.c	(revision 2028)
+@@ -217,13 +217,14 @@
+ 		syslog(LOG_INFO, "accepted client control connection from %s (%s at line %d)", remote_address_string, __FILE__, __LINE__);
+ 		return SUCCESS;
+ 	}
+-	/* check if pending control data is available */
+-	if (context->control_count == 0) {
+-		syslog(LOG_ERR, "no control data available (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	}
++
+ 	/* handle infiniband rdma */
+ 	if (event->connection.context->interconnect == NETMSG_INTERCONNECT_INFINIBAND) {
++		/* check if pending control data is available */
++		if (context->control_count == 0) {
++			syslog(LOG_ERR, "no control data available (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
+ 		/* dispatcher rdma memory */
+ 		result = server_dispatcher_accept_infiniband(context, &rdma);
+ 		if (result == ERROR) {
+@@ -242,8 +243,10 @@
+ 		syslog(LOG_ERR, "netmsg accept failed for control connection (%s at line %d)", __FILE__, __LINE__);
+ 		return ERROR;
+ 	}
+-	/* decrement control connection count */
+-	context->control_count--;
++	/* decrement control connection count if infiniband*/
++	if (event->connection.context->interconnect == NETMSG_INTERCONNECT_INFINIBAND) {
++		context->control_count--;
++	}
+ 
+ 	syslog(LOG_INFO, "accepted client connection from %s (%s at line %d)", remote_address_string, __FILE__, __LINE__);
+ 
+@@ -264,6 +267,9 @@
+ 	struct report_data credits;
+ 	size_t          receive_size;
+ 	int             result;
++	size_t          i;
++	struct credit_map *credit_map;
++	struct in_addr  in_address;
+ 
+ 	assert(context != NULL);
+ 	assert(event != NULL);
+@@ -299,7 +305,7 @@
+ 	if (strcasecmp(local_port_string, context->configuration.control) == 0 ||
+ 	    (event->connection.user_data != NULL && *(int *) event->connection.user_data == control_connection)) {
+ 		/* set data */
+-		data.data = &context->control[context->control_count];
++		data.data = &context->control[context->control_count - 1];
+ 		data.data_size = sizeof(struct control_data);
+ 	}
+ 	/* receive message */
+@@ -312,8 +318,41 @@
+ 		syslog(LOG_ERR, "received message size failed (%s at line %d)", __FILE__, __LINE__);
+ 		return ERROR;
+ 	}
+-	/* insert client credits into tree/hash */
+ 
++	if (strcasecmp(local_port_string, context->configuration.control) == 0 ||
++	    (event->connection.user_data != NULL && *(int *) event->connection.user_data == control_connection)) {
++		if (context->credit_count == SERVER_CREDIT_MAP_SIZE) {
++			syslog(LOG_ERR, "failed to add new memory area to credit map (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		/* find memory pointor for control connection */
++		credit_map = &context->credit_map[context->credit_count];
++		credit_map->address.s_addr = ((struct sockaddr_in *) &event->connection.remote_address)->sin_addr.s_addr;
++		credit_map->credits = NULL;
++		result = server_dispatcher_accept_infiniband(context, &credit_map->credits);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "failed to find memory area for client connection (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		context->credit_count++;
++	}
++	else {
++		credit_map = NULL;
++		in_address.s_addr = ((struct sockaddr_in *) &event->connection.remote_address)->sin_addr.s_addr;
++		/* find memory pointer to save credits */
++		for (i = 0; i < context->credit_count; i++) {
++			if (in_address.s_addr == context->credit_map[i].address.s_addr) {
++				credit_map = &context->credit_map[i];
++				break;
++			}
++		}
++		if (credit_map == NULL) {
++			syslog(LOG_ERR, "failed to find credits map (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		memmove(credit_map->credits, data.data, data.data_size);
++	}	
++
+ 	/*
+ 	 * every socket client is accepted
+ 	 * need to tell the load balancer new not yet seen clients
+@@ -331,14 +370,27 @@
+ static int
+ server_close(struct server_context * context, struct netmsg_event * event)
+ {
++	char            local_address_string[ADDRESS_SIZE_MAXIMUM];
+ 	char            remote_address_string[ADDRESS_SIZE_MAXIMUM];
++	char           *local_port_string;
+ 	int             result;
++	size_t          i;
++	struct in_addr  in_address;
+ 
+ 	assert(context != NULL);
+ 	assert(event != NULL);
+ 
+-	UNUSED(context);
++	/* format local address string */
++	result = address_format(UNDEFINED, &event->connection.local_address, event->connection.local_address_size, local_address_string, sizeof(local_address_string));
++	if (result == ERROR) {
++		syslog(LOG_ERR, "failed to format local address (%s at line %d)", __FILE__, __LINE__);
++		return ERROR;
++	}
+ 
++	/* set local port */
++	local_port_string = strrchr(local_address_string, ':');
++	local_port_string++;
++
+ 	/* format remote address string */
+ 	result = address_format(UNDEFINED, &event->connection.remote_address, event->connection.remote_address_size, remote_address_string, sizeof(remote_address_string));
+ 	if (result == ERROR) {
+@@ -346,8 +398,29 @@
+ 	}
+ 	syslog(LOG_INFO, "closed connection from %s (%s at line %d)", remote_address_string, __FILE__, __LINE__);
+ 
+-	/* remove client from tree/hash */
+-
++	if (strcasecmp(local_port_string, context->configuration.control) == 0 ||
++	    (event->connection.user_data != NULL && *(int *) event->connection.user_data == control_connection)) {
++		/* decrement control connection count if socket*/
++		if (event->connection.context->interconnect == NETMSG_INTERCONNECT_SOCKET) {
++			context->control_count--;
++		}
++	}
++	else {
++		in_address.s_addr = ((struct sockaddr_in *) &event->connection.remote_address)->sin_addr.s_addr;
++		/* remove client from array */
++		for (i = 0; i < context->credit_count; i++) {
++			if (in_address.s_addr == context->credit_map[i].address.s_addr) {
++				if (i < context->credit_count - 1) {
++					context->credit_map[i].address.s_addr = context->credit_map[context->credit_count - 1].address.s_addr;
++					memmove(context->credit_map[i].credits, context->credit_map[context->credit_count - 1].credits, sizeof(struct report_data)); 
++				}
++				context->credit_map[context->credit_count - 1].address.s_addr = 0;
++				context->credit_map[context->credit_count - 1].credits = NULL;
++				context->credit_count--;
++				break;
++			}
++		}
++	}	
+ 	/* reset user data */
+ 	event->connection.user_data = NULL;
+ 
+Index: src/server/server.h
+===================================================================
+--- src/server/server.h	(revision 1980)
++++ src/server/server.h	(revision 2028)
+@@ -41,6 +41,15 @@
+ /* control connections size */
+ #define SERVER_CONTROL_SIZE 1
+ 
++/* credit map size */
++#define SERVER_CREDIT_MAP_SIZE 100
++
++/* credit map */
++struct credit_map {
++	struct in_addr  address;
++	struct report_data *credits;
++};
++
+ /* server context */
+ struct server_context {
+ 	struct parse_configuration configuration;
+@@ -48,6 +57,8 @@
+ 	size_t          control_count;
+ 	struct netmsg_context netmsg;
+ 	void           *platform;
++	struct credit_map credit_map[SERVER_CREDIT_MAP_SIZE];
++	size_t          credit_count;
+ };
+ 
+ /* server function */
+Index: src/client/client.c
+===================================================================
+--- src/client/client.c	(revision 1980)
++++ src/client/client.c	(revision 2028)
+@@ -247,6 +247,9 @@
+ 	case NETHOOK_HOOK_ACCEPT:
+ 		syslog(LOG_DEBUG, "accept nethook (%s at line %d)", __FILE__, __LINE__);
+ 		break;
++	case NETHOOK_HOOK_RECVMSG:
++		syslog(LOG_DEBUG, "recvmsg nethook (size: %ld) (%s at line %d)", nethook.recv_size, __FILE__, __LINE__);
++		break;
+ 	default:
+ 		syslog(LOG_WARNING, "unsupported nethook (%s at line %d)", __FILE__, __LINE__);
+ 		return ERROR;
+@@ -282,6 +285,11 @@
+ 	/* increment nethook count */
+ 	network->nethook++;
+ 
++	/* update recvmsg mean */
++	if (nethook.hook == NETHOOK_HOOK_RECVMSG) {
++		network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].current = nethook.recv_size;
++	}
++
+ 	/* report for network */
+ 	result = client_report(context, network);
+ 	if (result == ERROR) {
+Index: src/client/linux/client_metric.c
+===================================================================
+--- src/client/linux/client_metric.c	(revision 1980)
++++ src/client/linux/client_metric.c	(revision 2028)
+@@ -316,7 +316,7 @@
+ 			return ERROR;
+ 		}
+ 		/* set source address to address storage */
+-		result = address_storage(AF_INET, (void *) &ipv4_address, port, &source_address);
++		result = address_storage(AF_INET, (void *) &ipv4_address, htons(port), &source_address);
+ 		if (result == ERROR) {
+ 			syslog(LOG_ERR, "failed to set udp source address to address storage (%s at line %d)", __FILE__, __LINE__);
+ 			fclose(file_stream);
+@@ -496,12 +496,12 @@
+ 
+ 	/* maximum value from proc */
+ 	if (network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum == 0) {
+-		file_stream = fopen("/proc/sys/net/core/rmem_max", "r");
++		file_stream = fopen("/proc/sys/net/core/rmem_default", "r");
+ 		if (file_stream == NULL) {
+-			syslog(LOG_ERR, "could not open rmem_max proc file stream: %m (%s at line %d)", __FILE__, __LINE__);
++			syslog(LOG_ERR, "could not open rmem_default proc file stream: %m (%s at line %d)", __FILE__, __LINE__);
+ 			return ERROR;
+ 		}
+-		/* parse tcp syn received maximum from proc file */
++		/* parse udp receive maximum from proc file */
+ 		result = fscanf(file_stream, "%u", &network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum);
+ 		if (ferror(file_stream) || result != 1) {
+ 			syslog(LOG_ERR, "could not parse value for receive queue maximum from proc file: %m (%s at line %d)", __FILE__, __LINE__);
+@@ -513,6 +513,42 @@
+ 			return ERROR;
+ 		}
+ 	}
++
++	/* gather drops for udp */
++	file_stream = fopen("/proc/net/snmp", "r");
++	if (file_stream == NULL) {
++		syslog(LOG_ERR, "could not open snmp proc file stream: %m (%s at line %d)", __FILE__, __LINE__);
++		return ERROR;
++	}
++	while (!feof(file_stream)) {
++		/* parse relevant values from single line */
++		result = fscanf(file_stream, "Udp: %*d %*d %u %*[^\n]\n", &network->metrics.udp[CLIENT_METRIC_UDP_DROP].current);
++		if (ferror(file_stream)) {
++			fclose(file_stream);
++			syslog(LOG_ERR, "could not parse value for udp drops from proc file: %m (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		if (result == 1) {
++			/* increase drop count to distinguish from zero */
++			network->metrics.udp[CLIENT_METRIC_UDP_DROP].current++;
++			break;
++		}
++		
++		/* skip line */
++		result = fscanf(file_stream, "%*[^\n]\n");
++		if (ferror(file_stream) || result != 0) {
++			fclose(file_stream);
++			syslog(LOG_ERR, "could not parse value for udp drops from proc file: %m (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++	}
++	/* close proc snmp */
++	result = fclose(file_stream);
++	if (result == -1) {
++		syslog(LOG_ERR, "could not close snmp proc file stream: %m (%s at line %d)", __FILE__, __LINE__);
++		return ERROR;
++	}
++
+ 	/* gather udp receive queue */
+ 	result = client_metric_udp_proc(context_linux, network);
+ 	if (result == ERROR) {
+Index: src/client/client_metric.c
+===================================================================
+--- src/client/client_metric.c	(revision 1980)
++++ src/client/client_metric.c	(revision 2028)
+@@ -173,10 +173,12 @@
+ 		metrics_size = CLIENT_METRIC_UDP_SIZE;
+ 		break;
+ 	}
+-
++	
+ 	/* reset current metrics before update */
+ 	for (i = 0; i < metrics_size; i++) {
+-		metrics[i].current = 0;
++		/* udp receive size is updated on nethook call */
++		if (i != CLIENT_METRIC_UDP_RECEIVE_SIZE)
++			metrics[i].current = 0;
+ 	}
+ 
+ 	/* update metrics depending on protocol */
+Index: src/client/client.h
+===================================================================
+--- src/client/client.h	(revision 1980)
++++ src/client/client.h	(revision 2028)
+@@ -69,6 +69,8 @@
+ /* udp metric counters */
+ enum client_metrics_udp {
+ 	CLIENT_METRIC_UDP_RECEIVE_QUEUE,
++	CLIENT_METRIC_UDP_RECEIVE_SIZE,
++	CLIENT_METRIC_UDP_DROP,
+ 	CLIENT_METRIC_UDP_SIZE
+ };
+ 
+Index: src/client/client_network.c
+===================================================================
+--- src/client/client_network.c	(revision 1980)
++++ src/client/client_network.c	(revision 2028)
+@@ -147,6 +147,7 @@
+ 		netmsg_close(&connection);
+ 		return ERROR;
+ 	}
++	sleep(1); /* workaround to delay following connection */
+ 	/* close control connection to load balancer */
+ 	result = netmsg_close(&connection);
+ 	if (result == NETMSG_ERROR) {
+Index: src/client/client_report.c
+===================================================================
+--- src/client/client_report.c	(revision 1980)
++++ src/client/client_report.c	(revision 2028)
+@@ -62,8 +62,8 @@
+ /* report mark minimum in percent */
+ #define CLIENT_REPORT_MARK_MINIMUM 10
+ 
+-/* udp receive queue bytes to credits */
+-#define CLIENT_REPORT_BYTES 16
++/* udp truesize of a packet on the receive queue (magic) */
++#define UDP_TRUESIZE(X) (((int) (((X) + 63) / 128)) * 128 + 376)
+ 
+ /* credits to report */
+ enum client_credits {
+@@ -88,6 +88,7 @@
+ client_report_update(struct client_context * context, struct client_network * network)
+ {
+ 	int 	result;
++	int 	packet_median;
+ 
+ 	/* update metrics */
+ 	result = client_metric_update(context, network);
+@@ -103,8 +104,16 @@
+ 		network->credits.soft = ((network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum) - (network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].history_median + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].history_median));
+ 		break;
+ 	case IPPROTO_UDP:
+-		network->credits.hard = (uint32_t) ((network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current * network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum) / 100);
+-		network->credits.soft = (uint32_t) ((network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].history_median * network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum) / 100);
++		packet_median = UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].history_median);
++		if (network->metrics.udp[CLIENT_METRIC_UDP_DROP].history[1] > 0 &&
++		    network->metrics.udp[CLIENT_METRIC_UDP_DROP].current - network->metrics.udp[CLIENT_METRIC_UDP_DROP].history[1] > 0) {
++			network->credits.hard = 0;
++			network->credits.soft = 0;
++		}
++		else {
++			network->credits.hard = (uint32_t) ((network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum - network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current) / packet_median); 
++			network->credits.soft = (uint32_t) ((network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum - network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].history_median) / packet_median); 
++		}
+ 		break;
+ 	}
+ 
+@@ -138,15 +147,20 @@
+ 	/* set data size depending on credits to report */
+ 	switch (credits) {
+ 	case CLIENT_CREDITS_HARD:
+-	    /* report only hard credits */
+-	    data.data_size = sizeof(uint32_t);
+-	    syslog(LOG_DEBUG, "send credits: %d hard credits (%s at line %d)", network->credits.hard, __FILE__, __LINE__);
+-	    break;
++		/* report only hard credits */
++		if (context->netmsg.interconnect == NETMSG_INTERCONNECT_SOCKET) {
++			data.data_size = sizeof(struct report_data);
++		}
++		else {
++			data.data_size = sizeof(uint32_t);
++		}
++		syslog(LOG_DEBUG, "send credits: %d hard credits (%s at line %d)", network->credits.hard, __FILE__, __LINE__);
++		break;
+ 	case CLIENT_CREDITS_SOFT_HARD:
+-	    /* report soft and hard credits */
+-	    data.data_size = sizeof(struct report_data);
+-	    syslog(LOG_DEBUG, "send credits: %d hard and %d soft credits (%s at line %d)", network->credits.hard, network->credits.soft, __FILE__, __LINE__);
+-	    break;
++		/* report soft and hard credits */
++		data.data_size = sizeof(struct report_data);
++		syslog(LOG_DEBUG, "send credits: %d hard and %d soft credits (%s at line %d)", network->credits.hard, network->credits.soft, __FILE__, __LINE__);
++		break;
+ 	}
+ 
+ 	/* send credits to load balancer */
+@@ -165,12 +179,12 @@
+ static int
+ client_report_dynamic_pressure_relieve_quantize(struct client_context *context, struct client_network *network)
+ {
+-    	static uint32_t        report_mark_soft;
+-    	static uint32_t        report_mark_hard;
+-	uint32_t	       report_mark_minimum;
+-	uint32_t	       maximum;
+-	uint32_t	       current;
+-	int 		       result;
++	static uint32_t    report_mark_soft;
++	static uint32_t    report_mark_hard;
++	uint32_t           report_mark_minimum;
++	uint32_t           maximum;
++	uint32_t           current;
++	int                result;
+ 
+ 	/* set maximum and current */
+ 	maximum = 0;
+@@ -179,76 +193,75 @@
+ 	/* calculate report mark */
+ 	if (report_mark_soft == 0 || report_mark_hard == 0) {
+ 
+-	    /* calculate maximum and current */
+-	    switch (network->protocol) {
+-	    case IPPROTO_TCP:
+-		    maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
+-		    current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
+-		    break;
+-	    case IPPROTO_UDP:
+-		    maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / CLIENT_REPORT_BYTES;
+-		    current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / CLIENT_REPORT_BYTES;
+-		    break;
+-	    }
++		/* calculate maximum and current */
++		switch (network->protocol) {
++			case IPPROTO_TCP:
++				maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
++				current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
++				break;
++			case IPPROTO_UDP:
++				maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].maximum);
++				current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].history_median);
++				break;
++		}
+ 
+-	    /* set report minimum */
+-	    report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
++		/* set report minimum */
++		report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
+ 
+-	    /*
+-	     * set report mark soft depending on current
+-	     *
+-	     * more soft reports if current is low and
+-	     * less soft reports if current is high
+-	     */
+-	    report_mark_soft = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
++		/*
++		 * set report mark soft depending on current
++		 *
++		 * more soft reports if current is low and
++		 * less soft reports if current is high
++		 */
++		report_mark_soft = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
+ 
+-	    /* keep report mark up to minimum */
+-	    if (report_mark_soft < report_mark_minimum) {
+-		report_mark_soft = report_mark_minimum;
+-	    }
++		/* keep report mark up to minimum */
++		if (report_mark_soft < report_mark_minimum) {
++			report_mark_soft = report_mark_minimum;
++		}
+ 
+-    	    /* set report mark hard */
+-	    report_mark_hard = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
++		/* set report mark hard */
++		report_mark_hard = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
+ 	}
+ 
+ 	/* check if report for hard credits is required */
+ 	if (report_mark_hard == 0 || (network->nethook % report_mark_hard) == 0) {
+ 
+-	    /* check if report for soft credits is required */
+-	    if (network->nethook >= report_mark_soft) {
++		/* check if report for soft credits is required */
++		if (network->nethook >= report_mark_soft) {
+ 
+-                    syslog(LOG_DEBUG, "report dynamic pressure relieve quantize (%s at line %d)", __FILE__, __LINE__);
++			syslog(LOG_DEBUG, "report dynamic pressure relieve quantize (%s at line %d)", __FILE__, __LINE__);
+ 
+-		    /* send soft and hard credits */
+-		    result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
+-		    if (result == ERROR) {
+-			syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-			return ERROR;
+-		    }
++			/* send soft and hard credits */
++			result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
++			if (result == ERROR) {
++				syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
++				return ERROR;
++			}
+ 
+-		    /* reset nethook count */
+-		    network->nethook = 0;
++			/* reset nethook count */
++			network->nethook = 0;
+ 
+-		    /* reset soft and hard report mark */
+-		    report_mark_soft = 0;
+-		    report_mark_hard = 0;
+-	    }
+-	    else {
+-                    syslog(LOG_DEBUG, "report dynamic pressure relieve quantize (%s at line %d)", __FILE__, __LINE__);
++			/* reset soft and hard report mark */
++			report_mark_soft = 0;
++			report_mark_hard = 0;
++		}
++		else {
++			syslog(LOG_DEBUG, "report dynamic pressure relieve quantize (%s at line %d)", __FILE__, __LINE__);
+ 
+-		    /* send only hard credits */
+-		    result = client_report_send(context, network, CLIENT_CREDITS_HARD);
+-		    if (result == ERROR) {
+-			syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-			return ERROR;
+-		    }
++			/* send only hard credits */
++			result = client_report_send(context, network, CLIENT_CREDITS_HARD);
++			if (result == ERROR) {
++				syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
++				return ERROR;
++			}
+ 
+-		    /* reset hard report mark */
+-		    report_mark_hard = 0;
+-	    }
++			/* reset hard report mark */
++			report_mark_hard = 0;
++		}
+ 	}
+ 
+-
+ 	return SUCCESS;
+ }
+ 
+@@ -258,12 +271,12 @@
+ static int
+ client_report_dynamic_pressure_relieve(struct client_context *context, struct client_network *network)
+ {
+-    	static uint32_t        report_mark_soft;
+-    	static uint32_t        report_mark_hard;
+-	uint32_t	       report_mark_minimum;
+-	uint32_t	       maximum;
+-	uint32_t	       current;
+-	int 		       result;
++	static uint32_t    report_mark_soft;
++	static uint32_t    report_mark_hard;
++	uint32_t           report_mark_minimum;
++	uint32_t           maximum;
++	uint32_t           current;
++	int                result;
+ 
+ 	/* set maximum and current */
+ 	maximum = 0;
+@@ -272,74 +285,74 @@
+ 	/* calculate report mark */
+ 	if (report_mark_soft == 0 || report_mark_hard == 0) {
+ 
+-	    /* calculate maximum and current */
+-	    switch (network->protocol) {
+-	    case IPPROTO_TCP:
+-		    maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
+-		    current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
+-		    break;
+-	    case IPPROTO_UDP:
+-		    maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / CLIENT_REPORT_BYTES;
+-		    current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / CLIENT_REPORT_BYTES;
+-		    break;
+-	    }
++		/* calculate maximum and current */
++		switch (network->protocol) {
++			case IPPROTO_TCP:
++				maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
++				current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
++				break;
++			case IPPROTO_UDP:
++				maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].maximum);
++				current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].history_median);
++				break;
++		}
+ 
+-	    /* set report minimum */
+-	    report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
++		/* set report minimum */
++		report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
+ 
+-	    /*
+-	     * set report mark soft depending on current
+-	     *
+-	     * more soft reports if current is low and
+-	     * less soft reports if current is high
+-	     */
+-	    report_mark_soft = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
++		/*
++		 * set report mark soft depending on current
++		 *
++		 * more soft reports if current is low and
++		 * less soft reports if current is high
++		 */
++		report_mark_soft = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
+ 
+-	    /* keep report mark up to minimum */
+-	    if (report_mark_soft < report_mark_minimum) {
+-		report_mark_soft = report_mark_minimum;
+-	    }
++		/* keep report mark up to minimum */
++		if (report_mark_soft < report_mark_minimum) {
++			report_mark_soft = report_mark_minimum;
++		}
+ 
+-    	    /* set report mark hard */
+-	    report_mark_hard = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
++		/* set report mark hard */
++		report_mark_hard = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
+ 	}
+ 
+ 	/* check if report for soft credits is required */
+ 	if (network->nethook >= report_mark_soft) {
+ 
+-       	            syslog(LOG_DEBUG, "report dynamic pressure relieve (%s at line %d)", __FILE__, __LINE__);
++		syslog(LOG_DEBUG, "report dynamic pressure relieve (%s at line %d)", __FILE__, __LINE__);
+ 
+-		    /* send soft and hard credits */
+-		    result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
+-		    if (result == ERROR) {
++		/* send soft and hard credits */
++		result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
++		if (result == ERROR) {
+ 			syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
+ 			return ERROR;
+-		    }
++		}
+ 
+-		    /* reset nethook count */
+-		    network->nethook = 0;
++		/* reset nethook count */
++		network->nethook = 0;
+ 
+-		    /* reset soft and hard report mark */
+-		    report_mark_soft = 0;
+-		    report_mark_hard = 0;
++		/* reset soft and hard report mark */
++		report_mark_soft = 0;
++		report_mark_hard = 0;
+ 	}
+ 	else {
+ 
+-	    /* check if report for hard credits is required */
+-	    if (report_mark_hard == 0 || (network->nethook % report_mark_hard) == 0) {
++		/* check if report for hard credits is required */
++		if (report_mark_hard == 0 || (network->nethook % report_mark_hard) == 0) {
+ 
+-                    syslog(LOG_DEBUG, "report dynamic pressure relieve (%s at line %d)", __FILE__, __LINE__);
++			syslog(LOG_DEBUG, "report dynamic pressure relieve (%s at line %d)", __FILE__, __LINE__);
+ 
+-		    /* send only hard credits */
+-		    result = client_report_send(context, network, CLIENT_CREDITS_HARD);
+-		    if (result == ERROR) {
+-			syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-			return ERROR;
+-		    }
++			/* send only hard credits */
++			result = client_report_send(context, network, CLIENT_CREDITS_HARD);
++			if (result == ERROR) {
++				syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
++				return ERROR;
++			}
+ 
+-		    /* reset hard report mark */
+-		    report_mark_hard = 0;
+-	    }
++			/* reset hard report mark */
++			report_mark_hard = 0;
++		}
+ 	}
+ 
+ 	return SUCCESS;
+@@ -351,11 +364,11 @@
+ static int
+ client_report_dynamic_soft_hard(struct client_context *context, struct client_network *network)
+ {
+-    	static uint32_t        report_mark;
+-	uint32_t	       report_mark_minimum;
+-	uint32_t	       maximum;
+-	uint32_t	       current;
+-	int 		       result;
++	static uint32_t    report_mark;
++	uint32_t           report_mark_minimum;
++	uint32_t           maximum;
++	uint32_t           current;
++	int                result;
+ 
+ 	/* set maximum and current */
+ 	maximum = 0;
+@@ -364,45 +377,45 @@
+ 	/* calculate report mark */
+ 	if (report_mark == 0) {
+ 
+-	    /* calculate maximum and current */
+-	    switch (network->protocol) {
+-	    case IPPROTO_TCP:
+-		    maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
+-		    current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
+-		    break;
+-	    case IPPROTO_UDP:
+-		    maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / CLIENT_REPORT_BYTES;
+-		    current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / CLIENT_REPORT_BYTES;
+-		    break;
+-	    }
++		/* calculate maximum and current */
++		switch (network->protocol) {
++			case IPPROTO_TCP:
++				maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
++				current = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].current + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].current;
++				break;
++			case IPPROTO_UDP:
++				maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].maximum);
++				current = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].current / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].history_median);
++				break;
++		}
+ 
+-	    /* set report minimum */
+-	    report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
++		/* set report minimum */
++		report_mark_minimum = (uint32_t)((maximum * CLIENT_REPORT_MARK_MINIMUM) / 100);
+ 
+-	    /*
+-	     * set report mark depending on current
+-	     *
+-	     * more reports if current is low and
+-	     * less reports if current is high
+-	     */
+-	    report_mark = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
++		/*
++		 * set report mark depending on current
++		 *
++		 * more reports if current is low and
++		 * less reports if current is high
++		 */
++		report_mark = (uint32_t)((current * CLIENT_REPORT_MARK) / 100);
+ 
+-	    /* keep report mark up to minimum */
+-	    if (report_mark < report_mark_minimum) {
+-		report_mark = report_mark_minimum;
+-	    }
++		/* keep report mark up to minimum */
++		if (report_mark < report_mark_minimum) {
++			report_mark = report_mark_minimum;
++		}
+ 	}
+ 
+ 	/* check if report is required */
+ 	if (network->nethook >= report_mark) {
+ 
+-                syslog(LOG_DEBUG, "report dynamic soft hard (%s at line %d)", __FILE__, __LINE__);
++		syslog(LOG_DEBUG, "report dynamic soft hard (%s at line %d)", __FILE__, __LINE__);
+ 
+ 		/* send soft and hard credits */
+ 		result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
+ 		if (result == ERROR) {
+-		    syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-		    return ERROR;
++			syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
+ 		}
+ 
+ 		/* reset nethook count */
+@@ -421,9 +434,9 @@
+ static int
+ client_report_soft_hard(struct client_context *context, struct client_network *network)
+ {
+-    	static uint32_t        report_mark;
+-	uint32_t	       maximum;
+-	int		       result;
++	static uint32_t    report_mark;
++	uint32_t           maximum;
++	int                result;
+ 
+ 	/* set maximum */
+ 	maximum = 0;
+@@ -431,18 +444,18 @@
+ 	/* calculate report mark */
+ 	if (report_mark == 0) {
+ 
+-	    /* calculate maximum */
+-	    switch (network->protocol) {
+-	    case IPPROTO_TCP:
+-		    maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
+-		    break;
+-	    case IPPROTO_UDP:
+-		    maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / CLIENT_REPORT_BYTES;
+-		    break;
+-	    }
++		/* calculate maximum */
++		switch (network->protocol) {
++			case IPPROTO_TCP:
++				maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
++				break;
++			case IPPROTO_UDP:
++				maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].maximum);
++				break;
++		}
+ 
+-	    /* set report mark */
+-	    report_mark = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
++		/* set report mark */
++		report_mark = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
+ 	}
+ 
+ 	/* check if report is required */
+@@ -453,8 +466,8 @@
+ 		/* send soft and hard credits */
+ 		result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
+ 		if (result == ERROR) {
+-		    syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-		    return ERROR;
++			syslog(LOG_ERR, "report soft and hard credits failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
+ 		}
+ 
+ 		/* reset nethook count */
+@@ -473,9 +486,9 @@
+ static int
+ client_report_low_watermark(struct client_context *context, struct client_network *network)
+ {
+-    	static uint32_t        report_mark;
+-	uint32_t	       maximum;
+-	int		       result;
++	static uint32_t    report_mark;
++	uint32_t           maximum;
++	int                result;
+ 
+ 	/* set maximum */
+ 	maximum = 0;
+@@ -483,30 +496,30 @@
+ 	/* calculate report mark */
+ 	if (report_mark == 0) {
+ 
+-	    /* calculate maximum */
+-	    switch (network->protocol) {
+-	    case IPPROTO_TCP:
+-		    maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
+-		    break;
+-	    case IPPROTO_UDP:
+-		    maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / CLIENT_REPORT_BYTES;
+-		    break;
+-	    }
++		/* calculate maximum */
++		switch (network->protocol) {
++			case IPPROTO_TCP:
++				maximum = network->metrics.tcp[CLIENT_METRIC_TCP_SYN_RECEIVED].maximum + network->metrics.tcp[CLIENT_METRIC_TCP_ACKNOWLEDGED].maximum;
++				break;
++			case IPPROTO_UDP:
++				maximum = (uint32_t) network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_QUEUE].maximum / UDP_TRUESIZE(network->metrics.udp[CLIENT_METRIC_UDP_RECEIVE_SIZE].maximum);
++				break;
++		}
+ 
+-	    /* set report mark */
+-	    report_mark = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
++		/* set report mark */
++		report_mark = (uint32_t) ((maximum * CLIENT_REPORT_MARK) / 100);
+ 	}
+ 
+ 	/* check if report is required */
+ 	if (network->nethook >= report_mark) {
+ 
+-	        syslog(LOG_DEBUG, "report low watermark (%s at line %d)", __FILE__, __LINE__);
++		syslog(LOG_DEBUG, "report low watermark (%s at line %d)", __FILE__, __LINE__);
+ 
+ 		/* send hard credits */
+ 		result = client_report_send(context, network, CLIENT_CREDITS_HARD);
+ 		if (result == ERROR) {
+-		    syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-		    return ERROR;
++			syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
+ 		}
+ 
+ 		/* reset nethook count */
+@@ -532,8 +545,8 @@
+ 	/* send hard credits */
+ 	result = client_report_send(context, network, CLIENT_CREDITS_HARD);
+ 	if (result == ERROR) {
+-	    syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-	    return ERROR;
++		syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
++		return ERROR;
+ 	}
+ 
+ 	/* reset nethook count */
+@@ -550,13 +563,13 @@
+ {
+ 	int result;
+ 
+-        syslog(LOG_DEBUG, "report intervall (%s at line %d)", __FILE__, __LINE__);
++	syslog(LOG_DEBUG, "report intervall (%s at line %d)", __FILE__, __LINE__);
+ 
+ 	/* send soft and hard credits */
+ 	result = client_report_send(context, network, CLIENT_CREDITS_SOFT_HARD);
+ 	if (result == ERROR) {
+-	    syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
+-	    return ERROR;
++		syslog(LOG_ERR, "report hard credits failed (%s at line %d)", __FILE__, __LINE__);
++		return ERROR;
+ 	}
+ 
+ 	return SUCCESS;
+@@ -568,62 +581,62 @@
+ int
+ client_report(struct client_context * context, struct client_network * network)
+ {
+-	int		result;
++	int result;
+ 
+ 	/* report algorithm */
+ 	switch (context->report) {
+ 	case CLIENT_REPORT_INTERVALL:
+-	    result = client_report_intervall(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report intervall failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_intervall(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report intervall failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_PLAIN:
+-	    result = client_report_plain(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report plain failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_plain(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report plain failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_LOW_WATERMARK:
+-	    result = client_report_low_watermark(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report low watermark failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_low_watermark(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report low watermark failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_SOFT_HARD:
+-	    result = client_report_soft_hard(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report soft hard failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_soft_hard(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report soft hard failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_DYNAMIC_SOFT_HARD:
+-	    result = client_report_dynamic_soft_hard(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report dynamic soft hard failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_dynamic_soft_hard(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report dynamic soft hard failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_DYNAMIC_PRESSURE_RELIEVE:
+-	    result = client_report_dynamic_pressure_relieve(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report dynamic pressure relieve failed (%s at line %d)", __FILE__, __LINE__);
+-		return ERROR;
+-	    }
+-	    break;
++		result = client_report_dynamic_pressure_relieve(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report dynamic pressure relieve failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
+ 	case CLIENT_REPORT_DYNAMIC_PRESSURE_RELIEVE_QUANTIZE:
+-	    result = client_report_dynamic_pressure_relieve_quantize(context, network);
+-	    if (result == ERROR) {
+-		syslog(LOG_ERR, "report dynamic pressure relieve quantize failed (%s at line %d)", __FILE__, __LINE__);
++		result = client_report_dynamic_pressure_relieve_quantize(context, network);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "report dynamic pressure relieve quantize failed (%s at line %d)", __FILE__, __LINE__);
++			return ERROR;
++		}
++		break;
++	default:
++		syslog(LOG_ERR, "unexpected report (%s at line %d)", __FILE__, __LINE__);
+ 		return ERROR;
+-	    }
+-	    break;
+-	default:
+-	    syslog(LOG_ERR, "unexpected report (%s at line %d)", __FILE__, __LINE__);
+-	    return ERROR;
+ 	}
+ 
+ 	return SUCCESS;

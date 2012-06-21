@@ -1,0 +1,154 @@
+Index: include/nethook.h
+===================================================================
+--- include/nethook.h	(revision 1980)
++++ include/nethook.h	(revision 2028)
+@@ -60,7 +60,7 @@
+ 	/* NETHOOK_HOOK_LISTEN, */
+ 	NETHOOK_HOOK_ACCEPT,
+ 	/* NETHOOK_HOOK_RECV, */
+-	/* NETHOOK_HOOK_RECVMSG, */
++	NETHOOK_HOOK_RECVMSG,
+ 	/* NETHOOK_HOOK_RECVFROM, */
+ 	/* NETHOOK_HOOK_READ, */
+ 	NETHOOK_HOOK_SIZE
+@@ -72,6 +72,7 @@
+ 	int32_t         protocol;
+ 	struct sockaddr_storage address;
+ 	socklen_t       address_size;
++	ssize_t		recv_size;
+ };
+ 
+ /* nethook shared memory */
+Index: src/nethook.c
+===================================================================
+--- src/nethook.c	(revision 1980)
++++ src/nethook.c	(revision 2028)
+@@ -62,6 +62,9 @@
+ /* accept hook */
+ typedef int     (*accept_t) (int, struct sockaddr *, socklen_t *);
+ 
++/* recvmsg hook */
++typedef ssize_t (*recvmsg_t) (int, struct msghdr *, int);
++
+ /*
+  * nethook intialize
+  */
+@@ -307,6 +310,118 @@
+ }
+ 
+ /*
++ * recvmsg hook
++ */
++ssize_t
++recvmsg(int sockfd, struct msghdr *msg, int flags)
++{
++	static recvmsg_t libc_recvmsg;
++	static struct nethook_context context;
++	struct nethook_shared *shared;
++	pid_t           pid;
++	struct nethook_data *data;
++	int             result;
++	ssize_t		libc_result;
++
++	/* set shared memory */
++	shared = context.shared;
++
++	/* set libc recvmsg */
++	if (libc_recvmsg == NULL) {
++		/* set libc recvmsg */
++		libc_recvmsg = (recvmsg_t) dlsym(RTLD_NEXT, "recvmsg");
++		if (libc_recvmsg == NULL) {
++			syslog(LOG_ERR, "failed to find libc recvmsg symbol: %s (%s at line %d)", dlerror(), __FILE__, __LINE__);
++			return ERROR;
++		}
++	}
++	/* reset shared memory and semaphores */
++	if (shared != NULL && shared->pid == UNDEFINED) {
++		result = nethook_shared_reset(&context);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "failed to reset shared memory (%s at line %d)", __FILE__, __LINE__);
++		}
++		shared = NULL;
++	}
++	/* attach to shared memory semaphore */
++	if (shared == NULL) {
++		result = nethook_shared_initialize(&context, NETHOOK_ACCESS_ATTACH);
++		if (result == ERROR) {
++			syslog(LOG_DEBUG, "failed to attach to shared memory and semaphore (%s at line %d)", __FILE__, __LINE__);
++			nethook_reset(&context);
++		}
++		shared = context.shared;
++	}
++	/* set current pid */
++	pid = getpid();
++	
++	/* call libc recvmsg */
++	libc_result = libc_recvmsg(sockfd, msg, flags);
++	if (libc_result == ERROR) {
++		syslog(LOG_ERR, "recvmsg error: %s", strerror(errno));
++		return libc_result;
++	}
++
++	/* check shared memory registered pid and data count */
++	if (shared != NULL && shared->pid != pid && shared->data_count < NETHOOK_DATA_SIZE) {
++
++		/* lock write semaphore */
++		result = nethook_shared_semaphore(&context, NETHOOK_SEMAPHORE_WRITE, NETHOOK_OPERATION_LOCK);
++		if (result == ERROR) {
++			syslog(LOG_ERR, "failed to lock write semaphore (%s at line %d)", __FILE__, __LINE__);
++		} else {
++
++			/* lock mutex semaphore */
++			result = nethook_shared_semaphore(&context, NETHOOK_SEMAPHORE_MUTEX, NETHOOK_OPERATION_LOCK);
++			if (result == ERROR) {
++				syslog(LOG_ERR, "failed to lock mutex semaphore (%s at line %d)", __FILE__, __LINE__);
++			} else {
++
++				/* set current data pointer */
++				data = &shared->data[shared->data_count];
++				memset(data, 0, sizeof(struct nethook_data));
++
++				/* set hook and protocol */
++				data->hook = NETHOOK_HOOK_RECVMSG;
++				data->protocol = IPPROTO_UDP;
++
++				/* set address size */
++				data->address_size = sizeof(struct sockaddr_storage);
++
++				/* get socket name */
++				result = getsockname(sockfd, (struct sockaddr *) & data->address, &data->address_size);
++				if (result == ERROR) {
++					syslog(LOG_ERR, "get socket name failed: %m(%s at line %d)", __FILE__, __LINE__);
++				}
++
++				/* set recv size */
++				data->recv_size = libc_result;
++
++				/* increment data count */
++				shared->data_count++;
++
++				/* check data count */
++				if (shared->data_count >= NETHOOK_DATA_SIZE) {
++					syslog(LOG_ERR, "shared memory data area is full (%s at line %d)", __FILE__, __LINE__);
++				}
++				/* unlock mutex semaphore */
++				result = nethook_shared_semaphore(&context, NETHOOK_SEMAPHORE_MUTEX, NETHOOK_OPERATION_UNLOCK);
++				if (result == ERROR) {
++					syslog(LOG_ERR, "failed to unlock mutex semaphore (%s at line %d)", __FILE__, __LINE__);
++				}
++				/* unlock read semaphore */
++				result = nethook_shared_semaphore(&context, NETHOOK_SEMAPHORE_READ, NETHOOK_OPERATION_UNLOCK);
++				if (result == ERROR) {
++					syslog(LOG_ERR, "failed to unlock read semaphore (%s at line %d)", __FILE__, __LINE__);
++				}
++			}
++		}
++	}
++
++	return libc_result;
++}
++
++/*
+  * nethook reset
+  */
+ int
