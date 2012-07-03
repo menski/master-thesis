@@ -157,7 +157,7 @@
 		Entstehung und die Grundlagen des \dns{} erläutert. Darüber hinaus werden verschiedene
 		Möglichkeiten der Lastverteilung besprochen. Wobei auf Besonderheiten der Lastverteilung im DNS
 		eingegangen wird. Abschließend wird das zu erweiternde System zur selbst-adaptiven
-		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten
+		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:salbnet} einige Arbeiten
 		aufgeführt, welche in Verbindung mit dieser Arbeit stehen. In Kapitel \ref{cha:konzept} wird das
 		Konzept der erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.  Darauf
 		folgend ist in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher dargestellten
@@ -178,9 +178,7 @@
 		\ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der allgemeinen
 		Lastverteilung aufgezeigt werden. Wobei auf Besonderheiten der Lastverteilung für das DNS
 		eingegangen wird. Zum Abschluss wird das System zur selbst-adaptiven Lastverteilung vorgestellt,
-		welches als Grundlage dieser Arbeit dient. Damit später verständlicher ist, an welchen
-		Stellen des Systemes Anpassungen vorgenommen werden müssen, werden die einzelnen Komponenten des
-		Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
+		welches als Grundlage dieser Arbeit dient. 
 
 		\section{Domain Name System (DNS)} % {{{
 		\label{sec:dns}
@@ -646,6 +644,33 @@
 
 		% section Lastverteilung }}}
 
+		\section{Fazit} % {{{
+		\label{sec:grundlagen-fazit}
+		
+		% section Fazit }}}
+
+  % chapter Grundlagen }}}
+
+	\chapter{Verwandte Arbeiten} % {{{
+	\label{cha:Verwandte Arbeiten}
+	
+	% chapter Verwandte Arbeiten }}}
+
+	\chapter{salbnet} % {{{
+	\label{cha:salbnet}
+
+Damit später verständlicher ist, an welchen
+		Stellen des Systemes Anpassungen vorgenommen werden müssen, werden die einzelnen Komponenten des
+		Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{images/salbd-concept}
+			\caption{Konzept von salbd}
+			\label{fig:}
+		\end{figure}
+		
+
 		\section{salbnet} % {{{
 		\label{sec:salbnet}
 
@@ -698,16 +723,14 @@
 			% subsection salbd }}}
 
 		% section salbnet }}}
-
-		\section{Fazit} % {{{
-		\label{sec:grundlagen-fazit}
-		
-		% section Fazit }}}
-
-  % chapter Grundlagen }}}
-
-	\chapter{Verwandte Arbeiten} % {{{
-	\label{cha:arbeiten}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=\textwidth]{images/salbnet}
+		\caption{Aufbau von salbnet}
+		\label{fig:salbnet}
+	\end{figure}
+	
 
 	Die Arbeiten \cite{scsczile2008} und \cite{schneidenbach2009} bilden die theoretische Grundlage
 	für salbnet. Die Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das
@@ -836,7 +859,7 @@ $~$\\
 	ein Benchmark vorgestellt, welcher dazu geeignet ist die Erweiterung von salbnet auf seine
 	Funktion zu testen und mit bestehenden Algorithmen zu vergleichen. 
 
-	% chapter Verwandte Arbeiten }}}
+	% chapter salbnet }}}
 
 	\chapter{Konzept} % {{{
 	\label{cha:konzept}
@@ -850,7 +873,7 @@ $~$\\
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
-		Wie in Kapitel \ref{cha:arbeiten} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendung
+		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendung
 		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
 		des TCP-Sockets des Webservers erstellt. Diese gibt konkret die Anzahl der Anfragen an, welche
 		noch in der Backlog Platz finden würden. Das heißt, mehr als diese Anzahl an Anfragen sollten an
@@ -897,7 +920,7 @@ $~$\\
 
 		Nachdem mehrere Ansätze vorgestellt wurden, sollen diese nun bewertet werden. Danach wird ein
 		Ansatz gewählt, welcher dann weiter verfeinert wird. Die Bewertung der Ansätze erfolgt nach den
-		in Kapitel \ref{cha:arbeiten} aufgeführten Anforderungen an eine Metrik:
+		in Kapitel \ref{cha:salbnet} aufgeführten Anforderungen an eine Metrik:
 
 		\begin{itemize}
 			\item Sie sollte einfach zu berechnen sein.
@@ -979,7 +1002,7 @@ $~$\\
 		\end{equation}
 
 		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
-		\ref{cha:arbeiten} beschrieben existieren verschiedene Meldestrategie in salbnet. Bei den
+		\ref{cha:salbnet} beschrieben existieren verschiedene Meldestrategie in salbnet. Bei den
 		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve werden die Credits in
 		dynamisch berechneten Intervallen gemeldet. Das heißt zwischen zwei Credit-Meldungen kann sich
 		die Receive-Queue stark verändern. Die Abschätzung enthält aber keinen Faktor, welcher die
