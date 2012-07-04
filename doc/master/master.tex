@@ -130,7 +130,7 @@
 		Last des Systems. (TODO: Grafik)
 
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
-		auch von vielen anderen Netzwerk-Diensten gefordert sind. Um diese Anforderungen zu erfüllen
+		auch von vielen anderen Netzwerk-Diensten gefordert sind. Um diese Anforderungen zu erfüllen,
 		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last einer Ressource dadurch
 		verringert, dass die Gesamtlast auf mehrere identische Ressourcen verteilt wird. Dadurch ist die
 		Last je Ressource geringer und besser handhabbar. Dieses Konzept findet allgemein in Netzwerken
@@ -144,28 +144,29 @@
 		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
 
 		Daher beschäftigt sich diese Arbeite mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu
-		wird ein bestehendes System \cite{scsczile2008} zur selbst-adaptiven Lastverteilung von
-		HTTP-Anfragen erweitert, welches einen Credit-basierten Ansatz der Lastverteilung realisiert.
+		wird ein bestehendes System \cite{scsczile2008,zinke2014} zur selbst-adaptiven Lastverteilung von
+		TCP-Anfragen erweitert, welches einen Credit-basierten Ansatz der Lastverteilung realisiert.
 		Die Webserver, welche die Anfragen abarbeiten sollen, melden dem Lastverteiler ihre aktuelle
 		Last.  Danach kann der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um
 		dieses Konzept für den DNS-Anwendungsfall zu nutzen, müssen die Unterschiede zwischen HTTP und
 		DNS-Anfragen analysiert werden. Anschließend muss eine Metrik erstellt werden, welche auf dem
-		DNS-Server genutzt wird um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits
+		DNS-Server genutzt wird, um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits
 		sollen dann per TCP an den Lastverteiler gemeldet werden.
 
 		Im Kapitel \ref{cha:grundlagen} wird auf die Grundlagen dieser Arbeit eingegangen. Dazu wird die
 		Entstehung und die Grundlagen des \dns{} erläutert. Darüber hinaus werden verschiedene
-		Möglichkeiten der Lastverteilung besprochen. Wobei auf Besonderheiten der Lastverteilung im DNS
+		Möglichkeiten der Lastverteilung besprochen, wobei auf Besonderheiten der Lastverteilung im DNS
 		eingegangen wird. Abschließend wird das zu erweiternde System zur selbst-adaptiven
-		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:salbnet} einige Arbeiten
-		aufgeführt, welche in Verbindung mit dieser Arbeit stehen. In Kapitel \ref{cha:konzept} wird das
-		Konzept der erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.  Darauf
-		folgend ist in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher dargestellten
-		Konzepts beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der Implementation
-		eingegangen. Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer
-		Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit
-		folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine Einschätzung
-		und Bewertung der erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
+		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten
+		aufgeführt, welche in Verbindung mit dieser Arbeit stehen. Das zu erweiternde System wird in
+		Kaptiel \ref{cha:salbnet} beschrieben. In Kapitel \ref{cha:konzept} wird das Konzept der
+		erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.  Darauf folgend ist
+		in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher dargestellten Konzepts
+		beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der Implementation eingegangen.
+		Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer Funktionsmessung
+		und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit folgt in Kapitel
+		\ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine Einschätzung und Bewertung der
+		erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
 
 	% chapter Einleitung }}}
 
@@ -652,7 +653,7 @@
   % chapter Grundlagen }}}
 
 	\chapter{Verwandte Arbeiten} % {{{
-	\label{cha:Verwandte Arbeiten}
+	\label{cha:arbeiten}
 	
 	% chapter Verwandte Arbeiten }}}
 
@@ -732,10 +733,10 @@ Damit später verständlicher ist, an welchen
 	\end{figure}
 	
 
-	Die Arbeiten \cite{scsczile2008} und \cite{schneidenbach2009} bilden die theoretische Grundlage
+	Die Arbeiten \cite{scsczile2008,schneidenbach2009,zinke2012} bilden die theoretische Grundlage
 	für salbnet. Die Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das
 	bedeutet, dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die
-	Backend-Server eine Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welchezum
+	Backend-Server eine Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum
 	aktuellen Zeitpunkt zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits
 	werden dem Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen
 	Round-Robin-Verfahren, welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche
@@ -751,7 +752,7 @@ Damit später verständlicher ist, an welchen
 	\begin{itemize}
 		\item Sie sollte einfach zu berechnen sein.
 		\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
-		\item Sie sollte Applikationsunabhängig sein.
+		\item Sie sollte applikationsunabhängig sein.
 		\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
 	\end{itemize}
 	
@@ -759,7 +760,7 @@ Damit später verständlicher ist, an welchen
 	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
 	Anforderungen an eine gute Metrik. Sie ist simple zu berechnen, da der aktuelle Füllstand und der
 	maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers entspricht einer
-	Warteschlange für den Server. Solange die Backlog leer ist kann der Webserver alle Anfragen sofort
+	Warteschlange für den Server. Solange die Backlog leer ist, kann der Webserver alle Anfragen sofort
 	beantworten.  Sobald Anfragen in der Backlog gespeichert werden, ist der Server nicht mehr zu
 	einer sofortigen Abarbeitung in der Lage, daher werden die wartenden Anfragen in der Backlog
 	gespeichert. Das heißt, die Anzahl der noch freien Plätze in der Backlog gibt die Anzahl der noch
@@ -767,21 +768,21 @@ Damit später verständlicher ist, an welchen
 	Anfragen eintreffen, werden diese fallen gelassen. Somit kann die Anfrage nicht beantwortet
 	werden.  Daher entspricht der aktuelle Füllstand der Backlog genau den aktuell zur Verfügung
 	stehenden Ressourcen des Servers. Dadurch, dass die TCP-Backlog überwacht wird, ist diese Methode
-	allgemein für alle Webserver nutzbar und somit Applikationsunabhängig. Außerdem benötigt die
+	allgemein für alle Webserver nutzbar und somit applikationsunabhängig. Außerdem benötigt die
 	Metrik keine besonderen Ressource, das heißt sie ist weder Speicher noch CPU-intensiv, und somit
 	beeinflusst sie nicht die Leistung des Webservers. 
 
 	Die Betrachtung der Backlog zeigt auch zwei wichtige Metriken zur Bewertung einer Lastverteilung
 	für Webserver. Das Verwerfen einer Anfrage muss mit allen Möglichkeiten verhindert werden. Jede
-	verworfene Anfrage kann einem verloren Nutzer oder Kunden entsprechen. Muss eine Anfrage sehr
-	lange in der Backlog warten, ist dies zwar nicht so ungünstig, wie eine verworfene Anfrage, aber es
-	bedeute eine längere Wartezeit für den Nutzer. Wenn dieser nicht bereit ist so lange auf eine
+	verworfene Anfrage kann einem verlorenen Nutzer oder Kunden entsprechen. Muss eine Anfrage sehr
+	lange in der Backlog warten, ist dies zwar nicht so ungünstig, wie eine verworfene Anfrage, aber
+	es bedeute eine längere Wartezeit für den Nutzer. Wenn dieser nicht bereit ist so lange auf eine
 	Antwort zu warten, ist dies ebenfalls ein verlorener Nutzer oder Kunde. Das heißt eine gute
-	Lastverteilung sollte zu einer gering Zahl an verworfenen Anfragen und eine minimalen Antwortzeit
-	führen.
+	Lastverteilung sollte zu einer geringen Zahl an verworfenen Anfragen und einer minimalen
+	Antwortzeit führen.
 
 	Als zweiter wichtiger Faktor des Credit-Ansatzes zählt neben der Metrik die Meldestrategie. Dabei
-	ist es entscheident wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
+	ist es entscheident, wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
 	könnte eine zusätzliche Last auf den Backend-Servern erzeugen. Werden Credits zu selten gemeldet
 	kann es sein, dass der Backend-Server beim Lastverteiler aussortiert wird, weil seine Credits auf
 	0 gefallen sind. Folgend werden 4 mögliche Meldestrategien vorgestellt \cite{scsczile2008,
@@ -840,18 +841,17 @@ $~$\\
 	Bei einer Simulation der verschiedenen Meldestrategien hat der Dynamic Pressure Relieve
 	Algorithmus die besten Ergebnisse erzielt \cite{scsczile2008}.
 
-	Um salbnet auf Webclustern zu testen wurde der Benchmark servprep/servload \cite{habenschuss2011}
-	entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und
-	diese modifizieren kann. So können alle Anfragen vervielfacht werden, Spitzenlasten verstärkt
-	werden oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die
-	Charakteristik des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche
-	Benchmark, welcher das von servprep vorbereitet Log wieder einspielt. Dabei ist servprep in der
-	Programmiersprache Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks,
-	wurde servprep in servload integriert. Dadurch konnte eine noch bessere Leistung erziehlt werden
-	und der Ressourcenverbrauch minimiert werden. In einer dieser Arbeit vorgestellten Arbeit
-	\cite{menski2012} wurde servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten
-	und DNS-Anfragen über UDP versenden kann. Somit ist es möglich servload in dieser Arbeits als
-	Benchmark einzusetzen.
+	Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload \cite{habenschuss2011}
+	entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und diese
+	modifizieren kann. So können alle Anfragen vervielfacht werden, Spitzenlasten verstärkt werden
+	oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die Charakteristik
+	des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche Benchmark, welcher
+	das von servprep vorbereitete Log wieder einspielt. Dabei ist servprep in der Programmiersprache
+	Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks, wurde servprep in
+	servload integriert. Dadurch konnte eine noch bessere Leistung erziehlt werden und der
+	Ressourcenverbrauch minimiert werden. Im Rahmen einer Semesterarbeit \cite{menski2012} wurde
+	servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten und DNS-Anfragen über
+	UDP versenden kann. Somit ist es möglich, servload in dieser Arbeit als Benchmark einzusetzen.
 
 	In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
 	Meldealgorithmen von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
@@ -865,7 +865,7 @@ $~$\\
 	\label{cha:konzept}
 
 	In diesem Kapitel sollen mögliche Konzepte zur Erweiterung von salbnet für DNS-Anfragen
-	vorgestellt werden. Danach wird eines der Konzept ausgewählt und ein Entwurf zur Implementierung
+	vorgestellt werden. Danach wird eines der Konzepte ausgewählt und ein Entwurf zur Implementierung
 	präsentiert. Die Implementierung des gewählten Entwurfs wird dann im Kapitel
 	\ref{cha:implementierung} beschrieben.
 
@@ -873,7 +873,7 @@ $~$\\
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
-		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendung
+		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
 		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
 		des TCP-Sockets des Webservers erstellt. Diese gibt konkret die Anzahl der Anfragen an, welche
 		noch in der Backlog Platz finden würden. Das heißt, mehr als diese Anzahl an Anfragen sollten an
@@ -884,7 +884,7 @@ $~$\\
 		\subsection*{Last-Metrik} % {{{
 
 		Wenn sich ein Server in einer Überlastsitutation befindet, kann dies oft daran erkannt werden
-		das bestimmte Ressource aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung dafür
+		das bestimmte Ressourcen aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung dafür
 		sprechen, dass der Server an seine Grenzen gekommen ist. Daher wäre eine mögliche Metrik die
 		Sammlung entsprechender Daten und ein anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
@@ -895,7 +895,7 @@ $~$\\
 
 		Die Last eines Servers hängt von der Anzahl an einkommenden Anfragen und der Anzahl an
 		abgearbeiteten (ausgehenden) Anfragen ab. Daher wäre es eine Möglichkeit alle eingehenden und
-		ausgehenden Anfragen bzw. Antworten zu zählen. Anschließend kann abgeschätzt werden ob der
+		ausgehenden Anfragen bzw. Antworten zu zählen. Anschließend kann abgeschätzt werden, ob der
 		Server zur Zeit mehr Anfragen abarbeitet als ihn neue erreichen. Oder ob zu viele Anfragen
 		eintreffen, welche er nicht mehr schnell genug abarbeiten kann.
 		
@@ -903,7 +903,7 @@ $~$\\
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 	
-		Ein Ansatz ähnlich des TCP-Ansatzes wäre es die Receive-Queue des UDP-Sockets des DNS-Servers zu
+		Ein Ansatz ähnlich des TCP-Ansatzes wäre es, die Receive-Queue des UDP-Sockets des DNS-Servers zu
 		überwachen. Anders als beim TCP-Fall werden aber in der Receive-Queue keine Verbindungen
 		verwaltet, sondern Pakete eingeordnet. Das heißt die Receive-Queue hat eine maximale Größe und
 		ist bis zu einem bestimmten Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in
@@ -925,13 +925,13 @@ $~$\\
 		\begin{itemize}
 			\item Sie sollte einfach zu berechnen sein.
 			\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
-			\item Sie sollte Applikationsunabhängig sein.
+			\item Sie sollte applikationsunabhängig sein.
 			\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
 		\end{itemize}
 
 		\subsection*{Last-Metrik} % {{{
 
-		Die Last-Metrik ist Applikationsunabhängig und wird auch nicht durch die Anzahl der Clients
+		Die Last-Metrik ist applikationsunabhängig und wird auch nicht durch die Anzahl der Clients
 		beeinflusst. Jedoch ist es schwer aus den Faktoren wie der CPU-Last, RAM-Auslastung und Load
 		eines Servers Aussagen über die noch zur Verfügung stehenden Ressourcen des Servers zu geben.
 		Der Vergleich von CPU-Lasten ist vor allem in heterogenen Clustern schwer, dazu müsste eine
@@ -942,25 +942,25 @@ $~$\\
 	
 		\subsection*{Verkehr-Metrik} % {{{
 
-		Die Verkehr-Metrik ist ebenfalls Applikationsunabhängig und simple zu berechnen. Es wird die
-		Differenz der eingehenden und ausgehenden Anfragen ermittelt. Ist diese Differenz negativ ist
+		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und simple zu berechnen. Es wird die
+		Differenz der eingehenden und ausgehenden Anfragen ermittelt. Ist diese Differenz negativ, ist
 		der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich 0 ist der
 		Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort beantworten kann.
 		Ist die Differenz positiv stauen sich Anfragen beim Server. Steigt diese Differenz immer
 		weiter an, kann davon ausgegangen werden, dass der Server Probleme hat weitere Anfragen
 		abzuarbeiten. Die Probleme dieser Metrik sind jedoch die Abbildung der Differenz auf die
-		verfügbaren Ressourcen des Servers. Das heißt was sagen die eingehenden und ausgehenden Anfragen
-		über die Anzahl der noch zusätzlich möglichen Anfragen aus. Außerdem kann davon ausgegangen
-		werden, das ein zählen aller ein- und ausgehenden Anfragen nicht gut skaliert. Das heißt, wenn
+		verfügbaren Ressourcen des Servers. Das heißt, was sagen die eingehenden und ausgehenden Anfragen
+		über die Anzahl der noch zusätzlich möglichen Anfragen aus. (????) Außerdem kann davon ausgegangen
+		werden, dass ein Zählen aller ein- und ausgehenden Anfragen nicht gut skaliert. Das heißt, wenn
 		eine hohe Anzahl an Anfragen auf den Server abgegeben werden, erzeugt das Überwachen aller
-		Verbindungen einen zusätzliche Last. Daher erfüllt diese Metrik ebenfalls nicht die
+		Verbindungen eine zusätzliche Last. Daher erfüllt diese Metrik ebenfalls nicht die
 		Anforderungen.
 		
 		% subsection Verkehr-Metrik }}}
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
-		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen, Applikationsunabhängig. Sie
+		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen, applikationsunabhängig. Sie
 		erzeugt auch keine zusätzliche Last, wenn die Client-Anzahl ansteigt. Die Berechnung ist etwas
 		schwieriger als beim TCP-Anwendungsfall, da wie bereits erwähnt, keine Verbindungen gespeichert
 		werden, sondern Pakete. Allerdings kann aus dem verbleibenden Platz in der Receive-Queue und
@@ -993,7 +993,7 @@ $~$\\
 		
 		$~$\\
 		Mit Hilfe dieser Messwerte kann eine Abschätzung getroffen werden, wieviel weitere Pakete
-		$p_{additional}$ (Anfragen) noch angenommen werden können, ohne das eine Anfrage verworfen wird.
+		$p_{additional}$ (Anfragen) noch angenommen werden können, ohne dass eine Anfrage verworfen wird.
 		Die Abschätzung ist in der Formel \ref{eq:additional} dargestellt. 
 
 		\begin{equation}
@@ -1018,7 +1018,7 @@ $~$\\
 		Anfragen verworfen wurden, sollte dies bei der Berechnung der aktuellen Credits beachtet werden.
 		Dabei ist die Frage, wie das Verwerfen von Anfragen bewertet wird. In \cite{scsczile2008} wird
 		eine nicht beantwortete Anfrage als ein verlorener Nutzer und potential als ein verlorener Kunde
-		bewertet. Dabei ist zu beachtet, dass die Aussage für den HTTP-Anwendungsfall getroffen wurde.
+		bewertet. Dabei ist zu beachten, dass die Aussage für den HTTP-Anwendungsfall getroffen wurde.
 		Allerdings ist es auch bei DNS ein sinnvolles Ziel die verworfenen Anfragen zu minimieren. Daher
 		sollen dem Lastverteiler 0 Credits gemeldet werden, wenn seit der letzten Credits-Meldung
 		Anfragen verworfen wurde. Somit kann der Server die aktuellen Anfragen abarbeiten ohne weitere
@@ -1027,7 +1027,7 @@ $~$\\
 		werden.
 		
 		Wird nun die Anzahl der verworfenen Anfrage seit der letzten Credit-Meldung $p_{drop}$
-		in der Abschätzung beachtet ergibt sich Formel \ref{eq:credits} zur Berechnung der Credits des
+		in der Abschätzung beachtet, ergibt sich Formel \ref{eq:credits} zur Berechnung der Credits des
 		DNS-Servers.
 
 		\begin{equation}
@@ -1051,10 +1051,10 @@ $~$\\
 
 	Dieses Kapitel beschriebt die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Metrik.
 	Dazu wird in Abschnitt \ref{sec:anforderungen} die Frage geklärt, wie die in Abschnitt
-	\ref{sec:entwurf} definierte Metrik berechnet werden. Das heißt, es wird gezeigt welche
+	\ref{sec:entwurf} definierte Metrik berechnet wird. Das heißt, es wird gezeigt, welche
 	Möglichkeiten existieren die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
-	Messwerte bewerten und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
-	eingegangen. Nachdem feststeht wie alle Messwerte ermittelt werden können, wird in Abschnitt
+	Messwerte bewertet und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
+	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
 	\ref{sec:erweiterung} auf die konkrete Implementierung in salbd eingegangen. In Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
 	einem Standard-Algorithmus vergleicht.
@@ -1063,7 +1063,7 @@ $~$\\
 		\label{sec:anforderungen}
 
 		In diesem Abschnitt sollen Möglichkeiten diskutiert werden, mit deren Hilfe die einzelnen
-		Messwerte, für die in Abschnitt \ref{sec:entwurf} beschriebe Metrik, ermittelt werden können. Es
+		Messwerte, für die in Abschnitt \ref{sec:entwurf} beschriebene Metrik, ermittelt werden können. Es
 		werden dabei folgende Werte benötigt: $~$\\
 		
 		\begin{tabular}{rl}
@@ -1121,9 +1121,9 @@ $~$\\
 		werden, dass die Implementation funktionstüchtig und zum Verteilen von DNS-Anfragen geeignet
 		ist. Außerdem wurde ein Vergleich zum Round-Robin-Verfahren des LVS durchgeführt. Dieser soll
 		zeigen, dass das salbnet Verfahren eine bessere Verteilung der Last auf den Backend-Servern
-		erzeugt. In Abschnitt \ref{sec:Messumgebung} wird der Aufbau der Messumgebung erläutert. Danach
-		wird in Abschnitt \ref{sec:Messplan} der Ablauf der Messung beschrieben und in Abschnitt
-		\ref{sec:Auswertung} folgt eine Auswertung.
+		erzeugt. In Abschnitt \ref{sec:messumgebung} wird der Aufbau der Messumgebung erläutert. Danach
+		wird in Abschnitt \ref{sec:messplan} der Ablauf der Messung beschrieben und in Abschnitt
+		\ref{sec:auswertung} folgt eine Auswertung.
 
 		\section{Messumgebung} % {{{
 		\label{sec:messumgebung}
