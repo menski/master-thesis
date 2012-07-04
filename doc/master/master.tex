@@ -466,8 +466,8 @@
 		\begin{figure}
 			\centering
 			\includegraphics[width=6cm]{images/internet-server}
-			\caption{}
-			\label{fig:}
+			\caption{Lastverteilung auf mehrer Server}
+			\label{fig:lastverteilung}
 		\end{figure}
 
 		In diesem Abschnitt sollen Problemlösungen vorgestellt werden, welche dazu dienen die Last einer
@@ -482,21 +482,22 @@
 		der Server durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies
 		meist die simplere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
 		die Daten konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt
-		zum Beispiel einen weiteren Server bereitzustellen. Dieses Vorgehen eignet sich oft bei
-		Webservern, welche durch die Auslieferung von dynmaischen Inhalten (z.B. PHP-Seiten) ausgelastet
-		sind. Das Skalieren in die Breite hat Vorteile gegenüber der ersten Variante und ist deshalb
-		dieser vorzuziehen, sofern es die Anwendung zulässt.  Allein durch die Bereitstellung eines
-		zusätzlichen Servers erhöht sich die Ausfallsicherheit und gleichzeitig auch die Wartbarkeit.
-		Durch diese Verteilung kann ein einzelner Server ausfallen oder überprüft werden, währende der
-		andere Server die Anwendung weiterhin zur Verfügung stellt. Zudem ist die Erweiterbarkeit und
-		weitere Skalierung sehr einfach, wenn einmal die Infrastruktur geschaffen wurde mehrere Server
-		zu nutzen. Ein weiterer nicht zu vernachlässigender Punkt sind die Kosten. So ist die
-		Anschaffung zweier identischer Systeme meist günstiger als ein einzelnes System, welches die
-		gleiche Last verarbeiten kann. Hinzu kommt die Möglichkeit gezielt Ressourcen zu entfernen um
-		Strom zu sparen. So könnten Server nur dann angeschaltet werden, wenn davon auszugehen ist, dass
-		eine hohe Last bevorsteht.  Ein Beispiel hierfür könnte eine Verkaufsplattform sein, die
-		zusätzliche Ressourcen benötigt, wenn	besonders vor Feiertagen eine hohe Anzahl an Bestellungen
-		eingeht.
+		zum Beispiel einen weitere Server bereitzustellen. So kann der Dienst des Servers, wie in
+		Abbildung \ref{fig:lastverteilung} zu sehen, von mehreren Servern dem Internet bereitgestellt
+		werden. Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von
+		dynmaischen Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite hat
+		Vorteile gegenüber der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die
+		Anwendung zulässt.  Allein durch die Bereitstellung eines zusätzlichen Servers erhöht sich die
+		Ausfallsicherheit und gleichzeitig auch die Wartbarkeit.  Durch diese Verteilung kann ein
+		einzelner Server ausfallen oder überprüft werden, währende der andere Server die Anwendung
+		weiterhin zur Verfügung stellt. Zudem ist die Erweiterbarkeit und weitere Skalierung sehr
+		einfach, wenn einmal die Infrastruktur geschaffen wurde mehrere Server zu nutzen. Ein weiterer
+		nicht zu vernachlässigender Punkt sind die Kosten. So ist die Anschaffung zweier identischer
+		Systeme meist günstiger als ein einzelnes System, welches die gleiche Last verarbeiten kann.
+		Hinzu kommt die Möglichkeit gezielt Ressourcen zu entfernen um Strom zu sparen. So könnten
+		Server nur dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.
+		Ein Beispiel hierfür könnte eine Verkaufsplattform sein, die zusätzliche Ressourcen benötigt,
+		wenn	besonders vor Feiertagen eine hohe Anzahl an Bestellungen eingeht.
 
 		Im Folgenden werden verschiede Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
 		Sie unterscheiden sich in der Umsetzung der Lastverteilung und bieten jeweils gewisse Vor- und
@@ -509,16 +510,17 @@
 			\begin{figure}
 				\centering
 				\includegraphics[width=6cm]{images/loadbalancer}
-				\caption{}
-				\label{fig:}
+				\caption{Lastverteilung mit Hilfe eines Lastverteilers}
+				\label{fig:loadbalancer}
 			\end{figure}
 			
 
 			Bei dem Konzept der Server-Lastverteilung wird von der folgenden Situation ausgegangen.  Es
-			existiert ein Cluster aus mehreren Servern, welche alle die selbe Anwendung (z.B. eine Website)
-			zur Verfügung stellen. Diese sogenannten Backend-Server sind über einen Lastverteiler, einem weiteren
-			Server, mit dem restlichen Netzwerk oder Internet verbunden. Der Lastverteiler hat die
-			folgenden Aufgaben \cite{bourke2001}:
+			existiert ein Cluster aus mehreren Servern, welche alle die selbe Anwendung (z.B. eine
+			Website) zur Verfügung stellen. Diese sogenannten Backend-Server sind über einen
+			Lastverteiler, einem weiteren Server, mit dem restlichen Netzwerk oder Internet verbunden
+			(siehe Abbildung \ref{fig:loadbalancer}). Der Lastverteiler hat die folgenden Aufgaben
+			\cite{bourke2001}:
 
 			\begin{itemize}
 				\item Entgegennehmen des kompletten Netzwerkverkehrs, welcher an die Anwendung gerichtet ist
@@ -585,17 +587,19 @@
 			\begin{figure}
 				\centering
 				\includegraphics[width=10cm]{images/dns-loadbalancer}
-				\caption{}
-				\label{fig:}
+				\caption{Lastverteilung mit Hilfe von DNS}
+				\label{fig:lastverteilung-dns}
 			\end{figure}
 
 			Existiert kein Cluster oder es soll auf einen zusätzlichen Server verzichtet werden, bietet
 			sich eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag
-			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Dabei existiert
-			keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge er die
-			IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit eine
-			gewissen Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt das
-			Caching von lokalen Nameservern dazu, dass alle Anfragen zu der Adresse im Cache geleitet
+			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Ein möglicher
+			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt, dabei wird als
+			erstes der DNS-Server befragt, welcher dann eine Liste alle möglichen Adressen liefert . Dabei
+			existiert keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge
+			er die IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit
+			eine gewissen Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt
+			das Caching von lokalen Nameservern dazu, dass alle Anfragen zu der Adresse im Cache geleitet
 			werden. Weiterhin hat der DNS-Server keine Informationen über die Last der Server oder ob
 			diese überhaupt im Betrieb sind. Dadurch wird ein Server der ausgefallen ist trotzdem immer
 			wieder als Antwort zurückgeliefert. Auch ist es nicht möglich Gewichte für die Verteilung der
@@ -682,82 +686,104 @@
 	\chapter{salbnet} % {{{
 	\label{cha:salbnet}
 
-		Damit später verständlicher ist, an welchen Stellen des Systemes Anpassungen vorgenommen werden
-		müssen, werden die einzelnen Komponenten des Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
+		Dieses Kapitel beschreibt salbnet\footnote{http://salbnet.org}, einen Credit-basierten
+		Lastverteilungsansatz.  Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
+		TCP-Verkehr vor allem in InfiniBand-Netzwerken \cite{zinke2007, scsczile2008,
+		schneidenbach2009}. Die Besonderheit an diesem Lastverteilungsverfahren ist, dass es sowohl eine
+		Komponente auf dem Lastverteiler als auch auf den Backend-Servern gibt. Dabei werden auf den
+		Backend-Servern Credits bestimmt, welche die Verfügbarkeit des Servers wiederspiegeln sollen,
+		und an den Lastverteiler übermittelt werden. Der Lastverteiler wählt dann anhand der gemeldeten
+		Credits die Backend-Server aus. Dieser Aufbau von salbnet ist in Abbildung \ref{fig:salbnet} zu
+		sehen, wobei die Komponenten von salbnet blau hervorgehoben sind. Sie sollen im Folgenden kurz
+		vorgestellt werden.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{images/salbnet}
+			\caption{Aufbau von salbnet (übernommen aus \cite{zinke2012})}
+			\label{fig:salbnet}
+		\end{figure}
+
+		\subsection*{libnetmsg} % {{{
+
+			Die libnetmsg \cite{rabweg2009} ist eine leichtgewichtige Kommunikations-Bibliothek die zur
+			Übertragung sowohl UDP und TCP als auch InfiniBand unterstützt. Außerdem kann bei InfiniBand
+			die Remote Direct Memory Access (RDMA) Eigenschaft genutzt werden. In salbnet wird die
+			Bibliothek genutzt um die Credits von den Backend-Server an den Lastverteiler zu melden. Wird
+			InfiniBand genutzt können die neuen Credits direkt in den Kernelspeicher des Lastverteilers
+			geschrieben werden. Dieses Vorgehen ist in Abbildung \ref{fig:salbnet} dargestellt.
+
+		% subsection libnetmsg }}}
+		
+		\subsection*{libnethook} % {{{
+
+			Die dynamische Bibliothek libnethook wird genutzt um Funktionsaufrufe, von zu überwachenden
+			Anwendungen abzufangen. So kann ermittelt werden wie oft eine Funktion aufgerufen wird und was
+			von ihr zurück gegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom
+			Apache Webserver\footnote{http://httpd.apache.org/} (httpd) abgefangen und analysiert. In
+			Abbildung \ref{fig:salbnet} ist angedeutet, dass libnethook zwischen dem httpd und der libc
+			aggiert. Allgemein kann das auch für alle anderen TCP-Anwendungen genutzt werden. Im TCP-Fall
+			wird nur die Anzahl der Funktionsaufrufe genutzt um eine Neuberechnung der Credits auszulösen.
+
+		% subsection libnethook }}}
+
+
+		\subsection*{salbd} % {{{
+
+			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
+			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler stellt salbd einmal ein Kernelmodul
+			bereit, welches den salbnet scheduler für LVS implementiert. Dieser wählt Round-Robin den
+			nächsten Backend-Server aus allen Servern, welche noch Credits größer 0 besitzen. Außerdem
+			wird salbd genutzt um die Credits von den Backend-Servern zu empfangen und bei Übertragungen
+			ohne RDMA auch um die Credits in den Kernelspace zum salbnet Scheduler zu übermitteln.  Im
+			Backend ist salbd zur Bestimmung der Credits anhand der aktuellen Last der Webserver
+			verantwortlich. Dazu werden verschiedene Metriken genutzt und anhand der ermittelten Werte
+			verschiedene Meldestrategien verfolgt. Dieser Ablauf ist schematisch in Abbildung
+			\ref{fig:salbd} dargestellt. Dabei überwacht salbd die ensprechende Anwendung (z.B.
+			httpd), ermittelt dadurch Metriken, welche genutzt werden um Credits zu berechnen. Diese
+			werden dann zum Lastverteiler übermittelt.
+
+		% subsection salbd }}}
+
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/salbd-concept}
-			\caption{Konzept von salbd}
-			\label{fig:}
+			\caption{Konzept von salbd (übernommen aus \cite{zinke2012})}
+			\label{fig:salbd}
 		\end{figure}
 		
-
-		\section{salbnet} % {{{
-		\label{sec:salbnet}
-
-		Mit salbnet\footnote{http://salbnet.org} wird ein Credit-basierter Lastverteilungsansatz
-		realisiert. Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von HTTP-Verkehr in
-		Infiniband-Netzwerken \cite{zinke2007, scsczile2008}. Die Besonderheit an diesem
-		Lastverteilungsverfahren ist, dass es sowohl eine Komponente auf dem Lastverteiler als auch auf
-		den Backend-Servern gibt. Die Komponente auf den Backend-Servern dient dazu, durch entsprechende
-		Metriken, die aktuelle Last des Servers zu bestimmen. Aus diesen Werten wird anschließend eine
-		Anzahl an Credits berechnet. Diese Credits geben an wieviel Anfragen der Backend-Server zu
-		diesem Zeitpunkt noch abarbeiten könnte ohne überlastet zu sein. Dabei entspricht ein Credit
-		einer Anfrage. Diese Credits werden dann von den Backend-Servern an den Lastverteiler
-		übermittelt. Der Lastverteiler wählt anschließend anhand der gemeldeten Credits die
-		Backend-Server aus. Dieses System ist in dem Sinne selbst-adaptiv, dass Server deren Credits
-		verbraucht sind und die keine neuen Credits melden, durch den Lastverteiler ausgelassen werden.
-		Denn es ist davon auszugehen, dass der Server überlastet oder ausgefallen ist. Sollte sich ein
-		Server von einer Überlastsituation erholen und dem Lastverteiler neue Credits übermitteln, wird
-		dieser wieder in die Lastverteilung mit aufgenommen.
-
-		Durch dieses Verfahren kann auf dem Lastverteiler ein einfacher Algorithmus wie Round-Robin
-		angewandt werden und es müssen keine Gewichte für die Verteilung bestimmt werden. Damit ist
-		dieses System durch seine eigene Anpassung besonders bei heterogenen Clustern geeignet.
-
-		Im Folgenden werden kurz die einzelnen Komponenten von salbnet vorgestellt.
-
-			\subsection*{libnethook} % {{{
-
-			Die dynmaische Biblothek libnethook dient zur Bestimmung der Lastsituation auf einem
-			Backend-Server. Sie wird mit dem zu überwachenden Dienst geladen. Vor dieser Arbeit wurde nur
-			der Apache Webserver\footnote{http://httpd.apache.org/} unterstützt. Die Biblothek überwacht,
-			wann der Webserver eine Anfrage abarbeitet. Dadurch kann die Berechnung neuer Credits
-			ausgelöst werden.
-			
-			% subsection libnethook }}}
-
-			\subsection*{libnetmsg} % {{{
-
-			Die libnetmsg ist eine Bibliothek die zum Austausch der Credits über das Netzwerk genutzt
-			wird. 
-			
-			% subsection libnetmsg }}}
-			
-			\subsection*{salbd} % {{{
-
-			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
-			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler dient salbd als Algorithmus für
-			den LVS und wählt die Server Round-Robin nach den gemeldeten Credits aus. Im Backend ist salbd
-			zur Bestimmung der Credits anhand der aktuellen Last der Webserver verantwortlich.
-				
-			% subsection salbd }}}
-
-		% section salbnet }}}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=\textwidth]{images/salbnet}
-		\caption{Aufbau von salbnet}
-		\label{fig:salbnet}
-	\end{figure}
+		% Auf dem Backend-Server dient salbd dazu
+		% Backend-Servern dient dazu, durch entsprechende Metriken, die aktuelle Last des Servers zu
+		% bestimmen. Aus diesen Werten wird anschließend eine Anzahl an Credits berechnet. Diese Credits
+		% geben an wieviel Anfragen der Backend-Server zu diesem Zeitpunkt noch abarbeiten könnte ohne
+		% überlastet zu sein. Dabei entspricht ein Credit einer Anfrage. Diese Credits werden dann von den
+		% Backend-Servern an den Lastverteiler übermittelt. Der Lastverteiler wählt anschließend anhand
+		% der gemeldeten Credits die Backend-Server aus. Dieses System ist in dem Sinne selbst-adaptiv,
+		% dass Server deren Credits verbraucht sind und die keine neuen Credits melden, durch den
+		% Lastverteiler ausgelassen werden.  Denn es ist davon auszugehen, dass der Server überlastet oder
+		% ausgefallen ist. Sollte sich ein Server von einer Überlastsituation erholen und dem
+		% Lastverteiler neue Credits übermitteln, wird dieser wieder in die Lastverteilung mit
+		% aufgenommen.
 	
 
-	Die Arbeiten \cite{scsczile2008,schneidenbach2009} bilden die theoretische Grundlage für salbnet.
-	In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt. Die
-	Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
-	Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
+
+
+		% 
+
+
+
+		% Durch dieses Verfahren kann auf dem Lastverteiler ein einfacher Algorithmus wie Round-Robin
+		% angewandt werden und es müssen keine Gewichte für die Verteilung bestimmt werden. Damit ist
+		% dieses System durch seine eigene Anpassung besonders bei heterogenen Clustern geeignet.
+
+		% Im Folgenden werden kurz die einzelnen Komponenten von salbnet vorgestellt.
+	
+	$~$\\
+
+	In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.
+	Dabei ist die Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet,
+	dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
 	Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum aktuellen Zeitpunkt
 	zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
 	Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen Round-Robin-Verfahren,
@@ -778,7 +804,7 @@
 		\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
 	\end{itemize}
 	
-	Die Version von salbnet vor dieser Arbeit war auf HTTP-Anfragen begrenzt. Dazu wurde eine Metrik
+	Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine Metrik
 	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
 	Anforderungen an eine gute Metrik. Sie ist simple zu berechnen, da der aktuelle Füllstand und der
 	maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers entspricht einer
@@ -1079,7 +1105,7 @@ $~$\\
 	Möglichkeiten existieren die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
 	Messwerte bewertet und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
 	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
-	\ref{sec:erweiterung} auf die konkrete Implementierung in salbd eingegangen. In Kapitel
+	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. In Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
 	einem Standard-Algorithmus vergleicht.
 		
@@ -1120,9 +1146,9 @@ $~$\\
 		Der aktuell belegte Speicherplatz in der UDP-Receive-Queue eines UDP-Sockets kann ebenfalls über
 		das \texttt{/proc}-Dateisystem ermittelt werden. Diese Information ist in der Datei
 		\texttt{/proc/net/udp} enthalten. In Listing \ref{lst:proc-udp} ist ein Auszug aus dieser Datei
-		zu sehen. Jede Zeile steht für einen Socket. Die \texttt{sl} ist der Hash-Slot des Sockets im
+		zu sehen. Jede Zeile steht für einen Socket. Dabei ist \texttt{sl} der Hash-Slot des Sockets im
 		Kernel. Die \texttt{local\_address} ist die lokale Adresse und Port des Sockets. Wenn der Socket
-		direkt Verbunden ist mit einer entfernten Adresse wird dies in \texttt{rem\_address} angezeigt.
+		direkt  mit einer entfernten Adresse verbunden ist, wird dies im Feld \texttt{rem\_address} angezeigt.
 		Der Status des Sockets ist in \texttt{st} vermerkt und \texttt{tx\_queue} bzw.
 		\texttt{rx\_queue} geben den Speicherverbrauch der UDP-Send-Queue bzw. UDP-Receive-Queue an. Es
 		folgen noch weitere Werte, welche in diesem Zusammenhang unwichtig sind. Somit kann durch diese
@@ -1139,8 +1165,10 @@ $~$\\
 		Implementation von salbnet \cite{zinke2012} wird ein \texttt{Netlink}-Socket genutzt um
 		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend ähnliches auch für
 		die UDP-Receive-Queue anzuwenden. Allerdings ist das von salbnet verwendete Kernelmodul für den
-		Kernel 2.6.18 und wird von neueren Kerneln nicht mehr unterstützt. Die Erweiterung der
-		\texttt{Netlink}-Sockets um ein UDP-Modul wurde jedoch erst im Kernel 3.3\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
+		Kernel 2.6.18 entwickelt und kann nicht ohne Anpassungen mit neueren Kernel-Versionen genutzt
+		werden. Die Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul wurde jedoch erst im
+		Kernel
+		3.3\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
 		aufgenommen. Somit ist die Verwendung eines \texttt{Netlink}-Sockets in salbnet für UDP nicht
 		möglich.		
 
@@ -1156,15 +1184,15 @@ $~$\\
 		abgeholt, wird die Größe des Pakets zurückgeliefert. In Listing \ref{lst:strace} wurde das
 		Programm \texttt{strace} genutzt, um die Systemcalls des BIND DNS-Servers nachzuvollziehen. In
 		Zeile 12 ist zu erkennen, dass ein Paket vom BIND mit Hilfe der Funktion \texttt{recvmsg} aus
-		der Queue abgeholt wird. Der Rückgabewert der Funktion (Zahl am Ende der Zeile) gibt die Größe
-		des Paketes in Byte an. In diesem Beispiel war das DNS-Paket 45 Byte groß. Somit ist es möglich
-		den Funktions-Aufruf des BIND abzufangen und die Paket-Größe zu ermitteln.
+		der Queue abgeholt wird. Der Rückgabewert der Funktion gibt die Größe des Paketes in Byte an. In
+		diesem Beispiel war das DNS-Paket 45 Byte groß. Somit ist es möglich den Funktions-Aufruf des
+		BIND abzufangen und die Paket-Größe zu ermitteln.
 
 		Allerdings ist die Größe des DNS-Paketes, wie sie von der Funktion \texttt{recvmsg}
 		zurückgegeben wird, nicht der komplette Speicherbedarf des Pakets in der Receive-Queue. Im
 		Linux-Kernel werden die Pakete, welche in einem Socket-Buffer liegen, mit Hilfe der
 		Datenstruktur \texttt{sk\_buff} verwaltet. Im Anhang \ref{cha:skbuff} ist das Listing
-		\ref{lst:skbuff} der \texttt{sk\_buff}-Datenstruktur des Linux-Kernels 2.6.18 aufgeführt. Es ist
+		\ref{lst:skbuff} der \texttt{sk\_buff}-Datenstruktur für den Linux-Kernels 2.6.18 angeführt. Es ist
 		zu erkennen, dass es eine große Anzahl an zusätzlichen Informationen in der Datenstruktur, neben
 		dem eigentlichen DNS-Paket gespeichert, wird. Das Feld \texttt{truesize} in der Datenstruktur,
 		enthält die vollständige Größe des Pakets in der Receive-Queue. Jedoch ist ein Zugriff auf
@@ -1178,16 +1206,16 @@ $~$\\
 		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkt Zusammenhang
 		zwischen der Größe des DNS-Pakets und dem benötigten Speicher in der Receive-Queue gibt. Der
 		Header eines DNS-Pakets ist 12 Byte groß und die maximale Größe eines DNS-Pakets ist 512 Byte
-		laut RFC \cite{rfc1035}. Daher wurde das Experiment mit Paketen der Größe 12-576 Byte
+		laut RFC \cite{rfc1035}, daher wurde das Experiment mit Paketen der Größe 12-576 Byte
 		durchgeführt. Das Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass 376
 		Byte die minimale Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete
 		eine Größe von 64 Byte wächst der Speicherbedarf um 128 Byte. Diese 128 Byte stehen
 		ausschließlich für den Inhalt des DNS-Pakets zur Verfügung, da alle zusätzlichen Daten der
 		\texttt{sk\_buff}-Datenstruktur bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets
-		ebenfalls um 128 Byte um überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte
+		ebenfalls um 128 Byte und überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte
 		an. Zusammengefasst lässt sich sagen, dass ab einer Paket-Größe von 64 Byte alle 128 Byte eine
 		Erhöhung des Speicherbedarfs um ebenfalls 128 Byte eintritt. Daher ist es möglich die Formel
-		\ref{eq:recvmsg} zu erstellen, welche anhand der Größe des DNS-Pakets (ermittelt durch
+		\ref{eq:recvmsg} zu bestimmen, welche anhand der Größe des DNS-Pakets (ermittelt durch
 		\texttt{recvmsg}) den Speicherbedarf in der Receive-Queue berechnet. Es ist zu beachten, dass
 		diese Formel nicht allgemeingültig ist und speziell für den Kernel 2.6.18 ermittelt wurde. Für
 		andere Kernel-Versionen kann sich ein veränderter Zusammenhang ergeben und somit auch eine
@@ -1225,9 +1253,10 @@ $~$\\
 		2.6.18 gilt dies leider noch nicht. Daher wurde auf die Datei \texttt{/proc/net/snmp}
 		zurückgegriffen. Wie in Listing \ref{lst:proc-snmp} zu sehen, wird in dieser Datei die Anzahl
 		der systemweiten Drops als \texttt{InErrors} angegeben. Da in dieser Arbeit davon ausgegangen
-		wird, dass es sich um ein DNS-Cluster handelt, also mit hoher Last gerechnet wird, kann davon
-		ausgegangen werden, dass der DNS-Server die Hauptanteil des UDP-Verkehrs erzeugt. Somit sind
-		Drops, auch wenn diese nur systemweit angegeben werden, kritisch für den DNS-Server.
+		wird, dass es sich um ein DNS-Cluster handelt, welches ausschließlich zum Beantworten von
+		DNS-Anfragen genutzt wird, kann davon	ausgegangen werden, dass der DNS-Server den Hauptanteil
+		des UDP-Verkehrs erzeugt. Somit sind Drops, auch wenn diese nur systemweit angegeben werden,
+		kritisch für den DNS-Server.
 		
 		\lstinputlisting[float,caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
 
@@ -1362,7 +1391,7 @@ $~$\\
 		bereits in anderen Messungen als sinnvoll für den Round-Robin-Algorithmus erwiesen, deshalb
 		wurden bei diesen Messungen wiederum auf sie zurückgegriffen. Bei dem salbd Algorithmus müssen
 		keine Gewichte angegeben werden. Allerdings muss eine Meldestrategie gewählt werden. Messungen
-		in einem HTTP-Szenario haben den Algorithmus dynamic pressure relieve als eine der besten
+		in einem TCP-Szenario haben den Algorithmus dynamic pressure relieve als eine der besten
 		Meldestrategien ermittelt. Deshalb wurde auch in diesem DNS-Szenario dieser ausgewählt. Die
 		Credits werden von den Backend-Servern über TCP zum Lastverteiler übermittelt. Die salbd
 		Konfiguration für den Lastverteiler (ib1) ist in Anhang \ref{lst:salbd-server} und die
