@@ -21,7 +21,7 @@
 
 \definecolor{uniblue}{rgb}{0.062745,0.17647,0.34118}
 \definecolor{tblue}{HTML}{204A87}
-\definecolor{tgreen}{HTML}{4E9A06}
+\definecolor{tcomment}{HTML}{2E3436}
 \definecolor{tred}{HTML}{CC0000}
 
 \lstset{
@@ -33,7 +33,7 @@
 	breaklines=true,
 	breakatwhitespace=false,
 	keywordstyle=\color{tblue},
-	commentstyle=\color{tgreen},
+	commentstyle=\color{tcomment},
 	stringstyle=\color{tred}
 }
 
@@ -61,7 +61,7 @@
 \newcommand{\TitleBetreuer}{Prof. Dr. Bettina Schnor\\ &M.Sc. Jörg Zinke}
 \newcommand{\TitleAbschlussText}{zur Erlangung des akademischen Grades\\Master of Science\\in Informatik}
 \newcommand{\TitleOrt}{Potsdam}
-\newcommand{\TitleDatum}{21. Juni 2012}
+\newcommand{\TitleDatum}{7. Juli 2012}
 \hypersetup
 {
 	pdfauthor={Sebastian Menski},
@@ -83,10 +83,10 @@
 			{\TitleTyp}\\
 			\TitleAbschlussText\\[3\baselineskip]
 
-			\TitleAutor\\[6\baselineskip]
+			\TitleAutor\\[3\baselineskip]
 			\begin{tabular}{rl}
 				\TitleBetreuerText: & \TitleBetreuer
-			\end{tabular}\\[3\baselineskip]
+			\end{tabular}\\[2\baselineskip]
 			\TitleOrt, \TitleDatum\par
 		}
 	\end{textblock*}
@@ -144,7 +144,7 @@
 		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
 
 		Daher beschäftigt sich diese Arbeite mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu
-		wird ein bestehendes System \cite{scsczile2008,zinke2014} zur selbst-adaptiven Lastverteilung von
+		wird ein bestehendes System \cite{scsczile2008,zinke2012} zur selbst-adaptiven Lastverteilung von
 		TCP-Anfragen erweitert, welches einen Credit-basierten Ansatz der Lastverteilung realisiert.
 		Die Webserver, welche die Anfragen abarbeiten sollen, melden dem Lastverteiler ihre aktuelle
 		Last.  Danach kann der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um
@@ -371,7 +371,7 @@
 				\begin{table}
 					\centering
 					\begin{tabular}{|c|c|c|}\hline
-						DNS-Server & 2004 & 2009 \\\hline
+						DNS-Server & 2004 & 2009 \\\hline\hline
 						BIND & \unit[70,11]{\%} & \unit[73,85]{\%} \\
 						djbdns & \unit[15,57]{\%} & \unit[2,56]{\%} \\
 						Microsoft DNS & \unit[6,24]{\%} & \unit[0,26]{\%}\\
@@ -644,7 +644,7 @@
 
 			Die Verteilung von DNS-Anfragen unterschiedet sich in mehreren Punkten von HTTP-Anfragen. So
 			ist das genutzte Transport-Protokoll UDP statt TCP und die Nachrichten dürfen nicht größer als
-			512 Bytes sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
+			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
 			HTTP-Anwendungen, wo ein Client während einer Session immer mit dem selben Server
 			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
 			als bei HTTP-Anfragen. Firmen und Organisationen haben selten einen so hohe Anzahl an
@@ -682,9 +682,8 @@
 	\chapter{salbnet} % {{{
 	\label{cha:salbnet}
 
-Damit später verständlicher ist, an welchen
-		Stellen des Systemes Anpassungen vorgenommen werden müssen, werden die einzelnen Komponenten des
-		Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
+		Damit später verständlicher ist, an welchen Stellen des Systemes Anpassungen vorgenommen werden
+		müssen, werden die einzelnen Komponenten des Systems im Abschnitt \ref{sec:salbnet} vorgestellt.		
 
 		\begin{figure}
 			\centering
@@ -755,19 +754,20 @@ Damit später verständlicher ist, an welchen
 	\end{figure}
 	
 
-	Die Arbeiten \cite{scsczile2008,schneidenbach2009,zinke2012} bilden die theoretische Grundlage
-	für salbnet. Die Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das
-	bedeutet, dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die
-	Backend-Server eine Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum
-	aktuellen Zeitpunkt zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits
-	werden dem Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen
-	Round-Robin-Verfahren, welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche
-	noch Credits besitzen durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen
-	Credits um eins verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine
-	neuen Credits, fällt der Server aus der Liste der verfügbaren Server heraus. Meldet ein Server,
-	dessen Credits bereits auf 0 gefallen waren, erneut Credits wird er wieder in die Verteilung
-	mitaufgenommen. Die beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur
-	Berechnung der Credits und die Meldestrategie der Backend-Server.
+	Die Arbeiten \cite{scsczile2008,schneidenbach2009} bilden die theoretische Grundlage für salbnet.
+	In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt. Die
+	Idee von salbnet ist Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
+	Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
+	Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum aktuellen Zeitpunkt
+	zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
+	Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen Round-Robin-Verfahren,
+	welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits besitzen
+	durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins
+	verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine neuen Credits,
+	fällt der Server aus der Liste der verfügbaren Server heraus. Meldet ein Server, dessen Credits
+	bereits auf 0 gefallen waren, erneut Credits wird er wieder in die Verteilung mitaufgenommen. Die
+	beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur Berechnung der Credits und
+	die Meldestrategie der Backend-Server.
 
 	Die Metrik hat folgende Anforderungen zu erfüllen \cite{scsczile2008}:
 
@@ -1071,6 +1071,8 @@ $~$\\
 	\chapter{Implementierung} % {{{
 	\label{cha:implementierung}
 
+	% KERNEL 2.6.18 erwähnen; Vielleicht schonmal procfs einführen?
+
 	Dieses Kapitel beschriebt die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Metrik.
 	Dazu wird in Abschnitt \ref{sec:anforderungen} die Frage geklärt, wie die in Abschnitt
 	\ref{sec:entwurf} definierte Metrik berechnet wird. Das heißt, es wird gezeigt, welche
@@ -1092,42 +1094,163 @@ $~$\\
 			$q_{max}$		  & die maximale Kapazität der UDP-Receive-Queue\\
 			$q_{current}$ &	der aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
 			$p_{median}$  &	der Median der Paket-Größen in der UDP-Receive-Queue\\
-			$p_{drop}$    &	die Anzahl der verworfenen Paket (Anfrage) seit der letzten Credit-Meldung\\
+			$p_{drop}$    &	die Anzahl der verworfenen Pakete (Anfragen) seit der letzten Credit-Meldung\\
 		\end{tabular}
 
 		$~$\\
 		\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
-		
-		\lstinputlisting[lastline=4,caption={Standard-Queue-Größe für UDP-Sockets},label=lst:default-queue]{listings/proc-rmem.txt}
-		\lstinputlisting[firstline=6,caption={Erhöhen der Queue-Größe für UDP-Sockets},label=lst:test-queue]{listings/proc-rmem.txt}
+
+		\lstinputlisting[float,lastline=4,caption={Standard-Queue-Größe für UDP-Sockets},label=lst:default-queue]{listings/proc-rmem.txt}
+		\lstinputlisting[float,firstline=6,caption={Erhöhen der Queue-Größe für UDP-Sockets},label=lst:test-queue]{listings/proc-rmem.txt}
+
+		Die maximale Kapazität der UDP-Receive-Queue für jeden UDP-Socket wird im Kernel festgelegt. Der
+		aktuelle Wert kann über das \texttt{/proc}-Dateisystem festgestellt werden. Beim
+		\texttt{/proc}-Dateisystem \cite{benvenuti2005} handelt es sich um ein virtuelles Dateisystem,
+		welches kernelinterne Datenstrukturen, in der Form von Dateien, in den Userspace exportiert. Im
+		Listing \ref{lst:default-queue} sind die beiden entsprechenden Dateien im
+		\texttt{/proc}-Dateisystem aufgeführt, welche die standard und maximale Größe der
+		UDP-Receive-Queue eines UDP-Sockets bestimmen. Um diese Werte zu verändern, kann das Programm
+		\texttt{sysctl} genutzt werden, welches Variablen im \texttt{/proc/sys}-Verzeichnis bearbeiten
+		kann, oder es kann direkt in die entsprechenden Dateien ein neuer Wert geschrieben werden. Die
+		Verwendung von \texttt{sysctl} ist in Listing \ref{lst:test-queue} zu sehen.
 		% subsection Maximale Kapazität der UDP-Receive-Queue }}}
 
 		\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
-		
-		Netlink UDP commit\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
-		in Kernel 3.3 aufgenommen.
-		\lstinputlisting[caption={/proc/net/udp Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
+
+		Der aktuell belegte Speicherplatz in der UDP-Receive-Queue eines UDP-Sockets kann ebenfalls über
+		das \texttt{/proc}-Dateisystem ermittelt werden. Diese Information ist in der Datei
+		\texttt{/proc/net/udp} enthalten. In Listing \ref{lst:proc-udp} ist ein Auszug aus dieser Datei
+		zu sehen. Jede Zeile steht für einen Socket. Die \texttt{sl} ist der Hash-Slot des Sockets im
+		Kernel. Die \texttt{local\_address} ist die lokale Adresse und Port des Sockets. Wenn der Socket
+		direkt Verbunden ist mit einer entfernten Adresse wird dies in \texttt{rem\_address} angezeigt.
+		Der Status des Sockets ist in \texttt{st} vermerkt und \texttt{tx\_queue} bzw.
+		\texttt{rx\_queue} geben den Speicherverbrauch der UDP-Send-Queue bzw. UDP-Receive-Queue an. Es
+		folgen noch weitere Werte, welche in diesem Zusammenhang unwichtig sind. Somit kann durch diese
+		Datei der belegte Speicherplatz der UDP-Receive-Queue für einen bestimmten UDP-Socket ermittelt werden.
+
+		Der Nachteil vom \texttt{/proc}-Dateisystem ist, dass bei wiederholten Abfragen eines Wertes,
+		jedesmal eine Datei geöffnet, gelesen und geschlossen werden muss. Anschließend muss der Inhalt
+		der Datei ausgewertet werden, um den gesuchten Wert zu finden. Eine möglicher Ersatz, vor allem
+		bei der Netzwerkkonfiguration, bieten \texttt{Netlink}-Sockets \cite{rfc3549, gusowski2009}.
+		Durch diese ist es möglich zwischen dem Kernel- und Userspace über einen Socket zu
+		kommunizieren. Dies hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial
+		ein Socket erstellt werden muss, welche danach weiterverwendet werden kann, oder es können Werte
+		gezielt abgefragt werden ohne sie aus einer Text-Repräsentation extrahieren zu müssen. In der
+		Implementation von salbnet \cite{zinke2012} wird ein \texttt{Netlink}-Socket genutzt um
+		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend ähnliches auch für
+		die UDP-Receive-Queue anzuwenden. Allerdings ist das von salbnet verwendete Kernelmodul für den
+		Kernel 2.6.18 und wird von neueren Kerneln nicht mehr unterstützt. Die Erweiterung der
+		\texttt{Netlink}-Sockets um ein UDP-Modul wurde jedoch erst im Kernel 3.3\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
+		aufgenommen. Somit ist die Verwendung eines \texttt{Netlink}-Sockets in salbnet für UDP nicht
+		möglich.		
+
+		\lstinputlisting[float,caption={/proc/net/udp	Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
+
 		% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
 		\subsection*{Median der Paket-Größen in der UDP-Receive-Queue} % {{{
+
+		Um den Median der Paket-Größen in der UDP-Receive-Queue bestimmen zu können, reicht der belegte
+		Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist nich ermittelbar wieviele Pakete
+		aktuelle in der Receive-Queue gespeichert sind. Wird jedoch ein Paket aus der Receive-Queue
+		abgeholt, wird die Größe des Pakets zurückgeliefert. In Listing \ref{lst:strace} wurde das
+		Programm \texttt{strace} genutzt, um die Systemcalls des BIND DNS-Servers nachzuvollziehen. In
+		Zeile 12 ist zu erkennen, dass ein Paket vom BIND mit Hilfe der Funktion \texttt{recvmsg} aus
+		der Queue abgeholt wird. Der Rückgabewert der Funktion (Zahl am Ende der Zeile) gibt die Größe
+		des Paketes in Byte an. In diesem Beispiel war das DNS-Paket 45 Byte groß. Somit ist es möglich
+		den Funktions-Aufruf des BIND abzufangen und die Paket-Größe zu ermitteln.
+
+		Allerdings ist die Größe des DNS-Paketes, wie sie von der Funktion \texttt{recvmsg}
+		zurückgegeben wird, nicht der komplette Speicherbedarf des Pakets in der Receive-Queue. Im
+		Linux-Kernel werden die Pakete, welche in einem Socket-Buffer liegen, mit Hilfe der
+		Datenstruktur \texttt{sk\_buff} verwaltet. Im Anhang \ref{cha:skbuff} ist das Listing
+		\ref{lst:skbuff} der \texttt{sk\_buff}-Datenstruktur des Linux-Kernels 2.6.18 aufgeführt. Es ist
+		zu erkennen, dass es eine große Anzahl an zusätzlichen Informationen in der Datenstruktur, neben
+		dem eigentlichen DNS-Paket gespeichert, wird. Das Feld \texttt{truesize} in der Datenstruktur,
+		enthält die vollständige Größe des Pakets in der Receive-Queue. Jedoch ist ein Zugriff auf
+		diesen Wert aus dem Userspace nicht möglich.
 		
-		\lstinputlisting[caption={strace-Ausgabe für den BIND-Server bei der Abfrage von
+		Um auf eine Anpassung im Kernelspace zu verzichten, wurde der Zusammenhang, zwischen der Größe
+		des DNS-Pakets und dem Speicherplatz in der Receive-Queue, experimentell ermittelt. Hierzu
+		wurden DNS-Pakete mit steigender Größe an einen BIND DNS-Server gesendet. Nach jedem Paket wurde
+		der belegte Speicherplatz der Receive-Queue ermittelt und anschließend die Größe des Pakets mit
+		der Funktion \texttt{recvmsg} ermittelt. Diese Versuche wurden mehrmals durchgeführt, dadurch
+		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkt Zusammenhang
+		zwischen der Größe des DNS-Pakets und dem benötigten Speicher in der Receive-Queue gibt. Der
+		Header eines DNS-Pakets ist 12 Byte groß und die maximale Größe eines DNS-Pakets ist 512 Byte
+		laut RFC \cite{rfc1035}. Daher wurde das Experiment mit Paketen der Größe 12-576 Byte
+		durchgeführt. Das Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass 376
+		Byte die minimale Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete
+		eine Größe von 64 Byte wächst der Speicherbedarf um 128 Byte. Diese 128 Byte stehen
+		ausschließlich für den Inhalt des DNS-Pakets zur Verfügung, da alle zusätzlichen Daten der
+		\texttt{sk\_buff}-Datenstruktur bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets
+		ebenfalls um 128 Byte um überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte
+		an. Zusammengefasst lässt sich sagen, dass ab einer Paket-Größe von 64 Byte alle 128 Byte eine
+		Erhöhung des Speicherbedarfs um ebenfalls 128 Byte eintritt. Daher ist es möglich die Formel
+		\ref{eq:recvmsg} zu erstellen, welche anhand der Größe des DNS-Pakets (ermittelt durch
+		\texttt{recvmsg}) den Speicherbedarf in der Receive-Queue berechnet. Es ist zu beachten, dass
+		diese Formel nicht allgemeingültig ist und speziell für den Kernel 2.6.18 ermittelt wurde. Für
+		andere Kernel-Versionen kann sich ein veränderter Zusammenhang ergeben und somit auch eine
+		andere Formel gelten.		
+
+		\begin{equation}
+			\text{Receive-Queue} = \lfloor (\text{recvmsg} + 63) / 128 \rfloor * 128 + 376	
+			\label{eq:recvmsg}
+		\end{equation}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|c|}\hline
+				Receive-Queue & recvmsg \\\hline\hline
+				376 & 12-64	\\
+				504 & 65-192	\\
+				632 & 193-320	\\
+				760 & 321-448 \\
+				888 &	449-576\\\hline
+			\end{tabular}
+			\caption{Experimentelle Bestimmung des Zusammenhangs zwischen der Größe des DNS-Pakets und dem
+			Speicherplatz in der Receive-Queue (Angaben in Byte)}
+			\label{tab:recvmsg}
+		\end{table}
+
+		\lstinputlisting[float,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von
 	\texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
+
 		% subsection Median der Paket-Größen in der UDP-Receive-Queue }}}
 
 		\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
+
+		In neueren Kernel-Versionen werden die Drops (Anzahl der verworfenen Anfragen) pro UDP-Socket
+		ebenfalls in der Datei \texttt{/proc/net/udp} aufgeführt. Für die verwendete Kernel-Version
+		2.6.18 gilt dies leider noch nicht. Daher wurde auf die Datei \texttt{/proc/net/snmp}
+		zurückgegriffen. Wie in Listing \ref{lst:proc-snmp} zu sehen, wird in dieser Datei die Anzahl
+		der systemweiten Drops als \texttt{InErrors} angegeben. Da in dieser Arbeit davon ausgegangen
+		wird, dass es sich um ein DNS-Cluster handelt, also mit hoher Last gerechnet wird, kann davon
+		ausgegangen werden, dass der DNS-Server die Hauptanteil des UDP-Verkehrs erzeugt. Somit sind
+		Drops, auch wenn diese nur systemweit angegeben werden, kritisch für den DNS-Server.
 		
-		\lstinputlisting[caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
+		\lstinputlisting[float,caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
+
 		% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
 			
 		% section Anforderungen }}}
 
-
-		\section{Erweiterung von salbd} % {{{
+		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
+
+		\lstinputlisting[float,firstline=42,lastline=60,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
+		\lstinputlisting[float,lastline=39,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
+		\lstinputlisting[float,firstline=63,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
+
+		\lstinputlisting[float,lastline=38,caption={Bestimmung der Hard- und Soft-Credits	(\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
+		\lstinputlisting[float,firstline=40,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
+
+		\lstinputlisting[float,caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
+
+		\lstinputlisting[float,caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
 			
-		% section Erweiterung von salbd }}}
+		% section Erweiterung von salbnet }}}
 
 		\section{Fazit} % {{{
 		\label{sec:implementierung-fazit}
@@ -1176,7 +1299,7 @@ $~$\\
 		\begin{table}
 			\centering
 			\begin{tabular}{|c|c|c|c|c|l|}\hline
-				Node & CPU &  Taktung & Kerne & RAM & Funktion \\\hline
+				Node & CPU &  Taktung & Kerne & RAM & Funktion \\\hline\hline
 				node015 & Intel Xeon E5520 & \unit[2,27]{GHz} & 1 $\times$ 4 & \unit[12]{GB} & servload\\
 				ib1 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & LVS, salbd (Server)\\
 				ib4 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & BIND, salbd (Client)\\
@@ -1190,7 +1313,7 @@ $~$\\
 		\begin{table}
 			\centering
 			\begin{tabular}{|c|c|}\hline
-				Resource Record & Anzahl \\\hline
+				Resource Record & Anzahl \\\hline\hline
 				A & 107 \\
 				NS & 4 \\
 				MX & 2 \\
@@ -1275,7 +1398,7 @@ $~$\\
 			\centering
 			\begin{tabular}{|lrrrr|}\hline
 				Faktor & Anfragen & Sessions & $\varnothing$ \nicefrac{Anfragen}{Sekunde} &
-				maximale \nicefrac{Anfragen}{Sekunde} \\\hline
+				maximale \nicefrac{Anfragen}{Sekunde} \\\hline\hline
 				1 & 22.594 & 33 & 75,31 & 204 \\
 				400 & 9.037.600 & 13.200 & 30.125,33 & 81.600 \\
 				800 & 18.075.200 & 26.400 & 60.250,67 & 163.200 \\
@@ -1329,12 +1452,12 @@ $~$\\
 	
 	% chapter Zusammenfassung }}}
 
-	% Content }}}
+	% Mainmatter }}}
 
-	% Appendix {{{
+	% Appendix {{{ 
 	\appendix
 
-	\chapter{Messumgebung} % {{{
+	\chapter{Messumgebung} % {{{ 
 	\label{cha:messumgebung}
 	
 	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1	(LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
@@ -1349,6 +1472,14 @@ $~$\\
 	ib8},label=lst:unixbench]{listings/result_unixbench.dat}
 
 	% chapter Messumgebung }}}
+
+	\chapter{sk\_buff} % {{{
+	\label{cha:skbuff}
+
+	\lstinputlisting[language=C,firstline=193,lastline=304,caption={\texttt{sk\_buff}-Datenstruktur in der Datei
+	\texttt{skbuff.h} vom Linux-Kernel 2.6.18},label=lst:skbuff]{listings/skbuff.h}
+	
+	% chapter skbuff }}}
 
 	% Appendix }}}
 
