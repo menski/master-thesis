@@ -151,7 +151,7 @@
 		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
 
 		Diese Arbeite beschäftigt sich mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu wird ein
-		bestehendes System \cite{scsczile2008,zinke2012} zur selbst-adaptiven Lastverteilung von
+		bestehendes System \cite{scsczile2008,zinke2012,salbnet} zur selbst-adaptiven Lastverteilung von
 		TCP-Anfragen erweitert, so dass es ebenfalls UDP-Anfragen verarbeiten kann. Diese System
 		realisiert einen Credit-basierten Ansatz der Lastverteilung. Die Server, welche die Anfragen
 		abarbeiten sollen, melden dem Lastverteiler ihre aktuelle Last in Form von Credits. Danach kann
@@ -173,7 +173,7 @@
 		dargestellten Konzepts beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der
 		Implementation eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die
 		Ergebnisse einer Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende
-		dieser Arbeit folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine
+		dieser Arbeit folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, eine
 		Einschätzung und Bewertung der erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des
 		Konzepts.
 
@@ -276,8 +276,7 @@
 				\glqq{}.\grqq{} notiert).
 				Diese Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
 				verwaltet. Unter der Root-Domain existieren aktuell 313
-				Top-Level-Domains (TLDs)\footnote{\url{http://data.iana.org/TLD/tlds-alpha-by-domain.txt} (Stand:
-				09.06.2012)}, welche sich hauptsächlich in drei Arten unterteilen lassen:
+				Top-Level-Domains (TLDs) \cite{tlds}, welche sich hauptsächlich in drei Arten unterteilen lassen:
 
 					\begin{itemize}
 						\item länderspezifische \textit{country-code TLDs} (ccTLDs)
@@ -313,6 +312,8 @@
 					\label{fig:dns-tree}
 				\end{figure}
 
+				% Was sind Resolver, warum nutz man sie
+
 				Dieses dezentrale System hat eine Reihe von Vorteilen. Als wichtigster Punkt ist die
 				Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch
 				zur Bereitstellung der Informationen gemeint ist. Zusätzlich ist es für die Betreiber einer
@@ -328,18 +329,18 @@
 				solche Anfragen die ganze Last beim Nameserver liegt. Die häufigste Form ist die
 				\textit{iterative} Abfrage, dabei antwortet der Nameserver mit der genauesten Information
 				die ihm zur Verfügung steht. Das heißt die Information über einen Nameserver einer SLD ist
-				genauer als einer TLD. Durch diese Art von Anfragen verbleibt die Last beim Fragensteller
-				bleibt. Daher antworten größere Nameserver, wie für die Root-Domain oder die TLDs, nur
-				iterativ auf Anfragen. Eine beispielhafte Anfrage nach der
-				\texttt{www.cs.uni-potsdam.de}-Domain ist in Abbildung \ref{fig:bsp-request} dargestellt. Es
-				ist zu erkennen, dass nur die Anfrage des Clients an den lokalen Nameserver rekursiv ist. Die
-				Anfragen des lokalen Nameservers sind dann iterative Anfragen. Sofern der lokale DNS-Server
-				weder die Adresse der \texttt{cs}, \texttt{uni-potsdam} oder \texttt{de} Domains kennt kann
-				er nur einen Root-Server fragen.  Dieser kann ihm mitteilen wie die \texttt{de}-Nameserver
-				erreichbar sind. Welche wiederum den Nameserver für die \texttt{uni-potsdam}-Domain kennen.
-				Dieser kennt mindestens die Adresse des \texttt{cs}-Nameservers, wenn nicht sogar bereits
-				die vollständige Antwort.  Spätestens der \texttt{cs}-Nameserver besitzt die nötigen
-				Informationen für die \texttt{www.cs.uni-potsdam.de}-Adresse.
+				genauer als einer TLD. Durch diese Art von Anfragen verbleibt die Last beim Fragensteller.
+				Daher antworten größere Nameserver, wie für die Root-Domain oder die TLDs, nur iterativ auf
+				Anfragen. Eine beispielhafte Anfrage nach der \texttt{www.cs.uni-potsdam.de}-Domain ist in
+				Abbildung \ref{fig:bsp-request} dargestellt. Es ist zu erkennen, dass nur die Anfrage des
+				Clients an den lokalen Nameserver rekursiv ist. Die Anfragen des lokalen Nameservers sind
+				dann iterative Anfragen. Sofern der lokale DNS-Server weder die Adresse der \texttt{cs},
+				\texttt{uni-potsdam} oder \texttt{de} Domains kennt kann er nur einen Root-Server fragen.
+				Dieser kann ihm mitteilen wie die \texttt{de}-Nameserver erreichbar sind. Welche wiederum
+				den Nameserver für die \texttt{uni-potsdam}-Domain kennen.  Dieser kennt mindestens die
+				Adresse des \texttt{cs}-Nameservers, wenn nicht sogar bereits die vollständige Antwort.
+				Spätestens der \texttt{cs}-Nameserver besitzt die nötigen Informationen für die
+				\texttt{www.cs.uni-potsdam.de}-Adresse.
 
 				\begin{figure}
 					\centering
@@ -396,7 +397,7 @@
 				\subsubsection*{BIND} % {{{
 
 				Die erste Version des Berkeley Internet Name Domain
-				(BIND)\footnote{\url{http://www.isc.org/software/bind}} Server wurde am Anfang der achtziger Jahre
+				(BIND) \cite{bind} Server wurde am Anfang der achtziger Jahre
 				an der University of California, Berkeley entwickelt und mit 4.3BSD erstmals
 				veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium (ISC)
 				weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
@@ -413,7 +414,7 @@
 
 				\subsubsection*{Name Server Daemon (NSD)} % {{{
 
-				Der Name Server Daemon (NSD)\footnote{\url{http://www.nlnetlabs.nl/projects/nsd/}} wird von den
+				Der Name Server Daemon (NSD) \cite{nsd} wird von den
 				NLnet Labs entwickelt und hat als Hauptziel die Vielfalt unter den Root-Servern zu erhöhen.
 				Das soll dazu führen, dass nicht alle Root-Server durch einen Fehler im BIND Server
 				angreifbar sind. Aktuell nutzen auch bereits 3 der 13 Root-Server den NSD als DNS-Server.
@@ -428,7 +429,7 @@
 
 				\subsubsection*{Microsoft DNS} % {{{
 
-				Der Microsoft DNS Server\footnote{\url{http://technet.microsoft.com/dns}} ist eine Implementation
+				Der Microsoft DNS Server \cite{msdns} ist eine Implementation
 				von Microsoft, welche mit den Windows Server Produkten ausgeliefert wird. Er kann sowohl als
 				authoritativer und rekursiver Nameserver betrieben werden. Durch seinen Einsatz auf Windows
 				Servern kommt er vor allem in lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des
@@ -440,10 +441,10 @@
 				\subsubsection*{djbdns} % {{{
 
 				Das von Daniel J. Bernstein entwickelte Software-Paket
-				djbdns\footnote{\url{http://cr.yp.to/djbdns.html}} ist einer der verbreitetsten DNS-Server. Daniel
+				djbdns \cite{djbdns} ist einer der verbreitetsten DNS-Server. Daniel
 				J.  Bernstein ist ein Mathematiker, Programmierer und Kryptologe aus den USA. Er
 				veröffentlichte djbdns im Jahr 2001 und setzte eine
-				Belohung\footnote{\url{http://cr.yp.to/djbdns/guarantee.html}} von \$1000 aus, für den ersten der
+				Belohung \cite{guarantee} von \$1000 aus, für den ersten der
 				einen Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein
 				Software-Paket aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck
 				erfüllen. Somit verringert sich die Code-Basis und die Komplexität der Programme. Die
@@ -455,12 +456,12 @@
 
 				\subsubsection*{dnsmasq} % {{{
 
-				Das Programm dnsmasq\footnote{\url{http://www.thekelleys.org.uk/dnsmasq/doc.html}} wurde
+				Das Programm dnsmasq \cite{dnsmasq} wurde
 				ausschließlich für Heim-Netzwerke entwickelt. Es stellt DNS und DHCP Dienste für ein kleines
 				Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq die Netzwerkknoten im Heimnetz über
 				DNS verfügbar macht, indem es entweder die \texttt{/etc/hosts} oder DHCP Informationen
 				nutzt. Dadurch müssen die lokalen Rechner keine eigene \texttt{hosts}-Datei pflegen.
-				Zusätzlich bietet es einen simplen Cache für DNS-Anfragen, was zu einer Beschleunigung im
+				Zusätzlich bietet es einen einfachn Cache für DNS-Anfragen, was zu einer Beschleunigung im
 				lokalen Netz führen kann. Somit ist dnsmasq kein üblicher DNS-Server und eignet sich auch
 				nicht zum Verwalten von Domains, zeigt jedoch eine alternative resourcenschonende lokale
 				Verwendung des DNS auf.
@@ -492,7 +493,7 @@
 		zu verhindern gibt es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource
 		durch eine leistungsfähigere Variante auszutauschen. Dies wird oft bei Datenbanken genutzt, wo
 		der Server durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies
-		meist die simplere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
+		meist die einfachere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
 		die Daten konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt
 		zum Beispiel einen weitere Server bereitzustellen. So kann der Dienst des Servers, wie in
 		Abbildung \ref{fig:lastverteilung} zu sehen, von mehreren Servern dem Internet bereitgestellt
@@ -545,32 +546,30 @@
 			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Es kann hierbei
 			unterschieden werden ob ein Lastverteiler im Kernelspace oder Userspace des Betreibssystems
 			implementiert ist. Ansätze für Userspace-basierte Lastverteiler sind zum Beispiel das Programm
-			perlbal\footnote{\url{http://github.com/perlbal}} oder das Apache-Modul
-			mod\_proxy\_balancer\footnote{\url{http://httpd.apache.org/docs/2.2/mod/mod\_proxy\_balancer.html}}.
-			Eine Implementierung im Userspace hat den Vorteil, dass der Lastverteiler unabhängig von
-			konkreten Betriebssystemen und Kernel-Versionen ist. Außerdem benötigt dieser keine
-			\texttt{root}-Rechte um konfiguriert und gestartet zu werden. Da es sich um Anwendungen im
-			Userspace handelt, findet hier die Lastverteilung auf einer höheren OSI-Schicht
-			\cite{tanenbaum1988} statt. Dadurch stehen dem Lastverteiler anwendungsspezifischere
-			Informationen zu einer Anfrage bereit. Dies kann zum Beispiel dazu genutzt werden, die
-			Abfrage nach deren Inhalt zu filtern und so ein kontextsensitives Verteilen zu ermöglichen.
-			Ein Nachteil, welcher vor allem bei hohem Netzwerkverkehr zum Tragen kommt, ist der nötige
-			Kontextwechsel damit der Lastverteiler im Userspace die Netzwerk-Pakete auswerten kann. Dazu
-			muss das Netzwerk-Paket in den Userspace und zum Weiterversenden wiederum in den
-			Kernelspace kopiert werden. Hierzu ist jeweils ein Kontextwechsel nötig, welcher bei hohem
-			Netzwerkverkehr zu Leistungseinbußen führen kann \cite{boehme2006}.  Im Vergleich zu diesen
-			Ansätzen im Userspace gibt es im Kernelspace den Linux Virtual Server
-			(LVS)\footnote{\url{http://www.linuxvirtualserver.org/}} \cite{zhang2000} für Linux und den
-			Paketfilter pf\footnote{\url{http://www.benzedrine.cx/pf.html}} für OpenBSD als bekannteste
-			Beispiele. Indem die Pakete bereits im Kernelspace verarbeitet werden, findet kein
-			Kontextwechsel statt und die Verarbeitung kann schneller erfolgen. Allerdings findet die
-			Verarbeitung auf einer der unteren Schichten des OSI-Modells statt, was dazu führt das keine
-			anwendungsspezifischen Informationen vorliegen. Jedoch bieten dieser Ansatz eben genau dies
-			auch als Vorteil, denn so kann eine Lastverteilung unabhängig von Anwendungen statt finden.
-			Das heißt ein Lastverteiler, wie der LVS, kann so konfiguriert werden, dass er gleichzeitig
+			perlbal \cite{perlbal} oder das Apache-Modul mod\_proxy\_balancer \cite{modproxy}.  Eine
+			Implementierung im Userspace hat den Vorteil, dass der Lastverteiler unabhängig von konkreten
+			Betriebssystemen und Kernel-Versionen ist. Außerdem benötigt dieser keine \texttt{root}-Rechte
+			um konfiguriert und gestartet zu werden. Da es sich um Anwendungen im Userspace handelt,
+			findet hier die Lastverteilung auf einer höheren OSI-Schicht \cite{tanenbaum1988} statt.
+			Dadurch stehen dem Lastverteiler anwendungsspezifischere Informationen zu einer Anfrage
+			bereit. Dies kann zum Beispiel dazu genutzt werden, die Abfrage nach deren Inhalt zu filtern
+			und so ein kontextsensitives Verteilen zu ermöglichen.  Ein Nachteil, welcher vor allem bei
+			hohem Netzwerkverkehr zum Tragen kommt, ist der nötige Kontextwechsel damit der Lastverteiler
+			im Userspace die Netzwerk-Pakete auswerten kann. Dazu muss das Netzwerk-Paket in den Userspace
+			und zum Weiterversenden wiederum in den Kernelspace kopiert werden. Hierzu ist jeweils ein
+			Kontextwechsel nötig, welcher bei hohem Netzwerkverkehr zu Leistungseinbußen führen kann
+			\cite{boehme2006}.  Im Vergleich zu diesen Ansätzen im Userspace gibt es im Kernelspace den
+			Linux Virtual Server (LVS) \cite{lvs,zhang2000} für Linux und den Paketfilter
+			pf \cite{pf} für OpenBSD als bekannteste Beispiele.
+			Indem die Pakete bereits im Kernelspace verarbeitet werden, findet kein Kontextwechsel statt
+			und die Verarbeitung kann schneller erfolgen. Allerdings findet die Verarbeitung auf einer der
+			unteren Schichten des OSI-Modells statt, was dazu führt das keine anwendungsspezifischen
+			Informationen vorliegen. Jedoch bieten dieser Ansatz eben genau dies auch als Vorteil, denn so
+			kann eine Lastverteilung unabhängig von Anwendungen statt finden.  Das heißt ein
+			Lastverteiler, wie der LVS, kann so konfiguriert werden, dass er gleichzeitig
 			unterschiedlichen Netzwerkverkehr (z.B. unterschiedliche Transportprotokolle oder Portnummern)
-			separat verteilt. Dies ist mit einer anwendungsbasierten Lösung nicht ohne erheblichen
-			Aufwand realisierbar.
+			separat verteilt. Dies ist mit einer anwendungsbasierten Lösung nicht ohne erheblichen Aufwand
+			realisierbar.
 
 			Unabhängig von der gewählten Software-Lösung ist der gewählte Algorithmus zur Lastverteilung
 			ein entscheidendes Kriterium. Es existieren mehrere Algorithmen für dieses Problem
@@ -578,7 +577,7 @@
 			Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
 			Least-Connection-Verfahren. Beim Round-Robin-Algorithmus wählt der Lastverteiler, aus einer
 			Liste von Servern, den nächsten aus. Dies geschieht zyklisch, was dazu führt, dass die
-			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr simpler Algorithmus der aber bei
+			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr einfacher Algorithmus der aber bei
 			homogenen Clustern und homogenen Anfragen ausreicht um Last sinnvoll zu verteilen. Handelt es
 			sich nicht um ein homogenes Cluster, so kann durch eine gewichtete Variante des Algorithmus
 			die Last entsprechend der Leistung der Server verteilt werden. Sind jedoch die Anfragen an das
@@ -658,6 +657,8 @@
 			
 			\subsection*{Lastverteilung von DNS-Verkehr} % {{{
 
+			% TODO: das mit den Sessions überlegen
+
 			Die Verteilung von DNS-Anfragen unterschiedet sich in mehreren Punkten von HTTP-Anfragen. So
 			ist das genutzte Transport-Protokoll UDP statt TCP und die Nachrichten dürfen nicht größer als
 			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
@@ -676,7 +677,7 @@
 			Frage erhält. Die Idee dahinter ist, dass durch den DNS-Server, der die kürzeste Route zum
 			Fragesteller hat, die beste Antwort gegeben werden kann. Vor allem bei den Root-Servern ist
 			dies sinnvoll. Es existieren insgesamt 13 Root-Server
-			(A-M)\footnote{\url{http://www.root-servers.org}}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
+			(A-M) \cite{rootserver}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
 			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA. 
 				
 			% subsection Lastverteilung von DNS-Verkehr }}}
@@ -705,7 +706,7 @@
 	\chapter{salbnet} % {{{
 	\label{cha:salbnet}
 
-		Dieses Kapitel beschreibt salbnet\footnote{\url{http://salbnet.org}}, einen Credit-basierten
+		Dieses Kapitel beschreibt salbnet \cite{salbnet}, einen Credit-basierten
 		Lastverteilungsansatz.  Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
 		TCP-Verkehr vor allem in InfiniBand-Netzwerken \cite{zinke2007, scsczile2008,
 		schneidenbach2009}. Die Besonderheit an diesem Lastverteilungsverfahren ist, dass es sowohl eine
@@ -739,7 +740,7 @@
 			Die dynamische Bibliothek libnethook wird genutzt um Funktionsaufrufe, von zu überwachenden
 			Anwendungen abzufangen. So kann ermittelt werden wie oft eine Funktion aufgerufen wird und was
 			von ihr zurück gegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom
-			Apache Webserver\footnote{\url{http://httpd.apache.org/}} (httpd) abgefangen und analysiert. In
+			Apache Webserver (httpd) \cite{httpd} abgefangen und analysiert. In
 			Abbildung \ref{fig:salbnet} ist angedeutet, dass libnethook zwischen dem httpd und der libc
 			aggiert. Allgemein kann das auch für alle anderen TCP-Anwendungen genutzt werden. Im TCP-Fall
 			wird nur die Anzahl der Funktionsaufrufe genutzt um eine Neuberechnung der Credits auszulösen.
@@ -799,7 +800,7 @@
 	dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
 	Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum aktuellen Zeitpunkt
 	zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
-	Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per simplen Round-Robin-Verfahren,
+	Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per einfachen Round-Robin-Verfahren,
 	welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits besitzen
 	durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins
 	verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine neuen Credits,
@@ -819,7 +820,7 @@
 
 	Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine Metrik
 	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
-	Anforderungen an eine gute Metrik. Sie ist simple zu berechnen, da der aktuelle Füllstand und der
+	Anforderungen an eine gute Metrik. Sie ist einfach zu berechnen, da der aktuelle Füllstand und der
 	maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers entspricht einer
 	Warteschlange für den Server. Solange die Backlog leer ist, kann der Webserver alle Anfragen sofort
 	beantworten.  Sobald Anfragen in der Backlog gespeichert werden, ist der Server nicht mehr zu
@@ -1006,7 +1007,7 @@ $~$\\
 
 		\subsection*{Verkehr-Metrik} % {{{
 
-		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und simple zu berechnen. Es wird die
+		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und einfach zu berechnen. Es wird die
 		Differenz der eingehenden und ausgehenden Anfragen ermittelt. Ist diese Differenz negativ, ist
 		der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich 0 ist der
 		Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort beantworten kann.
@@ -1178,15 +1179,13 @@ $~$\\
 		kommunizieren. Dies hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial
 		ein Socket erstellt werden muss, welche danach weiterverwendet werden kann, oder es können Werte
 		gezielt abgefragt werden ohne sie aus einer Text-Repräsentation extrahieren zu müssen. In der
-		Implementation von salbnet \cite{zinke2012} wird ein \texttt{Netlink}-Socket genutzt um
+		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt um
 		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend ähnliches auch für
 		die UDP-Receive-Queue anzuwenden. Allerdings ist das von salbnet verwendete Kernelmodul für den
 		Kernel 2.6.18 entwickelt und kann nicht ohne Anpassungen mit neueren Kernel-Versionen genutzt
 		werden. Die Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul wurde jedoch erst im
-		Kernel
-		3.3\footnote{\url{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}}
-		aufgenommen. Somit ist die Verwendung eines \texttt{Netlink}-Sockets in salbnet für UDP nicht
-		möglich.		
+		Kernel 3.3\cite{udpnetlink} aufgenommen. Somit ist die Verwendung eines \texttt{Netlink}-Sockets
+		in salbnet für UDP nicht möglich.
 
 		\lstinputlisting[float,caption={/proc/net/udp	Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
 
@@ -1400,7 +1399,7 @@ $~$\\
 
 		Verglichen wurden der gewichtete Round-Robin-Algorithmus des LVS mit dem dynamic pressure
 		relieve salbd Algorithmus. Die Gewichte für den Round-Robin Algorithmus wurden mit Hilfe des
-		Benchmarks UnixBench\footnote{\url{http://code.google.com/p/byte-unixbench/}} bestimmt. Dieser
+		Benchmarks UnixBench \cite{unixbench} bestimmt. Dieser
 		Benchmark führt verschieden Tests aus und ermitteln eine Gesamtbewertung des Systems. Die
 		Messergebnisse für die Machinen ib4, ib6 und ib8 sind im Anhang \ref{lst:unixbench} zu sehen. Es
 		wurden die Werte 788, 623 und 1180 für die ib4, ib6 und ib8 bestimmt. Diese Gewichte haben sich
@@ -1536,7 +1535,7 @@ $~$\\
 	\listoftables{}
 
 	% Bibliography {{{
-	\nocite{*}
+	% \nocite{*}
 	\bibliographystyle{dinat}
 	\bibliography{references}
 	% }}}
