@@ -122,12 +122,20 @@
 		das Versenden einer E-Mail führt zu einer DNS-Anfrage. Aus diesem Grund ist ein stabiles System
 		mit schnellen Antwortzeiten unerlässlich.
 		
-		Die DNS-Informationen sind in einer verteilten, baumartigen Struktur gespeichert.  Dabei sind für
-		die verschieden Knoten im Baum unterschiedliche DNS-Server zuständig. Die kritischste
-		Infrastruktur ist deshalb die Wurzel des Baums, die Root-Server, und die erste Ebene unter
-		ihnen, den Top-Level-Domains. Diese beiden Ebenen sind die am häufigsten frequentierten
-		Nameserver des DNS. Sie werden von großen Organisationen bereitgestellt und tragen die größte
-		Last des Systems. (TODO: Grafik)
+		Die DNS-Informationen sind in einer verteilten, baumartigen Struktur gespeichert (siehe
+		Abbildung \ref{fig:tree}).  Dabei sind für die verschieden Knoten im Baum unterschiedliche
+		DNS-Server zuständig. Die kritischste Infrastruktur existiert deshalb in den ersten beiden
+		Ebenen des Baums, dem Root-Server und den Top-Level-Domains (TLD). Diese beiden Ebenen sind die
+		am häufigsten frequentierten Nameserver des DNS. Sie werden von großen Organisationen
+		bereitgestellt und tragen die größte Last des Systems.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=\textwidth]{images/tree}
+			\caption{Baumstruktur des \dns{}}
+			\label{fig:tree}
+		\end{figure}
+		
 
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
 		auch von vielen anderen Netzwerk-Diensten gefordert sind. Um diese Anforderungen zu erfüllen,
@@ -143,30 +151,32 @@
 		welcher dann diese an die verfügbaren Backend-Server verteilt.  Somit ist es naheliegend diese
 		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
 
-		Daher beschäftigt sich diese Arbeite mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu
-		wird ein bestehendes System \cite{scsczile2008,zinke2012} zur selbst-adaptiven Lastverteilung von
-		TCP-Anfragen erweitert, welches einen Credit-basierten Ansatz der Lastverteilung realisiert.
-		Die Webserver, welche die Anfragen abarbeiten sollen, melden dem Lastverteiler ihre aktuelle
-		Last.  Danach kann der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um
-		dieses Konzept für den DNS-Anwendungsfall zu nutzen, müssen die Unterschiede zwischen HTTP und
-		DNS-Anfragen analysiert werden. Anschließend muss eine Metrik erstellt werden, welche auf dem
-		DNS-Server genutzt wird, um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits
-		sollen dann per TCP an den Lastverteiler gemeldet werden.
+		Diese Arbeite beschäftigt sich mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu wird ein
+		bestehendes System \cite{scsczile2008,zinke2012} zur selbst-adaptiven Lastverteilung von
+		TCP-Anfragen erweitert, so dass es ebenfalls UDP-Anfragen verarbeiten kann. Diese System
+		realisiert einen Credit-basierten Ansatz der Lastverteilung. Die Server, welche die Anfragen
+		abarbeiten sollen, melden dem Lastverteiler ihre aktuelle Last in Form von Credits. Danach kann
+		der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um dieses Konzept für den
+		DNS-Anwendungsfall zu nutzen, müssen die Unterschiede zwischen TCP und UDP-Anfragen analysiert
+		werden. Anschließend muss eine Metrik erstellt werden, welche auf dem DNS-Server genutzt wird,
+		um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits sollen dann per TCP an den
+		Lastverteiler gemeldet werden.
 
 		Im Kapitel \ref{cha:grundlagen} wird auf die Grundlagen dieser Arbeit eingegangen. Dazu wird die
 		Entstehung und die Grundlagen des \dns{} erläutert. Darüber hinaus werden verschiedene
 		Möglichkeiten der Lastverteilung besprochen, wobei auf Besonderheiten der Lastverteilung im DNS
-		eingegangen wird. Abschließend wird das zu erweiternde System zur selbst-adaptiven
-		Lastverteilung vorgestellt. Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten
-		aufgeführt, welche in Verbindung mit dieser Arbeit stehen. Das zu erweiternde System wird in
-		Kaptiel \ref{cha:salbnet} beschrieben. In Kapitel \ref{cha:konzept} wird das Konzept der
-		erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.  Darauf folgend ist
-		in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher dargestellten Konzepts
-		beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der Implementation eingegangen.
-		Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer Funktionsmessung
-		und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit folgt in Kapitel
-		\ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine Einschätzung und Bewertung der
-		erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
+		eingegangen wird. Abschließend wird diese Arbeit in die vorgestellten Konzept eingeordnet.
+		Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche in
+		Verbindung mit dieser Arbeit stehen. Das zu erweiternde System zur selbst-adaptiven
+		Lastverteilung wird in Kapitel \ref{cha:salbnet} beschrieben. In Kapitel \ref{cha:konzept} wird
+		das Konzept der erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.
+		Darauf folgend ist in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher
+		dargestellten Konzepts beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der
+		Implementation eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die
+		Ergebnisse einer Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende
+		dieser Arbeit folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung der Arbeit, eine
+		Einschätzung und Bewertung der erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des
+		Konzepts.
 
 	% chapter Einleitung }}}
 
@@ -177,9 +187,8 @@
 		zugrundeliegen.  Dazu wird zu Beginn des Kapitels in Abschnitt \ref{sec:dns} auf die Entstehung,
 		Bedeutung und Funktionsweise des \dns{} eingegangen. Daran anschließend soll in Abschnitt
 		\ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der allgemeinen
-		Lastverteilung aufgezeigt werden. Wobei auf Besonderheiten der Lastverteilung für das DNS
-		eingegangen wird. Zum Abschluss wird das System zur selbst-adaptiven Lastverteilung vorgestellt,
-		welches als Grundlage dieser Arbeit dient. 
+		Lastverteilung gegeben werden. Wobei auf Besonderheiten der Lastverteilung für das DNS
+		eingegangen wird. Zum Abschluss wird diese Arbeit in die vorgestellten Konzepte eingeordnet. 
 
 		\section{Domain Name System (DNS)} % {{{
 		\label{sec:dns}
