@@ -62,8 +62,7 @@
 \newcommand{\TitleAbschlussText}{zur Erlangung des akademischen Grades\\Master of Science\\in Informatik}
 \newcommand{\TitleOrt}{Potsdam}
 \newcommand{\TitleDatum}{7. Juli 2012}
-\hypersetup
-{
+\hypersetup{
 	pdfauthor={Sebastian Menski},
 	pdftitle={\TitleTitel},
 }
@@ -255,7 +254,9 @@
 
 			\subsection{Infrastruktur} % {{{
 			\label{sub:infrastruktur}
-			
+
+			% TODO: ICANN Internet Corporation for Assigned Names and Numbers erwähnen
+
 			Mit dem DNS wurde es möglich die Verwaltung und Bereitstellung der Informationen, welcher
 			Netzwerkteilnehmer über welchen Namen und welche IP-Adresse erreichbar ist, dezentral zu
 			verteilen. Dazu wird das komplette Netzwerk in sogenannte Domains aufgeteilt, welche
@@ -275,14 +276,17 @@
 				\glqq{}.\grqq{} notiert).
 				Diese Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
 				verwaltet. Unter der Root-Domain existieren aktuell 313
-				Top-Level-Domains (TLDs)\footnote{http://data.iana.org/TLD/tlds-alpha-by-domain.txt (Stand:
+				Top-Level-Domains (TLDs)\footnote{\url{http://data.iana.org/TLD/tlds-alpha-by-domain.txt} (Stand:
 				09.06.2012)}, welche sich hauptsächlich in drei Arten unterteilen lassen:
 
 					\begin{itemize}
-						\item länderspezifische \textit{country-code TLDs} (ccTLDs),
-						\item von verschiedene Gruppen verwaltete \textit{unsponsored TLDs} (uTLDs) und
-						\item von Unternehmen oder Organisationen verwaltete \textit{sponsored TLDs}
-							(sTLDs).
+						\item länderspezifische \textit{country-code TLDs} (ccTLDs)
+						\item allgemeine \textit{generic TLDs} (gTLDs):
+						\begin{itemize}
+							\item von ICANN verwaltete \textit{unsponsored TLDs} (uTLDs)
+							\item von privaten Organisationen vorgeschlagene \textit{sponsored TLDs}
+								(sTLDs)
+						\end{itemize}
 					\end{itemize}
 					
 				Beispiele für ccTLDs sind \texttt{de} für Deutschland, \texttt{fr} für Frankreich oder
@@ -305,7 +309,7 @@
 				\begin{figure}
 					\centering
 					\includegraphics[width=\textwidth]{images/dns-tree}
-					\caption{Ausschnitt aus der DNS-Topologie (TODO: schön machen)}
+					\caption{Ausschnitt aus der DNS-Topologie} % TODO: schön machen
 					\label{fig:dns-tree}
 				\end{figure}
 
@@ -340,7 +344,7 @@
 				\begin{figure}
 					\centering
 					\includegraphics[width=\textwidth]{images/request}
-					\caption{DNS-Anfragen für \texttt{www.cs.uni-potsdam.de} (TODO: schön machen)}
+					\caption{DNS-Anfragen für \texttt{www.cs.uni-potsdam.de}} % TODO: schön machen
 					\label{fig:bsp-request}
 				\end{figure}
 
@@ -354,7 +358,7 @@
 				haben, da solchen Seiten stark frequentiert werden. Dadurch können die Nameserver solche
 				Anfragen direkt aus dem Cache beantworten und auf weitere Abfragen verzichten.
 
-				TODO: Masterfile erklären, was sind Ressource Records?, UDP einpflegen
+				% TODO: Masterfile erklären, was sind Ressource Records?, UDP einpflegen
 				
 				% subsubsection Topologie }}}
 				
@@ -392,7 +396,7 @@
 				\subsubsection*{BIND} % {{{
 
 				Die erste Version des Berkeley Internet Name Domain
-				(BIND)\footnote{http://www.isc.org/software/bind} Server wurde am Anfang der achtziger Jahre
+				(BIND)\footnote{\url{http://www.isc.org/software/bind}} Server wurde am Anfang der achtziger Jahre
 				an der University of California, Berkeley entwickelt und mit 4.3BSD erstmals
 				veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium (ISC)
 				weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
@@ -409,7 +413,7 @@
 
 				\subsubsection*{Name Server Daemon (NSD)} % {{{
 
-				Der Name Server Daemon (NSD)\footnote{http://www.nlnetlabs.nl/projects/nsd/} wird von den
+				Der Name Server Daemon (NSD)\footnote{\url{http://www.nlnetlabs.nl/projects/nsd/}} wird von den
 				NLnet Labs entwickelt und hat als Hauptziel die Vielfalt unter den Root-Servern zu erhöhen.
 				Das soll dazu führen, dass nicht alle Root-Server durch einen Fehler im BIND Server
 				angreifbar sind. Aktuell nutzen auch bereits 3 der 13 Root-Server den NSD als DNS-Server.
@@ -424,7 +428,7 @@
 
 				\subsubsection*{Microsoft DNS} % {{{
 
-				Der Microsoft DNS Server\footnote{http://technet.microsoft.com/dns} ist eine Implementation
+				Der Microsoft DNS Server\footnote{\url{http://technet.microsoft.com/dns}} ist eine Implementation
 				von Microsoft, welche mit den Windows Server Produkten ausgeliefert wird. Er kann sowohl als
 				authoritativer und rekursiver Nameserver betrieben werden. Durch seinen Einsatz auf Windows
 				Servern kommt er vor allem in lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des
@@ -436,10 +440,10 @@
 				\subsubsection*{djbdns} % {{{
 
 				Das von Daniel J. Bernstein entwickelte Software-Paket
-				djbdns\footnote{http://cr.yp.to/djbdns.html} ist einer der verbreitetsten DNS-Server. Daniel
+				djbdns\footnote{\url{http://cr.yp.to/djbdns.html}} ist einer der verbreitetsten DNS-Server. Daniel
 				J.  Bernstein ist ein Mathematiker, Programmierer und Kryptologe aus den USA. Er
 				veröffentlichte djbdns im Jahr 2001 und setzte eine
-				Belohung\footnote{http://cr.yp.to/djbdns/guarantee.html} von \$1000 aus, für den ersten der
+				Belohung\footnote{\url{http://cr.yp.to/djbdns/guarantee.html}} von \$1000 aus, für den ersten der
 				einen Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein
 				Software-Paket aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck
 				erfüllen. Somit verringert sich die Code-Basis und die Komplexität der Programme. Die
@@ -451,7 +455,7 @@
 
 				\subsubsection*{dnsmasq} % {{{
 
-				Das Programm dnsmasq\footnote{http://www.thekelleys.org.uk/dnsmasq/doc.html} wurde
+				Das Programm dnsmasq\footnote{\url{http://www.thekelleys.org.uk/dnsmasq/doc.html}} wurde
 				ausschließlich für Heim-Netzwerke entwickelt. Es stellt DNS und DHCP Dienste für ein kleines
 				Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq die Netzwerkknoten im Heimnetz über
 				DNS verfügbar macht, indem es entweder die \texttt{/etc/hosts} oder DHCP Informationen
@@ -541,8 +545,8 @@
 			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Es kann hierbei
 			unterschieden werden ob ein Lastverteiler im Kernelspace oder Userspace des Betreibssystems
 			implementiert ist. Ansätze für Userspace-basierte Lastverteiler sind zum Beispiel das Programm
-			perlbal\footnote{http://github.com/perlbal} oder das Apache-Modul
-			mod\_proxy\_balancer\footnote{http://httpd.apache.org/docs/2.2/mod/mod\_proxy\_balancer.html}.
+			perlbal\footnote{\url{http://github.com/perlbal}} oder das Apache-Modul
+			mod\_proxy\_balancer\footnote{\url{http://httpd.apache.org/docs/2.2/mod/mod\_proxy\_balancer.html}}.
 			Eine Implementierung im Userspace hat den Vorteil, dass der Lastverteiler unabhängig von
 			konkreten Betriebssystemen und Kernel-Versionen ist. Außerdem benötigt dieser keine
 			\texttt{root}-Rechte um konfiguriert und gestartet zu werden. Da es sich um Anwendungen im
@@ -556,8 +560,8 @@
 			Kernelspace kopiert werden. Hierzu ist jeweils ein Kontextwechsel nötig, welcher bei hohem
 			Netzwerkverkehr zu Leistungseinbußen führen kann \cite{boehme2006}.  Im Vergleich zu diesen
 			Ansätzen im Userspace gibt es im Kernelspace den Linux Virtual Server
-			(LVS)\footnote{http://www.linuxvirtualserver.org/} \cite{zhang2000} für Linux und den
-			Paketfilter pf\footnote{http://www.benzedrine.cx/pf.html} für OpenBSD als bekannteste
+			(LVS)\footnote{\url{http://www.linuxvirtualserver.org/}} \cite{zhang2000} für Linux und den
+			Paketfilter pf\footnote{\url{http://www.benzedrine.cx/pf.html}} für OpenBSD als bekannteste
 			Beispiele. Indem die Pakete bereits im Kernelspace verarbeitet werden, findet kein
 			Kontextwechsel statt und die Verarbeitung kann schneller erfolgen. Allerdings findet die
 			Verarbeitung auf einer der unteren Schichten des OSI-Modells statt, was dazu führt das keine
@@ -666,13 +670,13 @@
 			von DNS-Einträgen durchzuführen. Bei größeren Firmen, die eine höhere Anzahl an DNS-Anfragen
 			zu bewältigen haben ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
 			größte Last liegt bei den Betreiber von TLDs und den Root-Servern. Für diese Anwendungsfälle
-			sind DNS-Cluster nötig. Zusätzlich kommt Anycast \cite{rfc4786} zum Einsatz. Dabei werden mehrere DNS Server
-			mit der selben Anycast-IP-Adresse mit dem Internet verbunden. Sendet nun ein
-			Client eine Anfrage an diese Anycast-Adresse antwortet der Server, der als erster die Frage
-			erhält. Die Idee dahinter ist, dass durch den DNS-Server, der die kürzeste Route zum
+			sind DNS-Cluster nötig. Zusätzlich kommt Anycast \cite{rfc4786, sapate2005} zum Einsatz. Dabei
+			werden mehrere DNS Server mit der selben Anycast-IP-Adresse mit dem Internet verbunden. Sendet
+			nun ein Client eine Anfrage an diese Anycast-Adresse antwortet der Server, der als erster die
+			Frage erhält. Die Idee dahinter ist, dass durch den DNS-Server, der die kürzeste Route zum
 			Fragesteller hat, die beste Antwort gegeben werden kann. Vor allem bei den Root-Servern ist
 			dies sinnvoll. Es existieren insgesamt 13 Root-Server
-			(A-M)\footnote{http://www.root-servers.org}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
+			(A-M)\footnote{\url{http://www.root-servers.org}}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
 			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA. 
 				
 			% subsection Lastverteilung von DNS-Verkehr }}}
@@ -688,13 +692,20 @@
 
 	\chapter{Verwandte Arbeiten} % {{{
 	\label{cha:arbeiten}
-	
+
+	% TODO: DNS Measurements at a Root Server
+	% TODO: DNS Cluster
+	% TODO: DNS Root/gTLD Performance Measurement
+	% TODO: Measurement of DNS Traffic Caused by DDoS Attacks
+	% TODO: Measuring Availability in the Domain Name System
+	% TODO: Two Days in the Life of the DNS Anycast Root Servers
+
 	% chapter Verwandte Arbeiten }}}
 
 	\chapter{salbnet} % {{{
 	\label{cha:salbnet}
 
-		Dieses Kapitel beschreibt salbnet\footnote{http://salbnet.org}, einen Credit-basierten
+		Dieses Kapitel beschreibt salbnet\footnote{\url{http://salbnet.org}}, einen Credit-basierten
 		Lastverteilungsansatz.  Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
 		TCP-Verkehr vor allem in InfiniBand-Netzwerken \cite{zinke2007, scsczile2008,
 		schneidenbach2009}. Die Besonderheit an diesem Lastverteilungsverfahren ist, dass es sowohl eine
@@ -707,7 +718,7 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/salbnet}
+			\includegraphics[width=\textwidth]{images/salbnet.png}
 			\caption{Aufbau von salbnet (übernommen aus \cite{zinke2012})}
 			\label{fig:salbnet}
 		\end{figure}
@@ -728,7 +739,7 @@
 			Die dynamische Bibliothek libnethook wird genutzt um Funktionsaufrufe, von zu überwachenden
 			Anwendungen abzufangen. So kann ermittelt werden wie oft eine Funktion aufgerufen wird und was
 			von ihr zurück gegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom
-			Apache Webserver\footnote{http://httpd.apache.org/} (httpd) abgefangen und analysiert. In
+			Apache Webserver\footnote{\url{http://httpd.apache.org/}} (httpd) abgefangen und analysiert. In
 			Abbildung \ref{fig:salbnet} ist angedeutet, dass libnethook zwischen dem httpd und der libc
 			aggiert. Allgemein kann das auch für alle anderen TCP-Anwendungen genutzt werden. Im TCP-Fall
 			wird nur die Anzahl der Funktionsaufrufe genutzt um eine Neuberechnung der Credits auszulösen.
@@ -756,7 +767,7 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/salbd-concept}
+			\includegraphics[width=\textwidth]{images/salbd-concept.png}
 			\caption{Konzept von salbd (übernommen aus \cite{zinke2012})}
 			\label{fig:salbd}
 		\end{figure}
@@ -773,12 +784,6 @@
 		% ausgefallen ist. Sollte sich ein Server von einer Überlastsituation erholen und dem
 		% Lastverteiler neue Credits übermitteln, wird dieser wieder in die Lastverteilung mit
 		% aufgenommen.
-	
-
-
-
-		% 
-
 
 
 		% Durch dieses Verfahren kann auf dem Lastverteiler ein einfacher Algorithmus wie Round-Robin
@@ -786,7 +791,7 @@
 		% dieses System durch seine eigene Anpassung besonders bei heterogenen Clustern geeignet.
 
 		% Im Folgenden werden kurz die einzelnen Komponenten von salbnet vorgestellt.
-	
+
 	$~$\\
 
 	In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.
@@ -811,7 +816,7 @@
 		\item Sie sollte applikationsunabhängig sein.
 		\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
 	\end{itemize}
-	
+
 	Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine Metrik
 	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
 	Anforderungen an eine gute Metrik. Sie ist simple zu berechnen, da der aktuelle Füllstand und der
@@ -843,7 +848,7 @@
 	kann es sein, dass der Backend-Server beim Lastverteiler aussortiert wird, weil seine Credits auf
 	0 gefallen sind. Folgend werden 4 mögliche Meldestrategien vorgestellt \cite{scsczile2008,
 	schneidenbach2009}.
-	
+
 	\paragraph{Plain} % {{{
 	\label{par:plain}
 
@@ -864,7 +869,7 @@
 	schon unter Last stehenden Server gesendet werden. Für den Lastverteiler sind grundsätzlich die
 	Soft-Credits das ausschlaggebende Maß. Erst, wenn kein Server mehr über Soft-Credits verfügt
 	werden die Hard-Credits beachtet.
-	
+
 	% paragraph Soft + Hard Credits }}}
 
 	\paragraph{Dynamic Report} % {{{
@@ -877,12 +882,12 @@
 	Server mit der Abarbeitung der Anfragen beschäftigt, werden die Credits seltener gemeldet. Das
 	führt dazu, dass bei vielen Anfragen keine zusätzliche Last durch unnötige Credit-Meldungen entsteht
 	und bei geringer Last der Lastverteiler immer aktuelle Werte vom Backend-Server besitzt.
-	
+
 	% paragraph Dynamic Report }}}
 
 	\paragraph{Dynamic Pressure Relieve} % {{{
 	\label{par:dynamic-pressure-relieve}
-	
+
 	Der Dynamic Pressure Relive Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
 	wiederum Hard und Soft-Credits. Allerdings werden die Hard-Credits spätestens nach einem fixen
 	Intervall gemeldet. Die Soft-Credits werden nach dem dynamischen Intervall aus dem Dynamic Report
@@ -958,7 +963,7 @@ $~$\\
 		% subsection Verkehr-Metrik }}}
 
 		\subsection*{Receive-Queue-Metrik} % {{{
-	
+
 		Ein Ansatz ähnlich des TCP-Ansatzes wäre es, die Receive-Queue des UDP-Sockets des DNS-Servers zu
 		überwachen. Anders als beim TCP-Fall werden aber in der Receive-Queue keine Verbindungen
 		verwaltet, sondern Pakete eingeordnet. Das heißt die Receive-Queue hat eine maximale Größe und
@@ -993,9 +998,12 @@ $~$\\
 		Der Vergleich von CPU-Lasten ist vor allem in heterogenen Clustern schwer, dazu müsste eine
 		Normalisierung durchgeführt werden, welche auf die entsprechenden Server ausgelegt ist. Daher
 		ist diese Metrik nicht einfach zu berechnen und erfüllt die Anforderung nicht.
-		
+
+		Beweis: \cite{kunz1991} und \cite{lansch1994}
+		% TODO: VS Buch und Paper einbauen
+
 		% subsection Last-Metrik }}}
-	
+
 		\subsection*{Verkehr-Metrik} % {{{
 
 		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und simple zu berechnen. Es wird die
@@ -1176,7 +1184,7 @@ $~$\\
 		Kernel 2.6.18 entwickelt und kann nicht ohne Anpassungen mit neueren Kernel-Versionen genutzt
 		werden. Die Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul wurde jedoch erst im
 		Kernel
-		3.3\footnote{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}
+		3.3\footnote{\url{http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=commit;h=52b7c59b}}
 		aufgenommen. Somit ist die Verwendung eines \texttt{Netlink}-Sockets in salbnet für UDP nicht
 		möglich.		
 
@@ -1309,7 +1317,7 @@ $~$\\
 
 		\section{Messumgebung} % {{{
 		\label{sec:messumgebung}
-	
+
 		Die Messumgebung soll ein realistisches Lastszenario wiederspiegeln. Dazu wurden aus dem
 		IB-Cluster des Instituts für Informatik 4 Rechner ausgewählt (ib1, ib4, ib6, ib8). Die
 		relevanten technischen Merkmale dieser Server sind in der Tabelle \ref{tab:netzwerkknoten}
@@ -1367,7 +1375,7 @@ $~$\\
 		\section{Messplan} % {{{
 		\label{sec:messplan}
 
-		Zur Durchführung der  Messung wurde ein anonymisiertes Log des authorativen Nameservers der  
+		Zur Durchführung der  Messung wurde ein anonymisiertes Log des authorativen Nameservers der
 		\texttt{haiti.cs.uni-potsdam.de}-Domain verwendet. Das Log enthält den Zeitraum von 10:41 am 27.
 		September 2011 bis 6:25 am 2. Oktober 2011. Über den Zeitraum von 6944 Minuten enthält das Log
 		1003149 Anfragen, welche hauptsächlich Anfragen nach \texttt{A} und \texttt{AAAA} Resource
@@ -1392,7 +1400,7 @@ $~$\\
 
 		Verglichen wurden der gewichtete Round-Robin-Algorithmus des LVS mit dem dynamic pressure
 		relieve salbd Algorithmus. Die Gewichte für den Round-Robin Algorithmus wurden mit Hilfe des
-		Benchmarks UnixBench\footnote{http://code.google.com/p/byte-unixbench/} bestimmt. Dieser
+		Benchmarks UnixBench\footnote{\url{http://code.google.com/p/byte-unixbench/}} bestimmt. Dieser
 		Benchmark führt verschieden Tests aus und ermitteln eine Gesamtbewertung des Systems. Die
 		Messergebnisse für die Machinen ib4, ib6 und ib8 sind im Anhang \ref{lst:unixbench} zu sehen. Es
 		wurden die Werte 788, 623 und 1180 für die ib4, ib6 und ib8 bestimmt. Diese Gewichte haben sich
@@ -1444,8 +1452,8 @@ $~$\\
 			\caption{Kennzahlen des modifizierten Log Intervalls}
 			\label{tab:multiply}
 		\end{table}
-		
-			
+
+
 		% section Messplan }}}
 
 		\section{Auswertung} % {{{
@@ -1486,7 +1494,7 @@ $~$\\
 		\end{itemize}
 		
 		% section Ausblick }}}
-	
+
 	% chapter Zusammenfassung }}}
 
 	% Mainmatter }}}
@@ -1496,15 +1504,15 @@ $~$\\
 
 	\chapter{Messumgebung} % {{{ 
 	\label{cha:messumgebung}
-	
+
 	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1	(LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
-	
+
 	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
 
 	\lstinputlisting[language=sh,caption={salbd BIND Konfiguration für ib4, ib6 und	ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
-	
+
 	\lstinputlisting[language=sh,caption={BIND Konfiguration für ib4, ib6 und ib8},label=lst:bind-conf]{listings/named.conf}
-	
+
 	\lstinputlisting[language=,breaklines=true,numbers=none,caption={UnixBench Resultate für die Maschinen ib4, ib6 und
 	ib8},label=lst:unixbench]{listings/result_unixbench.dat}
 
@@ -1515,7 +1523,7 @@ $~$\\
 
 	\lstinputlisting[language=C,firstline=193,lastline=304,caption={\texttt{sk\_buff}-Datenstruktur in der Datei
 	\texttt{skbuff.h} vom Linux-Kernel 2.6.18},label=lst:skbuff]{listings/skbuff.h}
-	
+
 	% chapter skbuff }}}
 
 	% Appendix }}}
