@@ -365,17 +365,16 @@
 			
 				In diesem Abschnitt werden mehrere Softwaresysteme vorgestellt, welche zum Betrieb eines
 				DNS-Server genutzt werden. Diese wurden aufgrund von zwei Studien aus den Jahren 2004 und
-				2009 zur Verteilung von DNS-Server Software ausgewählt. Die erste
-				Studie\footnote{http://mydns.bboy.net/survey/ (Stand: 09.06.2011)} wurde am 23. Mai 2004
-				abgeschlossen und untersuchte 37.836.997 SLDs unter den TLDs \texttt{com}, \texttt{net},
-				\texttt{org},	\texttt{info} und \texttt{biz}. Die zweite
-				Studie\footnote{http://dns.measurement-factory.com/surveys/200910.html (Stand: 09.06.2011)}
-				ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den TLDs \texttt{com}, \texttt{net}
-				und \texttt{org} untersucht. Es wurde jeweils versucht die eingesetze DNS-Server Software zu
-				ermitteln. Dabei wurden die Systeme BIND, djbdns, Microsoft DNS und NSD als vier der
-				häufigsten Systeme ermittelt (siehe Tabelle \ref{tab:verteilung}). Die genannten vier
-				Systeme werden im folgenden vorgestellt. Zusätzlich wird auf den dnsmasq Server eingegangen,
-			welcher eine sehr spezielle Form eines DNS-Servers darstellt.
+				2009 zur Verteilung von DNS-Server Software ausgewählt. Die erste Studie \cite{survey2004}
+				wurde am 23. Mai 2004 abgeschlossen und untersuchte 37.836.997 SLDs unter den TLDs
+				\texttt{com}, \texttt{net}, \texttt{org},	\texttt{info} und \texttt{biz}. Die zweite Studie
+				\cite{survey2009} ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den TLDs
+				\texttt{com}, \texttt{net} und \texttt{org} untersucht. Es wurde jeweils versucht die
+				eingesetze DNS-Server Software zu ermitteln. Dabei wurden die Systeme BIND, djbdns,
+				Microsoft DNS und NSD als vier der häufigsten Systeme ermittelt (siehe Tabelle
+				\ref{tab:verteilung}). Die genannten vier Systeme werden im folgenden vorgestellt.
+				Zusätzlich wird auf den dnsmasq Server eingegangen, welcher eine sehr spezielle Form eines
+				DNS-Servers darstellt.
 				
 				\begin{table}
 					\centering
@@ -386,7 +385,7 @@
 						Microsoft DNS & \unit[6,24]{\%} & \unit[0,26]{\%}\\
 						NSD & \unit[0,20]{\%} & \unit[0.03]{\%} \\\hline
 					\end{tabular}
-					\caption{Verteilung von DNS-Server Software}
+					\caption{Verteilung von DNS-Server Software nach \cite{survey2004, survey2009}}
 					\label{tab:verteilung}
 				\end{table}
 
