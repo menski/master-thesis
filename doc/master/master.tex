@@ -1301,17 +1301,15 @@
 	\chapter{Implementierung} % {{{
 	\label{cha:implementierung}
 
-	% KERNEL 2.6.18 erwähnen; Vielleicht schonmal procfs einführen?
-
-	Dieses Kapitel beschriebt die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Metrik.
+	Dieses Kapitel beschreibt die Implementierung der im Kapitel \ref{cha:konzept} entworfenen Metrik.
 	Dazu wird in Abschnitt \ref{sec:anforderungen} die Frage geklärt, wie die in Abschnitt
 	\ref{sec:entwurf} definierte Receive-Queue-Metrik berechnet wird. Das heißt, es wird gezeigt, welche
-	Möglichkeiten existieren die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
+	Möglichkeiten existieren, die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
 	Messwerte bewertet und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
 	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
-	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. In Kapitel
+	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. Im Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
-	einem Standard-Algorithmus vergleicht.
+	einem Standard-Algorithmus vergleichen.
 		
 		\section{Anforderungen} % {{{
 		\label{sec:anforderungen}
@@ -1336,13 +1334,14 @@
 		Die maximale Kapazität $q_{max}$ der UDP-Receive-Queue für jeden UDP-Socket wird im Kernel festgelegt. Der
 		aktuelle Wert kann über das \texttt{/proc}-Dateisystem festgestellt werden. Beim
 		\texttt{/proc}-Dateisystem \cite{benvenuti2005} handelt es sich um ein virtuelles Dateisystem,
-		welches kernelinterne Datenstrukturen, in der Form von Dateien, in den Userspace exportiert. Im
+		welches kernelinterne Datenstrukturen, in der Form von Dateien, in den Userspace exportiert. In
 		Listing \ref{lst:default-queue} werden die Werte der beiden entsprechenden Dateien im
-		\texttt{/proc}-Dateisystem ausgelesen, welche die standard und maximale Größe der
+		\texttt{/proc}-Dateisystem ausgelesen, welche die Standard- und maximale Größe der
 		UDP-Receive-Queue eines UDP-Sockets bestimmen. Um diese Werte zu verändern, kann das Programm
 		\texttt{sysctl} genutzt werden, welches Variablen im \texttt{/proc/sys}-Verzeichnis bearbeiten
 		kann, oder es kann direkt in die entsprechenden Dateien ein neuer Wert geschrieben werden. Die
 		Verwendung von \texttt{sysctl} ist in Listing \ref{lst:test-queue} zu sehen.
+
 		% subsection Maximale Kapazität der UDP-Receive-Queue }}}
 
 		\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
@@ -1355,21 +1354,21 @@
 		der Socket direkt  mit einer entfernten Adresse verbunden ist, wird dies im Feld
 		\texttt{rem\_address} angezeigt.  Der Status des Sockets ist in \texttt{st} vermerkt und
 		\texttt{tx\_queue} bzw.  \texttt{rx\_queue} geben den Speicherverbrauch der UDP-Send-Queue bzw.
-		UDP-Receive-Queue an. Es folgen noch weitere Werte, welche in diesem Zusammenhang jedoch unwichtig
+		UDP-Receive-Queue an. Es folgen noch weitere Werte, die in diesem Zusammenhang jedoch unwichtig
 		sind. Somit kann durch diese Datei der belegte Speicherplatz der UDP-Receive-Queue für einen
 		bestimmten UDP-Socket ermittelt werden.
 
-		Der Nachteil vom \texttt{/proc}-Dateisystem ist, dass bei wiederholten Abfragen eines Wertes,
-		jedesmal eine Datei geöffnet, gelesen und geschlossen werden muss. Anschließend muss der Inhalt
-		der Datei ausgewertet werden, um den gesuchten Wert zu finden. Eine möglicher Ersatz, vor allem
+		Der Nachteil vom \texttt{/proc}-Dateisystem ist, dass beim wiederholten Abfragen eines Wertes
+		jedesmal eine Datei geöffnet, gelesen und geschlossen werden muss. Danach muss der Inhalt
+		der Datei ausgewertet werden, um den gesuchten Wert zu finden. Einen möglichen Ersatz, vor allem
 		bei der Netzwerkkonfiguration, bieten \texttt{Netlink}-Sockets \cite{rfc3549, gusowski2009}.
-		Durch sie ist es möglich zwischen dem Kernel- und Userspace über einen Socket zu kommunizieren.
+		Durch sie ist es möglich, zwischen dem Kernel- und Userspace über einen Socket zu kommunizieren.
 		Dies hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial ein Socket
-		erstellt werden muss, welcher danach weiterverwendet werden kann, oder es können Werte gezielt
-		abgefragt werden ohne sie aus einer Text-Repräsentation extrahieren zu müssen. In der
-		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt um
-		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend ein ähnliches
-		Vorgehen auch für	die UDP-Receive-Queue zu evaluieren. Allerdings ist das Kernelmodul des
+		erstellt werden muss, welcher danach weiterverwendet werden kann. Es können aber auch Werte gezielt
+		abgefragt werden, ohne sie aus einer Textrepräsentation extrahieren zu müssen. In der
+		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt, um
+		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend, ein ähnliches
+		Vorgehen auch für	die UDP-Receive-Queue zu evaluieren. Allerdings wurde das Kernelmodul des
 		salbnet Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne Anpassungen mit
 		neueren Versionen genutzt werden. Eine Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul
 		\cite{udpnetlink}	wurde jedoch erst im Kernel 3.3 aufgenommen. Somit ist die Verwendung eines
@@ -1384,24 +1383,24 @@
 		\lstinputlisting[float,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von \texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
 
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
-		die Information über den belegte Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
-		nicht ermittelbar wieviele Pakete aktuelle in der Receive-Queue gespeichert sind. Wird jedoch
-		ein Paket aus der Receive-Queue abgeholt, wird die Größe des Pakets zurückgeliefert. In Listing
+		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
+		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. Holt man jedoch
+		ein Paket aus der Receive-Queue ab, wird die Größe des Pakets zurückgeliefert. In Listing
 		\ref{lst:strace} wurde das Programm \texttt{strace} genutzt, um die Systemcalls des BIND
-		DNS-Servers nachzuvollziehen. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND Servers
+		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND Servers
 		(named) ermittelt. Dann wurde in Zeile 3 strace für diese PID gestartet und die Ausgaben aller
-		Kindprozesse in einzelen Dateien gespeichert. Danach ist in der Ausgabe-Datei des Kindprozesses,
+		Kindprozesse in einzelnen Dateien gespeichert. Danach ist in der Ausgabe-Datei des Kindprozesses,
 		welcher die Anfrage verarbeitet hat, in Zeile 12 zu erkennen, dass ein Paket vom BIND mit Hilfe
 		der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der Rückgabewert der Funktion
 		gibt die Größe des Paketes in Byte an. In diesem Beispiel war das DNS-Paket 45 Byte groß. Somit
-		ist es möglich den Funktions-Aufruf des BIND abzufangen und die Paketgröße zu ermitteln.
+		ist es möglich, den Funktions-Aufruf des BIND abzufangen und die Paketgröße zu ermitteln.
 
 		Jedoch ist die Größe des DNS-Paketes, wie sie von der Funktion \texttt{recvmsg}
 		zurückgegeben wird, nicht der komplette Speicherbedarf des Pakets in der Receive-Queue. Im
 		Linux-Kernel werden die Pakete, welche in einem Socket-Buffer liegen, mit Hilfe der
 		Datenstruktur \texttt{sk\_buff} verwaltet. Im Anhang \ref{cha:skbuff} ist das Listing
 		\ref{lst:skbuff} der \texttt{sk\_buff}-Datenstruktur für den Linux-Kernels 2.6.18 angeführt. Es ist
-		zu erkennen, dass eine große Anzahl an zusätzlichen Informationen in der Datenstruktur, neben
+		zu erkennen, dass eine große Anzahl an zusätzlichen Informationen in der Datenstruktur neben
 		dem eigentlichen DNS-Paket gespeichert wird. Das Feld \texttt{truesize} in der Datenstruktur,
 		enthält die vollständige Größe des Pakets in der Receive-Queue. Allerdings ist ein Zugriff auf
 		diesen Wert aus dem Userspace nicht möglich.
@@ -1421,24 +1420,24 @@
 			\label{tab:recvmsg}
 		\end{table}
 
-		Um auf eine Anpassung im Kernelspace zu verzichten, wurde der Zusammenhang, zwischen der Größe
-		des DNS-Pakets und dem Speicherplatz in der Receive-Queue, experimentell ermittelt. Hierzu
+		Um auf eine Anpassung im Kernelspace zu verzichten, wurde der Zusammenhang zwischen der Größe
+		des DNS-Pakets und dem Speicherplatz in der Receive-Queue experimentell ermittelt. Hierzu
 		wurden DNS-Pakete mit steigender Größe an einen BIND DNS-Server gesendet. Nach jedem Paket wurde
-		der belegte Speicherplatz der Receive-Queue ermittelt und anschließend die Größe des Pakets mit
+		der belegte Speicherplatz der Receive-Queue und anschließend die Größe des Pakets mit
 		der Funktion \texttt{recvmsg} ermittelt. Diese Versuche wurden mehrmals durchgeführt, dadurch
 		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkt Zusammenhang
 		zwischen der Größe des DNS-Pakets und dem benötigten Speicher in der Receive-Queue gibt. Der
-		Header eines DNS-Pakets ist 12 Byte groß und die maximale Größe eines DNS-Pakets ist 512 Byte
-		\cite{rfc1035}, daher wurde das Experiment mit Paketen der Größe 12-576 Byte durchgeführt. Das
+		Header eines DNS-Pakets ist 12 Byte groß und die maximale Größe eines DNS-Pakets beträgt 512 Byte
+		\cite{rfc1035}, deshalb wurde das Experiment mit Paketen der Größe 12-576 Byte durchgeführt. Das
 		Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass 376 Byte die minimale
 		Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete eine Größe von 64
 		Byte wächst der Speicherbedarf um 128 Byte. Diese 128 Byte stehen ausschließlich für den Inhalt
 		des DNS-Pakets zur Verfügung, da alle zusätzlichen Daten der \texttt{sk\_buff}-Datenstruktur
 		bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets ebenfalls um 128 Byte und
-		überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte an. Zusammengefasst lässt
-		sich sagen, dass ab einer Paketgröße von 64 Byte alle 128 Byte eine Erhöhung des
-		Speicherbedarfs um ebenfalls 128 Byte eintritt. Daher ist es möglich die Formel \ref{eq:recvmsg}
-		zu bestimmen, welche anhand der Größe des DNS-Pakets (ermittelt durch \texttt{recvmsg}) den
+		überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte an. Zusammenfassend
+		kann man sagen, dass ab einer Paketgröße von 64 Byte alle 128 Byte eine Erhöhung des
+		Speicherbedarfs um ebenfalls 128 Byte eintritt. Daher ist es möglich, die Formel \ref{eq:recvmsg}
+		herzuleiten, mit der man anhand der Größe des DNS-Pakets (ermittelt durch \texttt{recvmsg}) den
 		Speicherbedarf in der Receive-Queue berechnet. Es ist zu beachten, dass diese Formel nicht
 		allgemeingültig ist und speziell für die Kernel-Version 2.6.18 ermittelt wurde. Für andere
 		Kernel-Versionen kann sich ein veränderter Zusammenhang ergeben und somit auch eine andere
@@ -1457,7 +1456,7 @@
 		In neueren Kernel-Versionen werden die Drops (Anzahl der verworfenen Anfragen) pro UDP-Socket
 		ebenfalls in der Datei \texttt{/proc/net/udp} aufgeführt. Für die verwendete Kernel-Version
 		2.6.18 gilt dies leider noch nicht. Daher wurde auf die Datei \texttt{/proc/net/snmp}
-		zurückgegriffen. Wie in Listing \ref{lst:proc-snmp} zu sehen, wird in dieser Datei die Anzahl
+		zurückgegriffen. Wie in Listing \ref{lst:proc-snmp} zu sehen ist, wird in dieser Datei die Anzahl
 		der systemweiten Drops als \texttt{InErrors} angegeben. Da in dieser Arbeit davon ausgegangen
 		wird, dass es sich um ein DNS-Cluster handelt, welches ausschließlich zum Beantworten von
 		DNS-Anfragen genutzt wird, kann angenommen werden, dass der DNS-Server den Hauptanteil
