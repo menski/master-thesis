@@ -1097,48 +1097,48 @@
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
-		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
+		Wie im Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
 		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
 		des TCP-Sockets des Webservers erstellt. Diese gibt konkret die Anzahl der Anfragen an, welche
-		noch in der Backlog Platz finden würden. Das heißt, mehr als diese Anzahl an Anfragen sollten an
-		den Server nicht gestellt werden, sonst existiert die Gefahr, dass die Anfragen verworfen
-		werden. Aufgabe dieses Kapitels ist es verschiedene Ansätze zu beschreiben, welche eine ähnlich
-		gute Metrik für UDP-Anfragen erzeugen
+		noch in der Backlog Platz finden würden. Das heißt, es sollten nicht mehr als diese Anzahl von
+		Anfragen an den Server gestellt werden, sonst existiert die Gefahr, dass die Anfragen verworfen
+		werden. Aufgabe dieses Kapitels ist es, verschiedene Ansätze zu beschreiben, welche eine ähnlich
+		gute Metrik für UDP-Anfragen erzeugen.
 
 		\subsection*{Last-Metrik} % {{{
 
-		Wenn sich ein Server in einer Überlastsitutation befindet, kann dies oft daran erkannt werden
-		das bestimmte Ressourcen aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung dafür
+		Wenn sich ein Server in einer Überlastsitutation befindet, erkennt man das oft daran, dass
+		bestimmte Ressourcen aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung aussagen
 		sprechen, dass der Server an seine Grenzen geraten ist. Daher wäre eine mögliche Metrik die
-		Sammlung entsprechender Last-Daten und ein anschließende Abschätzung bezüglich der verbleibenden
+		Sammlung entsprechender Last-Daten und eine anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
 		
 		% subsection Last-Metrik }}}
 
 		\subsection*{Verkehr-Metrik} % {{{
 
-		Bei Servern, welche einen Dienst für das Netzwerk bereitstellen, ist das Verhältnis der
-		eingehenden und ausgehenden Nachrichten ebenfalls eine mögliche Metrik für die Lastsitutation
-		des Servers. Ein Server der alle eingehenden Nachrichten sofort beantworten kann, und somit die
-		gleiche Anzahl an ausgehenden Nachrichten erzeugt, befindet sich in keiner Überlastsituation.
-		Hat der Server jedoch Probleme eingehenden Anfragen direkt zu beantworten, so befindet sich der
-		Server unter eine gewissen Last bis hin zur Überlast, wenn Anfragen verworfen werden müssen.
-		Somit wäre es mögliche die Anzahl der eingehenden Anfragen und abgearbeiteten (ausgehenden)
-		Anfragen zu protokollieren. Ist die Differenz nahe 0 ist von keiner hohen Last auszugehen.
-		Wächst die Differenz jedoch allmählich, befindet sich der Server unter steigender Last.
+		Bei Servern, die einen Dienst für das Netzwerk bereitstellen, ist das Verhältnis der eingehenden
+		und ausgehenden Nachrichten ebenfalls eine mögliche Metrik für die Lastsitutation des Servers.
+		Ein Server, der alle eingehenden Nachrichten sofort beantworten kann, und somit die gleiche
+		Anzahl an ausgehenden Nachrichten erzeugt, befindet sich in keiner Überlastsituation.  Hat der
+		Server jedoch Probleme, eingehenden Anfragen direkt zu beantworten, befindet er sich unter einer
+		gewissen Last, bis hin zur Überlast, bei der Anfragen verworfen werden müssen.  Somit wäre es
+		möglich, die Anzahl der eingehenden Anfragen und abgearbeiteten (ausgehenden) Anfragen zu
+		protokollieren. Wenn die Differenz nahe 0 ist, geht man von keiner hohen Last aus.  Wächst die
+		Differenz jedoch allmählich, befindet sich der Server unter steigender Last.
 
 		% subsection Verkehr-Metrik }}}
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
 		Ein Ansatz ähnlich des TCP-Backlog-Ansatzes \cite{zinke2007,scsczile2008} wäre das Überwachen
-		der Receive-Queue des UDP-Sockets des DNS-Servers zu überwachen. Anders als beim TCP-Fall werden
-		aber in der Receive-Queue keine Verbindungen verwaltet, sondern Pakete unterschiedlicher Größe
-		gespeichert. Das heißt die Receive-Queue hat eine maximale Größe und ist bis zu einem bestimmten
-		Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in der Receive-Queue aus.
-		Trotzdem könnte eine Metrik darin bestehen, den verbleibenden Platz in der Receive-Queue zu
-		bestimmen. Und daraus eine Abschätzung zu treffen, wieviele weitere Anfragen aufgenommen werden
-		könnten.
+		der Receive-Queue des UDP-Sockets des DNS-Servers. Anders als bei dem TCP-Fall werden aber in
+		der Receive-Queue keine Verbindungen verwaltet, sondern Pakete unterschiedlicher Größe
+		gespeichert. Das heißt, die Receive-Queue hat eine maximale Größe und ist bis zu einem
+		bestimmten Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in der Receive-Queue
+		aus.  Trotzdem könnte eine Metrik darin bestehen, den verbleibenden Platz in der Receive-Queue
+		zu bestimmen, um daraus eine Abschätzung zu treffen, wieviele weitere Anfragen aufgenommen
+		werden könnten.
 
 		% subsection Receive-Queue-Metrik }}}
 		
@@ -1149,8 +1149,8 @@
 
 		Nachdem im Abschnitte \ref{sec:ansaetze} mehrere Ansätze vorgestellt wurden, sollen diese nun
 		bewertet werden. Danach wird ein Ansatz ausgewählt, welcher dann weiter verfeinert wird. Die
-		Bewertung der Ansätze erfolgt nach den in Kapitel \ref{cha:salbnet} aufgeführten Anforderungen
-		an eine Metrik:
+		Bewertung der Ansätze erfolgt nach den im Kapitel \ref{cha:salbnet} aufgeführten Anforderungen
+		an eine Metrik, welche waren:
 
 		\begin{itemize}
 			\item Sie sollte einfach zu berechnen sein.
@@ -1162,12 +1162,12 @@
 		\subsection*{Last-Metrik} % {{{
 
 		Die Last-Metrik ist applikationsunabhängig und wird auch nicht durch die Anzahl der Clients
-		beeinflusst. Allerdings ist es schwer aus Faktoren wie der CPU-Last, RAM-Auslastung, Load etc.
+		beeinflusst. Allerdings ist es schwer, aus Faktoren wie der CPU-Last, RAM-Auslastung, Load etc.
 		eines Servers Aussagen über die aktuelle Lastsituation des Servers zu treffen. In
-		\cite{kunz1991} wurde verschieden Last-Metriken untersucht. Dabei wurde gezeigt, dass einfache
-		Metriken bessere Ergebnisse lieferten als mehrdimensionale Metriken, über mehrere Indizes. Die
-		besten Ergebnisse wurden mit einer Metrik, welche sich ausschließlich auf die Länge der
-		CPU-Warteschlange bezieht, erzielt. Bei dieser Untersuchung wurden ein homogenes System
+		\cite{kunz1991} wurden verschiedene Last-Metriken untersucht. Dabei wurde gezeigt, dass einfache
+		Metriken bessere Ergebnisse lieferten als mehrdimensionale, über mehrere Indizes. Die
+		besten Ergebnisse wurden mit einer Metrik, die sich ausschließlich auf die Länge der
+		CPU-Warteschlange bezieht, erzielt. Bei dieser Untersuchung wurde ausschließlich ein homogenes System
 		betrachtet. Um diese Metriken auf ein heterogenes System anzuwenden, muss eine Normierung
 		vorgenommen werden, damit die System und deren Metriken vergleichbar werden. Dazu schlägt
 		\cite{lansch1994} die Formel \ref{eq:load} vor, bei der $\alpha$ eine Architekturkonstante für
@@ -1182,8 +1182,8 @@
 		dieser Metrik eine Abschätzung über die noch möglichen Ressourcen, in Form von weiteren
 		Anfragen, nicht einfach ist. Zum Beispiel lässt sich kaum aus der Länge der CPU-Warteschlange
 		abschätzen, wieviel weitere Anfragen der Server noch empfangen kann, bevor er in eine
-		Überlastsituation gerät. Daher ist die Metrik nicht einfach zu berechnen, bzw. führt nur zu sehr
-		ungenauen Abschätzungen und erfüllt damit die Anforderungen nicht.
+		Überlastsituation gerät. Daher ist die Metrik schwer zu berechnen, bzw. führt nur zu sehr
+		ungenauen Abschätzungen und erfüllt damit nicht die Anforderungen.
 
 		% subsection Last-Metrik }}}
 
@@ -1191,18 +1191,18 @@
 
 		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und einfach zu berechnen, da nur die
 		Differenz der eingehenden und ausgehenden Anfragen ermittelt werden muss. Ist diese Differenz
-		negativ, ist der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich
-		0 ist der Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort
-		beantworten kann.  Ist die Differenz positiv stauen sich Anfragen beim Server. Steigt diese
-		Differenz immer weiter an, kann davon ausgegangen werden, dass der Server Probleme hat weitere
+		negativ, ist der Server schneller im Abarbeiten als dass neue Anfragen eintreffen. Ist sie gleich
+		0, ist der Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort
+		beantworten kann.  Ist die Differenz positiv, stauen sich Anfragen beim Server. Steigt diese
+		Differenz immer weiter an, kann davon ausgegangen werden, dass der Server Probleme hat, weitere
 		Anfragen abzuarbeiten. Die Probleme dieser Metrik sind jedoch die Abbildung der Differenz auf
-		die verfügbaren Ressourcen des Servers. Das bedeutet, es ist schwer anhand der Differenz auf die
-		noch möglichen Anfragen zu schließen, welche der Server zusätzlich abarbeiten könnte, ohne das
+		die verfügbaren Ressourcen des Servers. Das bedeutet, es ist schwer, anhand der Differenz auf die
+		noch möglichen Anfragen zu schließen, welche der Server zusätzlich abarbeiten könnte, ohne dass
 		eine Anfrage verworfen wird. Es könnte eine Abschätzung der maximal möglichen Anfragen pro
-		Zeitintervall genutzt werden, diese vernachlässigt allerdings, die UDP-Eigenschaft, dass in der
-		Receive-Queue keine Anfragen sondern Pakete gespeichert werden. Das heißt, dass die maximale
-		Anzahl an Anfragen pro Zeitintervall von den einzelnen Paketgrößen abhängt. Außerdem
-		kann davon ausgegangen werden, dass ein protokollieren aller ein- und ausgehenden Anfragen nicht
+		Zeitintervall genutzt werden. Diese vernachlässigt allerdings die UDP-Eigenschaft, dass in der
+		Receive-Queue keine Anfragen sondern Pakete gespeichert werden. Das heißt, die maximale
+		Anzahl an Anfragen pro Zeitintervall hängt von den einzelnen Paketgrößen ab. Außerdem
+		kann davon ausgegangen werden, dass ein Protokollieren aller ein- und ausgehenden Anfragen nicht
 		gut skaliert. So würde bei einer hohen Anzahl von Anfragen an den Server die Überwachung
 		eine zusätzlich Last erzeugen, welche den Server extra belastet. Daher erfüllt auch diese Metrik
 		ebenfalls nicht die Anforderungen.
@@ -1211,9 +1211,9 @@
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
-		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen applikationsunabhängig, da sie sie
+		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen, applikationsunabhängig, da sie
 		sich auf die Receive-Queue des UDP-Sockets bezieht. Sie erzeugt auch keine zusätzliche Last,
-		wenn die Client-Anzahl ansteigt. Die Berechnung ist etwas schwieriger als bei der
+		wenn die Client-Anzahl steigt. Die Berechnung ist etwas schwieriger als bei der
 		TCP-Backlog-Metrik, da, wie bereits erwähnt, keine Verbindungen gespeichert werden, sondern
 		Pakete. Allerdings kann aus dem verbleibenden Platz in der Receive-Queue und einer Abschätzung
 		über die durchschnittliche Paketgröße eine Vorhersage getroffen werden, welche zusätzliche
@@ -1222,7 +1222,7 @@
 
 		% subsection Receive-Queue-Metrik }}}
 
-		Wie bereits durch die vorhergehenden Bewertung zu erkennen, hat nur die Receive-Queue-Metrik die
+		Wie bereits durch die vorhergehenden Bewertungen zu erkennen ist, hat nur die Receive-Queue-Metrik die
 		Anforderung aus \cite{scsczile2008} an eine Metrik für salbnet erfüllt. Diese wird in Abschnitt
 		\ref{sec:entwurf} genauer beschrieben und in Kapitel \ref{cha:implementierung} wird die
 		konkrete Implementierung in salbnet erläutert.
@@ -1233,8 +1233,8 @@
 		\label{sec:entwurf}
 
 		Die ausgewählte Receive-Queue-Metrik wird in diesem Abschnitt im Detail beschrieben.
-		Dazu werden alle nötigen Messwerte identifiziert und eine Formel entwickelt, welche aus den
-		Messwerten die Credits des Servers berechnen. Die Metrik soll den Server anhand der
+		Dazu werden alle nötigen Messwerte identifiziert und eine Formel entwickelt, mit der aus den
+		Messwerten die Credits des Servers berechnet werden können. Die Metrik soll den Server anhand der
 		UDP-Receive-Queue des DNS-Servers bewerten. Daher werden folgende Messwerte benötigt: $~$\\
 		
 		\begin{tabular}{rl}
@@ -1253,27 +1253,27 @@
 			\label{eq:additional}
 		\end{equation}
 
-		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
-		\ref{cha:salbnet} beschrieben existieren verschiedene Meldestrategie in salbnet. Bei den
+		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie im Kapitel
+		\ref{cha:salbnet} beschrieben, existieren verschiedene Meldestrategien in salbnet. Bei den
 		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve (siehe Abschnitt
 		\ref{sub:meldestrategien}) werden die Credits in dynamisch berechneten Intervallen gemeldet. Das
-		heißt zwischen zwei Credit-Meldungen kann sich die Receive-Queue stark verändern. Die
+		heißt, zwischen zwei Credit-Meldungen kann sich die Receive-Queue stark verändern. Die
 		Abschätzung enthält aber keinen Faktor, welcher die Tendenz seit der letzten Credit-Berechnung
 		darstellt. Eine Lösung wäre, bei jeder Abarbeitung einer Anfrage Credits zu berechnen und diese
 		zu speichern. Dadurch könnte der Verlauf mit in der Abschätzung genutzt werden. Allerdings würde
 		dies besonders bei einer hohen Last auf dem Server zu einem zusätzlichen Aufwand führen, welcher
 		die Leistung des Servers negativ beeinflussen kann. Als Kompromiss, zwischen ständiger
-		Credit-Berechnung und Vernachlässigung des Verlaufs, gibt es die Möglichkeit nur auf
-		Überlastsituationen zu reagieren. Das heißt es wird überprüft ob der Server sich zwischen zwei
-		Credit-Meldungen in einer Überlastsitutation befunden hat. Dies kann zum Beispiel daran erkannt
-		werden, ob Paket verworfen worden. Dies geschieht, wenn die maximale Kapazität der Receive-Queue
-		erreicht wurde. Sind seit der letzten Credit-Meldung Anfragen verworfen wurden, sollte dies bei
+		Credit-Berechnung und Vernachlässigung des Verlaufs gibt es die Möglichkeit, nur auf
+		Überlastsituationen zu reagieren. Das heißt, es wird überprüft, ob der Server sich zwischen zwei
+		Credit-Meldungen in einer Überlastsitutation befunden hat. Das erkennt man zum Beispiel daran,
+		ob Pakete verworfen worden. Dies geschieht, wenn die maximale Kapazität der Receive-Queue
+		erreicht wurde. Sind seit der letzten Credit-Meldung Anfragen verworfen wurden, sollte das bei
 		der Berechnung der aktuellen Credits beachtet werden.  Dabei ist die Frage, wie das Verwerfen
 		von Anfragen bewertet wird. In \cite{scsczile2008} wird eine nicht beantwortete Anfrage als ein
 		verlorener Nutzer und potential als ein verlorener Kunde bewertet. Dabei ist zu beachten, dass
 		die Aussage für einen HTTP-Anwendungsfall getroffen wurde.  Allerdings ist es auch bei DNS ein
-		sinnvolles Ziel die verworfenen Anfragen zu minimieren. Daher sollen dem Lastverteiler 0 Credits
-		gemeldet werden, wenn seit der letzten Credits-Meldung Anfragen verworfen wurde. Somit kann der
+		sinnvolles Ziel, die verworfenen Anfragen zu minimieren. Daher sollen dem Lastverteiler 0 Credits
+		gemeldet werden, wenn seit der letzten Credits-Meldung Anfragen verworfen wurden. Somit kann der
 		Server die aktuellen Anfragen abarbeiten ohne weitere Anfragen zu erhalten. Dadurch wird sich
 		die Last des Servers vermutlich bis zur nächsten Credit-Meldung verringern. Anschließend können
 		wieder Credits entsprechend der aktuellen Situation gemeldet werden.
