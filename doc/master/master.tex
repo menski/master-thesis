@@ -114,19 +114,34 @@
 	\chapter{Einleitung} % {{{
 	\label{cha:einleitung}
 
-		Das \dns{} \cite{rfc1034, rfc1035} ist eine fundamentale Komponente des heutigen Internets. Es
-		ermöglicht die Abbildung von Domain-Namen, wie sie von Menschen genutzt werden, auf die dazu
-		gehörige IP-Adressen, welche von Computer-Systemen benötigt werden. Ohne diese Abbildung wäre
-		die einfache und schnelle Nutzung des Internets nicht möglich. Jeder Aufruf einer Website oder
-		das Versenden einer E-Mail führt zu einer DNS-Anfrage. Aus diesem Grund ist ein stabiles System
-		mit schnellen Antwortzeiten unerlässlich.
-		
-		Die DNS-Informationen sind in einer verteilten, baumartigen Struktur gespeichert (siehe
-		Abbildung \ref{fig:tree}).  Dabei sind für die verschieden Knoten im Baum unterschiedliche
-		DNS-Server zuständig. Die kritischste Infrastruktur existiert deshalb in den ersten beiden
-		Ebenen des Baums, dem Root-Server und den Top-Level-Domains (TLD). Diese beiden Ebenen sind die
-		am häufigsten frequentierten Nameserver des DNS. Sie werden von großen Organisationen
-		bereitgestellt und tragen die größte Last des Systems.
+		Das \dns{} \cite{rfc1034, rfc1035} ist eine fundamentale Komponente des heutigen Internets.  Es
+		ermöglicht eine Abbildung von Domain-Namen auf sogenannte IP\footnote{Das Internet Protocol (IP)
+		ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite \cite{stevens1994}. Es dient der
+		Vermittlung von Daten-Paketen in einem Netzwerk, um dies zu ermöglichen erhält jeder
+		Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein Domain-Name ist eine Zeichenkette,
+		diese können sich Menschen leichter merken als eine Zahlenfolge.  Computersysteme hingegen
+		können besser und schneller mit Zahlen als mit Zeichenketten arbeiten.  Daher ist diese
+		Abbildung eine wichtige Voraussetzung für die einfache und schnelle Nutzung eines Netzwerks, im
+		Besonderen des Internets. Bei jedem Aufruf einer Website oder dem Verschicken einer E-Mail, bei
+		dem der Nutzer einen Domain-Namen nutzt, wird eine Abfrage an einen Server im DNS gestellt. Die
+		darauffolgende Antwort, ist die dem Domain-Name zugeordnete IP-Adresse. Diese IP-Adresse wird
+		dann vom Computersystem genutzt um eine Verbindung zum Ziel aufzubauen. Dieser Zusammenhang
+		verdeutlicht bereits die Wichtigkeit des DNS, denn ohne dieses System müsste jeder Nutzer eines
+		Netzwerks die benötigten IP-Adressen selber kennen. Dies ist vielleicht für ein kleines privates
+		Netzwerk durchaus möglich, in Anbetracht der Größe des heutigen Internets jedoch	kaum
+		vorstellbar. Aus diesem Grund ist ein stabiles System mit schnellen Antwortzeiten unerlässlich.
+
+		Die Informationen im DNS werden dezentral gespeichert. Sie werden in einer verteilten,
+		baumartigen Struktur gespeichert (siehe Abbildung \ref{fig:tree}). Dabei können verschiedene
+		Server, die einzelnen Knoten des Baums und die dazugehörigen Informationen verwalten. Diese
+		Server werden im Folgenden DNS-Server oder Nameserver genannten und haben die Aufgabe Fragen an
+		das DNS zu beantworten. Aus der Struktur, des in Abbildung \ref{fig:tree} dargestellten Baums, ist
+		zu erkennen, dass die kritischste Infrastruktur in den ersten beiden Ebenen des Baums existiert.
+		Dabei handelt es sich um den Root-Server und alle Server der Top-Level-Domains (TLDs). Diese
+		beiden Ebenen stellen die am häufigsten frequentierten Nameserver des DNS bereit, denn die Baumstruktur
+		des DNS bedeutet, dass ein Knoten bzw. DNS-Server nur Informationen über den von ihm ausgehenden
+		Teilbaum besitzt. Somit ist verständlich, dass die größte Menge an Informationen, beim Root-Server
+		und den TLDs liegt.
 
 		\begin{figure}
 			\centering
@@ -134,48 +149,83 @@
 			\caption{Baumstruktur des \dns{}}
 			\label{fig:tree}
 		\end{figure}
-		
 
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
 		auch von vielen anderen Netzwerk-Diensten gefordert sind. Um diese Anforderungen zu erfüllen,
-		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last einer Ressource dadurch
-		verringert, dass die Gesamtlast auf mehrere identische Ressourcen verteilt wird. Dadurch ist die
+		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last auf einer Ressource dadurch
+		verringert, dass die Gesamtlast auf mehrere identische Ressourcen verteilt wird. Somit ist die
 		Last je Ressource geringer und besser handhabbar. Dieses Konzept findet allgemein in Netzwerken
 		und bei Server-Systemen Anwendung \cite{bourke2001, kopparapu2002}. Aber auch speziellere
 		Anwendungsgebiete wie die Verteilung von Last auf Webservern sind besonders interessant für
 		Websites mit hohen Lastanforderungen \cite{meplho2012}. Hierbei wird die anfallende Last auf ein
-		Cluster aus Backend-Servern verteilt, welche alle	die gleiche Anwendung bereitstellen. Die
-		Aufgabe der Verteilung übernimmt dabei meist ein Lastverteiler, welcher vor den Backend-Server
-		in das Netzwerk eingefügt wird. Jede Anfrage wird somit durch den Lastverteiler geleitet,
-		welcher dann diese an die verfügbaren Backend-Server verteilt.  Somit ist es naheliegend diese
-		Konzepte auch auf das Verteilen von DNS-Anfragen anzuwenden.
+		Cluster aus Backend-Servern verteilt, dabei stellt jeder der sogenannten Backend-Server die
+		gleiche Anwendung bereit. Die Aufgabe der Verteilung übernimmt dabei meist ein Lastverteiler,
+		welcher vor den Backend-Servern in das Netzwerk eingefügt wird. Jede Anfrage wird somit durch
+		den Lastverteiler geleitet, und dann von diesem an einen verfügbaren Backend-Server
+		weitergeleitet. Diese allgemeinen Konzepte lassen sich ebenfalls für hohe Lastsituationen im DNS
+		nutzen.
 
 		Diese Arbeite beschäftigt sich mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu wird ein
-		bestehendes System \cite{scsczile2008,zinke2012,salbnet} zur selbst-adaptiven Lastverteilung von
-		TCP-Anfragen erweitert, so dass es ebenfalls UDP-Anfragen verarbeiten kann. Diese System
-		realisiert einen Credit-basierten Ansatz der Lastverteilung. Die Server, welche die Anfragen
-		abarbeiten sollen, melden dem Lastverteiler ihre aktuelle Last in Form von Credits. Danach kann
-		der Lastverteiler entscheiden, welcher Server weitere Anfragen erhält. Um dieses Konzept für den
-		DNS-Anwendungsfall zu nutzen, müssen die Unterschiede zwischen TCP und UDP-Anfragen analysiert
-		werden. Anschließend muss eine Metrik erstellt werden, welche auf dem DNS-Server genutzt wird,
-		um seine aktuelle Last möglichst genau zu bestimmen. Diese Credits sollen dann per TCP an den
-		Lastverteiler gemeldet werden.
+		bestehendes System \cite{zinke2007,scsczile2008,zinke2012,salbnet} zur selbst-adaptiven
+		Lastverteilung von TCP-Anfragen erweitert, so dass es ebenfalls UDP-Anfragen verarbeiten kann.
+		Dieses System ist in dem Sinne selbst-adaptive, dass der Lastverteiler keine eigenständigen
+		Annahmen über die Last der Backend-Server trifft. Jeder Backend-Server ermittelt eigenständig
+		eine Einschätzung der aktuellen Lastsituation. Diese wird dem Lastverteiler über Credits
+		mitgeteilt. Dabei entspricht ein Credit einer weiteren Verbindung, welche von dem Server
+		abgearbeitet werden kann. Somit passt sich der Lastverteiler, immer eigenständig an die aktuelle
+		Lastsituation auf den Backend-Server an, ohne dass ein Administrator Einstellungen am
+		Lastverteiler vornehmen muss.  Damit unterscheidet sich das System von anderen
+		Lastverteilungs-Algorithmen, welche meist initial konfiguriert werden und danach kaum
+		beeinflussbar sind. So kann auch eine fehlerhaft initiale Konfiguration nicht im laufenden
+		Betrieb ausgebessert werden. Das selbst-adaptive System hingegen sollte sich an verschiedene
+		Lastsituationen eigenständig anpassen.
 
-		Im Kapitel \ref{cha:grundlagen} wird auf die Grundlagen dieser Arbeit eingegangen. Dazu wird die
-		Entstehung und die Grundlagen des \dns{} erläutert. Darüber hinaus werden verschiedene
-		Möglichkeiten der Lastverteilung besprochen, wobei auf Besonderheiten der Lastverteilung im DNS
-		eingegangen wird. Abschließend wird diese Arbeit in die vorgestellten Konzept eingeordnet.
-		Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche in
-		Verbindung mit dieser Arbeit stehen. Das zu erweiternde System zur selbst-adaptiven
-		Lastverteilung wird in Kapitel \ref{cha:salbnet} beschrieben. In Kapitel \ref{cha:konzept} wird
-		das Konzept der erarbeiteten Erweiterung und die dazu geführten Vorüberlegungen aufgezeigt.
-		Darauf folgend ist in Kapitel \ref{cha:implementierung} die konkrete Umsetzung des vorher
-		dargestellten Konzepts beschrieben. Es wird hierbei auf Besonderheiten und Probleme bei der
-		Implementation eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die
-		Ergebnisse einer Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende
-		dieser Arbeit folgt in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, eine
-		Einschätzung und Bewertung der erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des
-		Konzepts.
+		Das in \cite{zinke2007,scsczile2008} beschrieben System ist für TCP\footnote{Das Transmission
+		Control Protocol (TCP) ist ein zuverlässiges, verbindungsorientiertes und paketvermitteltes
+		Transportprotokoll der TCP/IP-Suite \cite{stevens1994}. Es wird für Verbindungen eingesetzten,
+		welche in dem Sinne verlässlich sind, dass verlorene Daten-Pakete erneut übertragen werden. Um
+		dies zu realisieren ist allerdings ein gewisser Mehraufwand beim Verbindungsaufbau und -abbau
+		nötig.  Bekanntestes Beispiel für TCP-Verbindungen stellen HTTP-Anfragen zum Abrufen und
+		kommunizieren mit Websites dar.}-Anfragen implementiert. Und wurde anhand des Apache Webservers
+		(httpd) \cite{httpd} getestet \cite{zinke2012}. Bei diesen Test wurden die Credits über ein
+		InfiniBand \cite{infiniband,zinke2007} Netzwerk übertragen und direkt in den Speicher des
+		Lastverteilers geschrieben\footnote{InfiniBand \cite{infiniband} ist eine
+		Hochgeschwindigkeits-Übertragungstechnik, welche zusätzlich Remote Direct Memory Access (RDMA)
+		unterstützt. Dies ermöglicht einen direkten Speicherzugriff auf einen über das Netzwerk verbunden
+		Rechner.}. Durch diesen direkten Schreibzugriff, muss keine blockierende Kommunikation zwischen dem
+		Lastverteiler und dem Backend-Server statt finden.
+
+		Aufgabe dieser Arbeit ist es, dass bereits für TCP implementierte Verfahren ebenfalls für UDP zu
+		implementieren. Das User Datagram Protocol (UDP) \cite{stevens1994} ist ebenfalls ein
+		paketvermitteltes Transportprotokoll aus der TCP/IP-Suite, jedoch im Gegensatz zum TCP
+		verbindungslos und unzuverlässig. Das bedeutet der Verlust eines Daten-Pakets während der
+		Übertragung wird nicht bemerkt und somit ist auch keine automatisch Wiederholung der Übertragung
+		möglich. Diese Eigenschaft grenzt die Anwendungsfälle, in denen UDP sinnvoll einsätzbar ist
+		bereits stark ein, allerdings entfällt durch diese Unzuverlässigkeit der Mehraufwand am Anfang
+		und Ende einer zuverlässigen Verbindung, wie es zum Beispiel bei TCP der Fall ist. Da es sich
+		bei DNS-Anfragen immer nur um eine Frage und eine Antwort handelt, welche schnell übertragen
+		werden sollen, ist der Mehraufwand einer TCP-Verbindung nicht sinnvoll. Daher wird im
+		Standardfall für DNS-Anfragen UDP genutzt. Dabei ist das allgemeine Vorgehen so, dass Anfragen,
+		welche nicht in einem bestimmten Zeitraum beantwortet wurden, erneut gesendet werden. Diese
+		Unterschiede zwischen TCP und UDP müssen bei der Erweiterung des bestehenden Systems beachtet
+		werden.  Außerdem wird zur Übertragung der Credits, zwischen den Backend-Servern und dem
+		Lastverteiler, eine TCP/IP-Verbindung über Ethernet genutzt. Dadurch soll verdeutlicht werden,
+		dass dieses selbst-adaptive System auch über blockierende Kommunikation effizient ist.
+
+		Die Arbeit ist in 8 Kapitel aufgeteilt. In Kapitel \ref{cha:grundlagen} werden die Grundlagen
+		dieser Arbeit erklärt, dabei handelt es sich um das \dns{} und Lastverteilungsansätze, und es
+		wird eine Einordnung dieser Arbeit in die vorgestellten Konzepte vorgenommen. Anschließend
+		werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche sich mit DNS-Clustern
+		und Lastsituationen in eben diesen befassen. Das zu erweiternde System zur selbst-adaptiven
+		Lastverteilung salbnet \cite{zinke2012,salbnet} wird in Kapitel \ref{cha:salbnet} beschrieben.
+		In Kapitel \ref{cha:konzept} wird das Konzept der erarbeiteten Erweiterung und die dazugehörigen
+		Vorüberlegungen aufgezeigt.  Darauf folgend ist in Kapitel \ref{cha:implementierung} die
+		konkrete Umsetzung des vorher dargestellten Konzepts beschrieben.  Es wird hierbei auf
+		Besonderheiten und Probleme bei der Implementation eingegangen.  Daran anschließend werden in
+		Kapitel \ref{cha:messungen} die Ergebnisse einer Funktionsmessung und eine Einschätzung der
+		Implementation vorgestellt. Am Ende dieser Arbeit folgt in Kapitel \ref{cha:zusammenfassung}
+		eine Zusammenfassung, Einschätzung und Bewertung der erreichten Ziele und ein Ausblick auf
+		mögliche Erweiterungen des Konzepts.
 
 	% chapter Einleitung }}}
 
