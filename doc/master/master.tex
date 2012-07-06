@@ -633,8 +633,8 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=6cm]{images/internet-server}
-			\caption{Lastverteilung auf mehrer Server}
+			\includegraphics[width=5cm]{images/internet-server}
+			\caption{Lastverteilung mit mehreren Servers}
 			\label{fig:lastverteilung}
 		\end{figure}
 
@@ -650,38 +650,38 @@
 		der Server durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies
 		meist die einfachere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
 		die Daten konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt
-		zum Beispiel einen weitere Server bereitzustellen. So kann der Dienst des Servers, wie in
-		Abbildung \ref{fig:lastverteilung} zu sehen, von mehreren Servern dem Internet bereitgestellt
-		werden. Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von
-		dynmaischen Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite hat
-		Vorteile gegenüber der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die
-		Anwendung zulässt.  Allein durch die Bereitstellung eines zusätzlichen Servers erhöht sich die
-		Ausfallsicherheit und gleichzeitig auch die Wartbarkeit.  Durch diese Verteilung kann ein
-		einzelner Server ausfallen oder überprüft werden, währende der andere Server die Anwendung
-		weiterhin zur Verfügung stellt. Zudem ist die Erweiterbarkeit und weitere Skalierung sehr
-		einfach, wenn einmal die Infrastruktur geschaffen wurde mehrere Server zu nutzen. Ein weiterer
-		nicht zu vernachlässigender Punkt sind die Kosten. So ist die Anschaffung zweier identischer
-		Systeme meist günstiger als ein einzelnes System, welches die gleiche Last verarbeiten kann.
-		Hinzu kommt die Möglichkeit gezielt Ressourcen zu entfernen um Strom zu sparen. So könnten
-		Server nur dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.
-		Ein Beispiel hierfür könnte eine Verkaufsplattform sein, die zusätzliche Ressourcen benötigt,
-		wenn	besonders vor Feiertagen eine hohe Anzahl an Bestellungen eingeht.
+		zum Beispiel weitere Server bereitzustellen. So kann der Dienst des Servers, wie in Abbildung
+		\ref{fig:lastverteilung} zu sehen, von mehreren Servern dem Internet bereitgestellt werden.
+		Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von dynmaischen
+		Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite hat Vorteile gegenüber
+		der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die Anwendung zulässt.  Allein
+		durch die Bereitstellung eines zusätzlichen Servers erhöht sich die Ausfallsicherheit und
+		gleichzeitig auch die Wartbarkeit.  Durch diese Verteilung kann ein einzelner Server ausfallen
+		oder überprüft werden, währende der andere Server die Anwendung weiterhin zur Verfügung stellt.
+		Zudem ist die Erweiterbarkeit und weitere Skalierung sehr einfach, wenn einmal die Infrastruktur
+		geschaffen wurde mehrere Server zu nutzen. Ein weiterer nicht zu vernachlässigender Punkt ist
+		die Kostenfrage. So ist die Anschaffung zweier identischer Systeme meist günstiger als ein
+		einzelnes System, welches die gleiche Last verarbeiten kann.  Hinzu kommt die Möglichkeit
+		gezielt Ressourcen zu entfernen um Strom zu sparen. So könnten Server nur dann angeschaltet
+		werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.  Ein Beispiel hierfür könnte
+		eine Verkaufsplattform sein, die zusätzliche Ressourcen benötigt, wenn	besonders vor Feiertagen
+		eine hohe Anzahl an Bestellungen eingeht.
 
 		Im Folgenden werden verschiede Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
 		Sie unterscheiden sich in der Umsetzung der Lastverteilung und bieten jeweils gewisse Vor- und
 		Nachteile. Der Hauptanwendungsfall für diese Systeme ist die Verteilung von HTTP-Anfragen.
 		Diese unterscheiden sich von DNS-Anfragen in mehreren Punkten, weshalb anschließend noch
 		Besonderheiten und existierende Verfahren der Lastverteilung von DNS-Verkehr erklärt werden.
-
-			\subsection*{Server-Lastverteilung} % {{{
-
+	
+			\subsection{Server-Lastverteilung} % {{{
+			\label{sub:Server-Lastverteilung}
+			
 			\begin{figure}
 				\centering
-				\includegraphics[width=6cm]{images/loadbalancer}
+				\includegraphics[width=5cm]{images/loadbalancer}
 				\caption{Lastverteilung mit Hilfe eines Lastverteilers}
 				\label{fig:loadbalancer}
 			\end{figure}
-			
 
 			Bei dem Konzept der Server-Lastverteilung wird von der folgenden Situation ausgegangen.  Es
 			existiert ein Cluster aus mehreren Servern, welche alle die selbe Anwendung (z.B. eine
@@ -693,9 +693,9 @@
 			\begin{itemize}
 				\item Entgegennehmen des kompletten Netzwerkverkehrs, welcher an die Anwendung gerichtet ist
 					(z.B. HTTP-Anfragen an eine Website).
-				\item Aufteilung des angenommenen Netzwerkverkehrs und Verteilung auf die Backend-Server.
-				\item Beobachtung der Last der Backend-Server und entsprechenden Anpassung der
-					Lastverteilung.
+				\item Verteilung des angenommenen Netzwerkverkehrs auf die Backend-Server.
+				\item Überwachung der Last der einzelnen Backend-Server und entsprechenden Anpassung der
+					Verteilung des Netzwerkverkehrs.
 			\end{itemize}
 
 			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Es kann hierbei
@@ -714,45 +714,45 @@
 			und zum Weiterversenden wiederum in den Kernelspace kopiert werden. Hierzu ist jeweils ein
 			Kontextwechsel nötig, welcher bei hohem Netzwerkverkehr zu Leistungseinbußen führen kann
 			\cite{boehme2006}.  Im Vergleich zu diesen Ansätzen im Userspace gibt es im Kernelspace den
-			Linux Virtual Server (LVS) \cite{lvs,zhang2000} für Linux und den Paketfilter
-			pf \cite{pf} für OpenBSD als bekannteste Beispiele.
-			Indem die Pakete bereits im Kernelspace verarbeitet werden, findet kein Kontextwechsel statt
-			und die Verarbeitung kann schneller erfolgen. Allerdings findet die Verarbeitung auf einer der
-			unteren Schichten des OSI-Modells statt, was dazu führt das keine anwendungsspezifischen
-			Informationen vorliegen. Jedoch bieten dieser Ansatz eben genau dies auch als Vorteil, denn so
-			kann eine Lastverteilung unabhängig von Anwendungen statt finden.  Das heißt ein
-			Lastverteiler, wie der LVS, kann so konfiguriert werden, dass er gleichzeitig
-			unterschiedlichen Netzwerkverkehr (z.B. unterschiedliche Transportprotokolle oder Portnummern)
-			separat verteilt. Dies ist mit einer anwendungsbasierten Lösung nicht ohne erheblichen Aufwand
-			realisierbar.
+			Linux Virtual Server (LVS) \cite{lvs,zhang2000} für Linux und den Paketfilter pf \cite{pf} für
+			OpenBSD als bekannteste Beispiele.  Indem die Pakete bereits im Kernelspace verarbeitet
+			werden, findet kein Kontextwechsel statt und die Verarbeitung kann schneller erfolgen.
+			Allerdings findet die Verarbeitung auf einer der unteren Schichten des OSI-Modells statt, was
+			dazu führt das keine anwendungsspezifischen Informationen vorliegen. Jedoch bieten dieser
+			Ansatz eben genau dies auch als Vorteil, denn so kann eine Lastverteilung unabhängig von
+			Anwendungen statt finden.  Das heißt ein Lastverteiler, wie der LVS, kann so konfiguriert
+			werden, dass er gleichzeitig unterschiedlichen Netzwerkverkehr (z.B. unterschiedliche
+			Transportprotokolle oder Portnummern) separat verteilt. Dies ist mit einer anwendungsbasierten
+			Lösung nicht ohne weiteres realisierbar.
 
 			Unabhängig von der gewählten Software-Lösung ist der gewählte Algorithmus zur Lastverteilung
 			ein entscheidendes Kriterium. Es existieren mehrere Algorithmen für dieses Problem
-			\cite{zinke2007}, wobei es von der gewählten Software abhängt, welche zur Verfügung stehen.
-			Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
+			\cite{zinke2007}, wobei es von der gewählten Software abhängt, welche überhaupt zur Verfügung
+			stehen.  Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
 			Least-Connection-Verfahren. Beim Round-Robin-Algorithmus wählt der Lastverteiler, aus einer
 			Liste von Servern, den nächsten aus. Dies geschieht zyklisch, was dazu führt, dass die
-			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr einfacher Algorithmus der aber bei
-			homogenen Clustern und homogenen Anfragen ausreicht um Last sinnvoll zu verteilen. Handelt es
-			sich nicht um ein homogenes Cluster, so kann durch eine gewichtete Variante des Algorithmus
-			die Last entsprechend der Leistung der Server verteilt werden. Sind jedoch die Anfragen an das
-			Cluster nicht homogen, das heißt jede Anfrage erzeugt eine unterschiedliche Last bei den
-			Backend-Servern, kann dies nicht durch den Round-Robin-Algorithmus ausgeglichen werden. Der
-			zweite bekante Algorithmus ist Least-Connection. Dieser Algorithmus beachtet bei der
-			Verteilung die aktuelle Anzahl an Verbindungen zu den Backend-Servern, das heißt wenn ein
+			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr einfacher Algorithmus der aber
+			bei homogenen Clustern und homogenen Anfragen ausreicht, um die Last sinnvoll zu verteilen.
+			Handelt es sich nicht um ein homogenes Cluster, so kann durch eine gewichtete Variante des
+			Algorithmus die Last entsprechend der Leistung der Server verteilt werden. Sind jedoch die
+			Anfragen an das Cluster nicht homogen, das heißt jede Anfrage erzeugt eine unterschiedliche
+			Last bei den Backend-Servern, kann dies nicht durch den Round-Robin-Algorithmus ausgeglichen
+			werden. Der zweite bekante Algorithmus ist Least-Connection. Dieser Algorithmus beachtet bei
+			der Verteilung die aktuelle Anzahl an Verbindungen zu den Backend-Servern, das heißt wenn ein
 			Server schneller seine Anfragen abarbeitet als ein anderer, erhält dieser Server früher wieder
 			Anfragen. Auch von diesem Algorithmus gibt es eine gewichtete Variante, welche die bereits
 			dynamisch getroffene Entscheidung noch einmal verbessern soll. Daher ist anzunehmen, dass
 			Least-Connection bessere Ergebnisse auf heterogenen Clustern als Round-Robin erzielt und auch
 			nicht homogene Anfragen begrenzt abfängt.
 
-			% subsection Server Lastverteilung }}}
+			% subsection Server-Lastverteilung }}}
 
-			\subsection*{DNS-basierte Lastverteilung} % {{{
+			\subsection{DNS-basierte Lastverteilung} % {{{
+			\label{sub:dns-lastverteilung}
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=10cm]{images/dns-loadbalancer}
+				\includegraphics[width=9cm]{images/dns-loadbalancer}
 				\caption{Lastverteilung mit Hilfe von DNS}
 				\label{fig:lastverteilung-dns}
 			\end{figure}
@@ -761,42 +761,51 @@
 			sich eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag
 			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Ein möglicher
 			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt, dabei wird als
-			erstes der DNS-Server befragt, welcher dann eine Liste alle möglichen Adressen liefert . Dabei
+			erstes der DNS-Server befragt, welcher dann eine Liste aller möglichen Adressen liefert. Dabei
 			existiert keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge
 			er die IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit
 			eine gewissen Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt
 			das Caching von lokalen Nameservern dazu, dass alle Anfragen zu der Adresse im Cache geleitet
 			werden. Weiterhin hat der DNS-Server keine Informationen über die Last der Server oder ob
-			diese überhaupt im Betrieb sind. Dadurch wird ein Server der ausgefallen ist trotzdem immer
+			diese überhaupt erreichbar sind. Dadurch wird ein Server, der ausgefallen ist, trotzdem immer
 			wieder als Antwort zurückgeliefert. Auch ist es nicht möglich Gewichte für die Verteilung der
 			Last auf den Server anzugeben, weshalb eine Heterogenität der Server nicht ausgeglichen werden
-			kann. Dieses Problem sollte durch den Ressource Record Typen \texttt{SRV} \cite{rfc2782}
-			behoben werden. Ein Beispiel eines \texttt{SRV}-Eintrags für einen Webserver ist in Tabelle
-			\ref{tab:srv} zu sehen. Durch den Domain-Namen wird definiert, dass dieser Eintrag nur für
-			HTTP-Anfragen über TCP an die Domain \texttt{bsp.de} gilt. In dem Beispiel wird anschließend
-			den Domains \texttt{www.bsp.de} und \texttt{www2.bsp.de} eine Priorität von 0 und
-			\texttt{backup.bsp.de} von 1 zugeordnet. Dabei muss von einem Client der Server mit der
-			kleinsten Priorität gewählt werden, sofern dieser erreichbar ist. Gibt es mehrere Server mit
-			der selben Priorität (wie im Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte
-			die Wahl eines Server mit einem höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch
-			der Port für das Ziel angegeben. Diese Verfahren führt zwei Gewichtungen ein, welche auf der
-			Client-Seite ausgewertet werden. Allerdings ist dies das größte Problem. Denn die
-			Unterstützung auf der Clientseite für \texttt{SRV}-Einträge ist gering. Außerdem bleibt das
-			Problem bestehen, das der DNS-Server nicht die Last und Funktionstüchtigkeit der Server kennt.
-			Jedoch gibt es dem Client einen Anhaltspunkt, welchen Server er als nächstes kontaktieren
-			sollte, sofern ein Server nicht erreichbar ist.
+			kann. Dieses Problem sollte durch den DNS-Typen \texttt{SRV} \cite{rfc2782} behoben werden.
+			Ein Beispiel eines \texttt{SRV}-Eintrags für einen Webserver ist in Tabelle \ref{tab:srv} zu
+			sehen. Durch den Domain-Namen wird definiert, dass dieser Eintrag nur für HTTP-Anfragen über
+			TCP an die Domain \texttt{bsp.de} gilt. In dem Beispiel wird anschließend den Domains
+			\texttt{www.bsp.de} und \texttt{www2.bsp.de} eine Priorität von 0 und \texttt{backup.bsp.de}
+			von 1 zugeordnet. Dabei muss von einem Client der Server mit der kleinsten Priorität gewählt
+			werden, sofern dieser erreichbar ist. Gibt es mehrere Server mit der selben Priorität (wie im
+			Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte die Wahl eines Server mit einem
+			höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch der Port für das Ziel angegeben.
+			Diese Verfahren führt zwei Gewichtungen ein, welche auf der Client-Seite ausgewertet werden.
+			Allerdings ist dies das größte Problem. Denn die Unterstützung auf der Clientseite für
+			\texttt{SRV}-Einträge ist gering. Außerdem bleibt das Problem bestehen, das der DNS-Server
+			nicht die Last und Funktionstüchtigkeit der Server kennt.  Jedoch gibt es dem Client einen
+			Anhaltspunkt, welchen Server er als nächstes kontaktieren sollte, sofern ein Server nicht
+			erreichbar ist.
 
 			\begin{table}
 				\centering
 				\begin{tabular}{|ccccccl|}\hline
-				 Domain & Klasse & RR & Priorität & Gewicht & Port & Ziel \\\hline\hline
+				 Domain & Klasse & Typ & Priorität & Gewicht & Port & Ziel \\\hline\hline
 					\_http.\_tcp.bsp.de. & IN & SRV & 0 & 2 & 80 & www.bsp.de. \\	
 					& IN & SRV & 0 & 1 & 80 & www2.bsp.de. \\	
 					& IN & SRV & 1 & 0 & 80 & backup.bsp.de. \\\hline
 				\end{tabular}
 				\caption{Beispiel für einen \texttt{SRV}-Eintrag für einen Webserver}
 				\label{tab:srv}
-			\end{table}
+			\end{table} 
+			
+			Mit Geotargeting oder auch GeoIP genannt, ist es möglich anhand der IP-Adresse einen Aussage
+			über die ungefähre geografische Position des Inhabers zu treffen. Diese Information wird zum
+			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet wodurch der
+			DNS-Server seine Antwort an die geografische Position des Fragestellers anpassen kann. Die
+			Gedanke dabei ist, dass ein geografisch naher Server auch der schnellere Server ist. Dies muss
+			nicht immer der Fall sein und außerdem kann es sein, dass der Client über einen DNS-Server
+			Anfragen stellt, welcher selber nicht geografisch nah ist. Dadurch kann dies zu negativen
+			Effekten führen.
 
 			Auch Kombinationen der Server-Lastverteilung und DNS-Lastverteilung sind möglich. Dabei wird ein
 			DNS-Server um Lastverteilungsfunktionen erweitert. So beschreibt \cite{chyuyi2003} ein
@@ -804,24 +813,23 @@
 			die Abfrage einer Antwort benötigt. Dadurch kann die DNS-Antwort entsprechend der
 			Lastsitutation angepasst werden. Ein ähnlichen Ansatz beschreiben \cite{mookim2005}, dabei
 			werden Backend-Server die überlastet sind aus der Round-Robin-Liste des DNS-Servers entfernt
-			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben. Bei dem
-			allgemeinen Prinzip des Globalen Server-Lastverteilung \cite{bourke2001} kann der DNS-Server
-			zum Beispiel anhand der geographischen Lage einen Server auswählen.
+			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben.
 
 			% subsection DNS-basierte Lastverteilung }}}
 			
-			\subsection*{Lastverteilung von DNS-Verkehr} % {{{
+			\subsection{Lastverteilung von DNS-Verkehr} % {{{
+			\label{sub:lastverteilung-dns}
 
 			% TODO: das mit den Sessions überlegen
 
 			Die Verteilung von DNS-Anfragen unterschiedet sich in mehreren Punkten von HTTP-Anfragen. So
 			ist das genutzte Transport-Protokoll UDP statt TCP und die Nachrichten dürfen nicht größer als
 			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
-			HTTP-Anwendungen, wo ein Client während einer Session immer mit dem selben Server
+			zustandsbehafteten HTTP-Anwendungen, wo ein Client während einer Session immer mit dem selben Server
 			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
 			als bei HTTP-Anfragen. Firmen und Organisationen haben selten einen so hohe Anzahl an
-			DNS-Anfragen, dass sie eine Lastverteilung benötigen. Dies schließt nicht aus, dass mehrere
-			DNS-Server existieren, welche aber oft nur als Schutz gegen Ausfällen und anderen Störungen
+			DNS-Anfragen, dass sie Überlastsituationen erreichen. Dies schließt nicht aus, dass mehrere
+			DNS-Server existieren, welche aber oft nur als Schutz vor Ausfällen und anderen Störungen
 			dienen.  In lokalen Netzwerken und kleinere Firmen reicht es daher Lastverteilung mit Hilfe
 			von DNS-Einträgen durchzuführen. Bei größeren Firmen, die eine höhere Anzahl an DNS-Anfragen
 			zu bewältigen haben ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
