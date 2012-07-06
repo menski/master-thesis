@@ -1,0 +1,11 @@
+#
+# /etc/hosts: static lookup table for host names
+#
+
+#<ip-address>	<hostname.domain.org>	<hostname>
+127.0.0.1	localhost.localdomain	localhost snickers
+::1		localhost.localdomain	localhost snickers
+192.168.1.1	router
+192.168.1.105	nexus
+
+# End of file

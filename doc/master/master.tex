@@ -345,9 +345,10 @@
 			Dadurch wird einer Seits die Menge an Informationen je Knoten gering gehalten und außerdem
 			kann so die Verwaltung und Pflege der Information an verschieden Betreiber delegiert werden.
 
-			Die Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
-			kontrolliert und auch die Vergabe der Top-Level-Domains (TLDs) ist an sie gebunden. Die ICANN
-			ist eine Non-Profit-Organisation mit Sitz in den USA. Sie ist zwar für die Vergabe der TLDs
+			Die Root-Domain, welche aktuell von 13 Root-Servern \cite{rootserver} bereitgestellt wird,
+			wird von der Internet Corporation for Assigned Names and Numbers (ICANN) kontrolliert und auch
+			die Vergabe der Top-Level-Domains (TLDs) ist an sie gebunden. Die ICANN ist eine
+			Non-Profit-Organisation mit Sitz in den USA. Sie ist zwar für die Vergabe der TLDs
 			verantwortlich, verwaltet und betrieben werden diese jedoch von verschieden Organisationen und
 			Unternehmen. Es existieren aktuell 313 TLDs \cite{tlds}, welche sich hauptsächlich in drei
 			Arten unterteilen lassen:
@@ -523,22 +524,22 @@
 			\label{sub:software}
 			
 				In diesem Abschnitt werden mehrere Softwaresysteme vorgestellt, welche zum Betrieb eines
-				DNS-Server genutzt werden. Diese wurden aufgrund von zwei Studien aus den Jahren 2004 und
-				2009 zur Verteilung von DNS-Server Software ausgewählt. Die erste Studie \cite{survey2004}
-				wurde am 23. Mai 2004 abgeschlossen und untersuchte 37.836.997 SLDs unter den TLDs
-				\texttt{com}, \texttt{net}, \texttt{org},	\texttt{info} und \texttt{biz}. Die zweite Studie
-				\cite{survey2009} ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den TLDs
-				\texttt{com}, \texttt{net} und \texttt{org} untersucht. Es wurde jeweils versucht die
-				eingesetze DNS-Server Software zu ermitteln. Dabei wurden die Systeme BIND, djbdns,
-				Microsoft DNS und NSD als vier der häufigsten Systeme ermittelt (siehe Tabelle
+				DNS-Server genutzt werden können. Diese wurden aufgrund von zwei Studien aus den Jahren 2004
+				und 2009 zur Verteilung von DNS-Server-Software ausgewählt. Die erste Studie
+				\cite{survey2004} wurde am 23. Mai 2004 abgeschlossen und untersuchte 37.836.997 SLDs unter
+				den TLDs \texttt{com}, \texttt{net}, \texttt{org},	\texttt{info} und \texttt{biz}. Die
+				zweite Studie \cite{survey2009} ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den
+				TLDs \texttt{com}, \texttt{net} und \texttt{org} untersucht. Es wurde jeweils versucht die
+				Version der eingesetzen DNS-Server-Software zu ermitteln. Dabei wurden die Systeme BIND,
+				djbdns, Microsoft DNS und NSD als vier der häufigsten Systeme ermittelt (siehe Tabelle
 				\ref{tab:verteilung}). Die genannten vier Systeme werden im folgenden vorgestellt.
 				Zusätzlich wird auf den dnsmasq Server eingegangen, welcher eine sehr spezielle Form eines
 				DNS-Servers darstellt.
 				
 				\begin{table}
 					\centering
-					\begin{tabular}{|c|c|c|}\hline
-						DNS-Server & 2004 & 2009 \\\hline\hline
+					\begin{tabular}{|c|r|r|}\hline
+						DNS-Server & \multicolumn{1}{c|}{2004} & \multicolumn{1}{c|}{2009} \\\hline\hline
 						BIND & \unit[70,11]{\%} & \unit[73,85]{\%} \\
 						djbdns & \unit[15,57]{\%} & \unit[2,56]{\%} \\
 						Microsoft DNS & \unit[6,24]{\%} & \unit[0,26]{\%}\\
@@ -550,14 +551,13 @@
 
 				\subsubsection*{BIND} % {{{
 
-				Die erste Version des Berkeley Internet Name Domain
-				(BIND) \cite{bind} Server wurde am Anfang der achtziger Jahre
-				an der University of California, Berkeley entwickelt und mit 4.3BSD erstmals
-				veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium (ISC)
-				weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
+				Die erste Version des Berkeley Internet Name Domain (BIND) \cite{bind} Server wurde am
+				Anfang der achtziger Jahre an der University of California, Berkeley entwickelt und mit
+				4.3BSD erstmals veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium
+				(ISC) weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
 				entwickelt. Er wird auf 10 der 13 Root-Server eingesetzt und ist auch sonst bei TLDs
 				weitverbreitet. Die erste Version des aktuellen BIND 9 Servers wurde 2000 veröffentlicht,
-				ein Nachfolger wird seit 2 Jahren entwickelt um die aktuellsten Standards (z.B.  DNSsec) zu
+				ein Nachfolger wird seit 2 Jahren entwickelt um die aktuellsten Standards (z.B. DNSSEC) zu
 				unterstützen.
 
 				Für diese Arbeit wurde der BIND Server als DNS-Server gewählt, da er der weitverbreitetste ist und
@@ -577,48 +577,49 @@
 				DNS-Server, das heißt er beantwortet keine rekursiven Anfragen. Was seinen Einsatz als
 				DNS-Server in einem lokalen Netzwerk ausschließt. Daher kann bei dem NSD auf unnötige
 				Funktionen verzichtet werden und somit auf hohe Belastbarkeit optimiert werden. Die erste
-				Version der aktuellen NSD 3 wurde 2006 veröffentlicht.
+				Version des aktuellen NSD 3 wurde 2006 veröffentlicht.
 				
 				% subsubsection Name Server Daemon (NSD) }}}
 
 				\subsubsection*{Microsoft DNS} % {{{
 
-				Der Microsoft DNS Server \cite{msdns} ist eine Implementation
-				von Microsoft, welche mit den Windows Server Produkten ausgeliefert wird. Er kann sowohl als
-				authoritativer und rekursiver Nameserver betrieben werden. Durch seinen Einsatz auf Windows
-				Servern kommt er vor allem in lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des
-				Microsoft DNS Servers ist, dass es nicht nur möglich ist die DNS-Informationen aus einem
-				Master-File zu erhalten sondern auch aus einem Active Directory.
+				Der Microsoft DNS Server \cite{msdns} ist eine Implementation von Microsoft, welche mit den
+				Windows Server Produkten ausgeliefert wird. Er kann sowohl als authoritativer und rekursiver
+				Nameserver betrieben werden. Durch seinen Einsatz auf Windows Servern kommt er vor allem in
+				lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des Microsoft DNS Servers ist,
+				dass es nicht nur möglich ist die DNS-Informationen aus einem Master-File zu erhalten
+				sondern auch aus einem Active Directory.
 				
 				% subsubsection Microsoft DNS }}}
 
 				\subsubsection*{djbdns} % {{{
 
-				Das von Daniel J. Bernstein entwickelte Software-Paket
-				djbdns \cite{djbdns} ist einer der verbreitetsten DNS-Server. Daniel
-				J.  Bernstein ist ein Mathematiker, Programmierer und Kryptologe aus den USA. Er
-				veröffentlichte djbdns im Jahr 2001 und setzte eine
-				Belohung \cite{guarantee} von \$1000 aus, für den ersten der
-				einen Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein
-				Software-Paket aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck
-				erfüllen. Somit verringert sich die Code-Basis und die Komplexität der Programme. Die
-				Hauptkomponenten sind \texttt{tinydns} ein authoritativer Nameserver und \texttt{dnscache}
-				ein rekursiver Nameserver. Für andere Funktionen wie das Austauschen von kompletten
-				Zone-Informationen oder Blacklisting existieren ebenfalls eigene Programme.
+				Das von Daniel J. Bernstein entwickelte Software-Paket djbdns \cite{djbdns} ist einer der
+				verbreitetsten DNS-Server. Daniel J.  Bernstein ist ein Mathematiker, Programmierer und
+				Kryptologe aus den USA. Er veröffentlichte djbdns im Jahr 2001 und setzte eine Belohung
+				\cite{guarantee} von \$1000 aus, für den ersten der einen Fehler in djbdns findet. Die
+				Besonderheit von djbdns liegt darin, dass es ein Software-Paket aus mehreren Programmen ist,
+				welche immer einen speziellen Einsatzzweck erfüllen. Somit verringert sich die Code-Basis
+				und die Komplexität der Programme. Die Hauptkomponenten sind \texttt{tinydns} ein
+				authoritativer Nameserver und \texttt{dnscache} ein rekursiver Nameserver. Für andere
+				Funktionen wie das Austauschen von kompletten Zone-Informationen oder Blacklisting
+				existieren ebenfalls eigene Programme.
 				
 				% subsubsection Djbdns }}}
 
 				\subsubsection*{dnsmasq} % {{{
 
-				Das Programm dnsmasq \cite{dnsmasq} wurde
-				ausschließlich für Heim-Netzwerke entwickelt. Es stellt DNS und DHCP Dienste für ein kleines
-				Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq die Netzwerkknoten im Heimnetz über
-				DNS verfügbar macht, indem es entweder die \texttt{/etc/hosts} oder DHCP Informationen
-				nutzt. Dadurch müssen die lokalen Rechner keine eigene \texttt{hosts}-Datei pflegen.
-				Zusätzlich bietet es einen einfachn Cache für DNS-Anfragen, was zu einer Beschleunigung im
-				lokalen Netz führen kann. Somit ist dnsmasq kein üblicher DNS-Server und eignet sich auch
-				nicht zum Verwalten von Domains, zeigt jedoch eine alternative resourcenschonende lokale
-				Verwendung des DNS auf.
+				Das Programm dnsmasq \cite{dnsmasq} wurde ausschließlich für Heimnetzwerke entwickelt. Es
+				stellt DNS und DHCP\footnote{Das Dynamic Host Configuration Protocol (DHCP) \cite{rfc2131}
+				ermöglicht es Clients in einem Netzwerk dynamisch IP-Adressen zuzuweisen, so kann zum
+				Beispiel in einem Heimnetzwerk auf die Konfiguration von statischen IP-Adressen verzichtet
+				werden.} Dienste für ein kleines Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq
+				die Netzwerkknoten im Heimnetz über DNS verfügbar macht, indem es entweder die
+				\texttt{/etc/hosts} oder DHCP Informationen nutzt. Dadurch müssen die lokalen Rechner keine
+				eigene \texttt{hosts}-Datei pflegen.  Zusätzlich bietet es einen einfachen Cache für
+				DNS-Anfragen, was zu einer Beschleunigung im lokalen Netz führen kann. Somit ist dnsmasq
+				kein üblicher DNS-Server und eignet sich auch nicht zum Verwalten von Domains, zeigt jedoch
+				eine alternative resourcenschonende lokale Verwendung des DNS auf.
 				
 				% subsubsection Dnsmasq }}}
 

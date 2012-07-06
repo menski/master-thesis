@@ -1,0 +1,11 @@
+bsp.de.     IN  NS    ns1.bsp.de
+bsp.de.     IN  NS    ns2.bsp.de
+
+bsp.de.     IN  MX  10  mail.bsp.de
+
+twix        IN  A     141.89.59.23
+ns1         IN  A     141.89.59.12
+ns2         IN  A     141.89.59.13
+mail        IN  A     141.89.59.34
+
+www         IN  CNAME twix
