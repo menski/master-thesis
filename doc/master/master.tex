@@ -1162,45 +1162,64 @@
 		\subsection*{Last-Metrik} % {{{
 
 		Die Last-Metrik ist applikationsunabhängig und wird auch nicht durch die Anzahl der Clients
-		beeinflusst. Jedoch ist es schwer aus den Faktoren wie der CPU-Last, RAM-Auslastung und Load
-		eines Servers Aussagen über die noch zur Verfügung stehenden Ressourcen des Servers zu geben.
-		Der Vergleich von CPU-Lasten ist vor allem in heterogenen Clustern schwer, dazu müsste eine
-		Normalisierung durchgeführt werden, welche auf die entsprechenden Server ausgelegt ist. Daher
-		ist diese Metrik nicht einfach zu berechnen und erfüllt die Anforderung nicht.
+		beeinflusst. Allerdings ist es schwer aus Faktoren wie der CPU-Last, RAM-Auslastung, Load etc.
+		eines Servers Aussagen über die aktuelle Lastsituation des Servers zu treffen. In
+		\cite{kunz1991} wurde verschieden Last-Metriken untersucht. Dabei wurde gezeigt, dass einfache
+		Metriken bessere Ergebnisse lieferten als mehrdimensionale Metriken, über mehrere Indizes. Die
+		besten Ergebnisse wurden mit einer Metrik, welche sich ausschließlich auf die Länge der
+		CPU-Warteschlange bezieht, erzielt. Bei dieser Untersuchung wurden ein homogenes System
+		betrachtet. Um diese Metriken auf ein heterogenes System anzuwenden, muss eine Normierung
+		vorgenommen werden, damit die System und deren Metriken vergleichbar werden. Dazu schlägt
+		\cite{lansch1994} die Formel \ref{eq:load} vor, bei der $\alpha$ eine Architekturkonstante für
+		die Grundgeschwindigkeit und \textit{load} die aktuelle Last des Systems ist.
 
-		Beweis: \cite{kunz1991} und \cite{lansch1994}
-		% TODO: VS Buch und Paper einbauen
+		\begin{equation}
+			I := \alpha \cdot (1 + \text{load})
+			\label{eq:load}
+		\end{equation}
+
+		Selbst, wenn eine normierte Metrik genutzt wird, existiert trotzdem noch das Problem, dass mit
+		dieser Metrik eine Abschätzung über die noch möglichen Ressourcen, in Form von weiteren
+		Anfragen, nicht einfach ist. Zum Beispiel lässt sich kaum aus der Länge der CPU-Warteschlange
+		abschätzen, wieviel weitere Anfragen der Server noch empfangen kann, bevor er in eine
+		Überlastsituation gerät. Daher ist die Metrik nicht einfach zu berechnen, bzw. führt nur zu sehr
+		ungenauen Abschätzungen und erfüllt damit die Anforderungen nicht.
 
 		% subsection Last-Metrik }}}
 
 		\subsection*{Verkehr-Metrik} % {{{
 
-		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und einfach zu berechnen. Es wird die
-		Differenz der eingehenden und ausgehenden Anfragen ermittelt. Ist diese Differenz negativ, ist
-		der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich 0 ist der
-		Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort beantworten kann.
-		Ist die Differenz positiv stauen sich Anfragen beim Server. Steigt diese Differenz immer
-		weiter an, kann davon ausgegangen werden, dass der Server Probleme hat weitere Anfragen
-		abzuarbeiten. Die Probleme dieser Metrik sind jedoch die Abbildung der Differenz auf die
-		verfügbaren Ressourcen des Servers. Das heißt, was sagen die eingehenden und ausgehenden Anfragen
-		über die Anzahl der noch zusätzlich möglichen Anfragen aus. (????) Außerdem kann davon ausgegangen
-		werden, dass ein Zählen aller ein- und ausgehenden Anfragen nicht gut skaliert. Das heißt, wenn
-		eine hohe Anzahl an Anfragen auf den Server abgegeben werden, erzeugt das Überwachen aller
-		Verbindungen eine zusätzliche Last. Daher erfüllt diese Metrik ebenfalls nicht die
-		Anforderungen.
-		
+		Die Verkehr-Metrik ist ebenfalls applikationsunabhängig und einfach zu berechnen, da nur die
+		Differenz der eingehenden und ausgehenden Anfragen ermittelt werden muss. Ist diese Differenz
+		negativ, ist der Server schneller im Abarbeiten als das neue Anfragen eintreffen. Ist sie gleich
+		0 ist der Server in einem Gleichgewicht, in dem er alle eintreffenden Anfragen sofort
+		beantworten kann.  Ist die Differenz positiv stauen sich Anfragen beim Server. Steigt diese
+		Differenz immer weiter an, kann davon ausgegangen werden, dass der Server Probleme hat weitere
+		Anfragen abzuarbeiten. Die Probleme dieser Metrik sind jedoch die Abbildung der Differenz auf
+		die verfügbaren Ressourcen des Servers. Das bedeutet, es ist schwer anhand der Differenz auf die
+		noch möglichen Anfragen zu schließen, welche der Server zusätzlich abarbeiten könnte, ohne das
+		eine Anfrage verworfen wird. Es könnte eine Abschätzung der maximal möglichen Anfragen pro
+		Zeitintervall genutzt werden, diese vernachlässigt allerdings, die UDP-Eigenschaft, dass in der
+		Receive-Queue keine Anfragen sondern Pakete gespeichert werden. Das heißt, dass die maximale
+		Anzahl an Anfragen pro Zeitintervall von den einzelnen Paketgrößen abhängt. Außerdem
+		kann davon ausgegangen werden, dass ein protokollieren aller ein- und ausgehenden Anfragen nicht
+		gut skaliert. So würde bei einer hohen Anzahl von Anfragen an den Server die Überwachung
+		eine zusätzlich Last erzeugen, welche den Server extra belastet. Daher erfüllt auch diese Metrik
+		ebenfalls nicht die Anforderungen.
+
 		% subsection Verkehr-Metrik }}}
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
-		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen, applikationsunabhängig. Sie
-		erzeugt auch keine zusätzliche Last, wenn die Client-Anzahl ansteigt. Die Berechnung ist etwas
-		schwieriger als beim TCP-Anwendungsfall, da wie bereits erwähnt, keine Verbindungen gespeichert
-		werden, sondern Pakete. Allerdings kann aus dem verbleibenden Platz in der Receive-Queue und
-		einer Abschätzung über die durchschnittliche Paketgröße eine Vorhersage getroffen werden, welche
-		zusätzliche Anzahl an Anfragen der Server verarbeiten könnte. Damit erfüllt die Metrik auch die
+		Die Receive-Queue-Metrik ist, wie auch die beiden vorherigen applikationsunabhängig, da sie sie
+		sich auf die Receive-Queue des UDP-Sockets bezieht. Sie erzeugt auch keine zusätzliche Last,
+		wenn die Client-Anzahl ansteigt. Die Berechnung ist etwas schwieriger als bei der
+		TCP-Backlog-Metrik, da, wie bereits erwähnt, keine Verbindungen gespeichert werden, sondern
+		Pakete. Allerdings kann aus dem verbleibenden Platz in der Receive-Queue und einer Abschätzung
+		über die durchschnittliche Paketgröße eine Vorhersage getroffen werden, welche zusätzliche
+		Anzahl an Anfragen der Server verarbeiten könnte. Damit erfüllt die Metrik auch die
 		Anforderungen der einfachen Berechnung und der Angabe von verfügbaren Ressourcen.
-		
+
 		% subsection Receive-Queue-Metrik }}}
 
 		Wie bereits durch die vorhergehenden Bewertung zu erkennen, hat nur die Receive-Queue-Metrik die
@@ -1405,7 +1424,7 @@
 		andere Formel gelten.		
 
 		\begin{equation}
-			\text{Receive-Queue} = \lfloor (\text{recvmsg} + 63) / 128 \rfloor * 128 + 376	
+			\text{Receive-Queue} = \lfloor (\text{recvmsg} + 63) / 128 \rfloor \cdot 128 + 376	
 			\label{eq:recvmsg}
 		\end{equation}
 
