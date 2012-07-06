@@ -67,6 +67,41 @@
 
 %%% RFCs %%%
 
+@techreport{rfc768,
+  author      = {Postel, J.},
+  title       = {User Datagram Protocol},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {1980},
+  type        = {RFC},
+  number      = {768},
+  url         = {http://www.ietf.org/rfc/rfc768.txt},
+}
+
+@techreport{rfc791,
+  author      = {Postel, J.},
+  title       = {Internet Protocol},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {1981},
+  type        = {RFC},
+  number      = {791},
+  note        = {Updated by RFC 1349},
+  url         = {http://www.ietf.org/rfc/rfc791.txt},
+}
+
+@techreport{rfc793,
+  author      = {Postel, J.},
+  title       = {Transmission Control Protocol},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {1981},
+  type        = {RFC},
+  number      = {793},
+  note        = {Updated by RFCs 1122, 3168, 6093, 6528},
+  url         = {http://www.ietf.org/rfc/rfc793.txt},
+}
+
 @techreport{rfc1034,
   author      = {Mockapetris, P. V.},
   title       = {Domain names - concepts and facilities},
@@ -89,18 +124,6 @@
   url         = {http://www.rfc-editor.org/rfc/rfc1035.txt},
 }
 
-@techreport{rfc791,
-  author      = {Postel, J.},
-  title       = {Internet Protocol},
-  institution = {Internet Engineering Task Force},
-  publisher   = {IETF},
-  year        = {1981},
-  type        = {RFC},
-  number      = {791},
-  note        = {Updated by RFC 1349},
-  url         = {http://www.ietf.org/rfc/rfc791.txt},
-}
-
 @techreport{rfc2460,
   author      = {Deering, S. and Hinden, R.},
   title       = {Internet Protocol, Version 6 (IPv6) Specification},
@@ -111,17 +134,6 @@
   number      = {2460},
   note        = {Updated by RFCs 5095, 5722, 5871, 6437, 6564},
   url         = {http://www.ietf.org/rfc/rfc2460.txt},
-}
-
-@techreport{rfc4786,
-  author      = {Abley, J. and Lindqvist, K.},
-  title       = {Operation of Anycast Services},
-  institution = {Internet Engineering Task Force},
-  publisher   = {IETF},
-  year        = {2006},
-  type        = {RFC},
-  number      = {4786},
-  url         = {http://www.ietf.org/rfc/rfc4786.txt},
 }
 
 @techreport{rfc2782,
@@ -137,14 +149,72 @@
 }
 
 @techreport{rfc3549,
-  author      ="J. Salim and H. Khosravi and A. Kleen and A. Kuznetsov",
-  title       ="{Linux Netlink as an IP Services Protocol}",
+  author      = {Salim, J. and Khosravi, H. and Kleen, A. and Kuznetsov, A.},
+  title       = {Linux Netlink as an IP Services Protocol},
   institution = {Internet Engineering Task Force},
   publisher   = {IETF},
   year        = {2003},
   type        = {RFC},
   number      = {3549},
   url         = {http://www.ietf.org/rfc/rfc3549.txt},
+}
+
+@techreport{rfc3596,
+  author      = {Thomson, S. and Huitema, C. and Ksinant, V. and Souissi, M.},
+  title       = {DNS Extensions to Support IP Version 6},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {2003},
+  type        = {RFC},
+  number      = {3596},
+  url         = {http://www.ietf.org/rfc/rfc3596.txt},
+}
+
+@techreport{rfc4033,
+  author      = {Arends, R. and Austein, R. and Larson, M. and Massey, D. and Rose, S.},
+  title       = {DNS Security Introduction and Requirements},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {2005},
+  type        = {RFC},
+  number      = {4033},
+  note        = {Updated by RFC 6014},
+  url         = {http://www.ietf.org/rfc/rfc4033.txt},
+}
+
+@techreport{rfc4034,
+  author      = {Arends, R. and Austein, R. and Larson, M. and Massey, D. and Rose, S.},
+  title       = {Resource Records for the DNS Security Extensions},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {2005},
+  type        = {RFC},
+  number      = {4034},
+  note        = {Updated by RFCs 4470, 6014},
+  url         = {http://www.ietf.org/rfc/rfc4034.txt},
+}
+
+@techreport{rfc4035,
+  author      = {Arends, R. and Austein, R. and Larson, M. and Massey, D. and Rose, S.},
+  title       = {Protocol Modifications for the DNS Security Extensions},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {2005},
+  type        = {RFC},
+  number      = {4035},
+  note        = {Updated by RFCs 4470, 6014},
+  url         = {http://www.ietf.org/rfc/rfc4035.txt},
+}
+
+@techreport{rfc4786,
+  author      = {Abley, J. and Lindqvist, K.},
+  title       = {Operation of Anycast Services},
+  institution = {Internet Engineering Task Force},
+  publisher   = {IETF},
+  year        = {2006},
+  type        = {RFC},
+  number      = {4786},
+  url         = {http://www.ietf.org/rfc/rfc4786.txt},
 }
 
 
@@ -285,6 +355,14 @@
   school      = {Universität Potsdam},
   year        = {2009},
   type        = {Semsterarbeit},
+}
+
+@mastersthesis{lorenz2012,
+  author      = {Lorenz, Claas},
+  title       = {Sicherheit im Domain Name System},
+  school      = {Universität Potsdam},
+  year        = {2012},
+  type        = {Bachelorarbeit},
 }
 
 

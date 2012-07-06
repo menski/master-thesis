@@ -21,7 +21,7 @@
 
 \definecolor{uniblue}{rgb}{0.062745,0.17647,0.34118}
 \definecolor{tblue}{HTML}{204A87}
-\definecolor{tcomment}{HTML}{2E3436}
+\definecolor{tgreen}{HTML}{4E9A06}
 \definecolor{tred}{HTML}{CC0000}
 
 \lstset{
@@ -32,8 +32,8 @@
 	captionpos=b,
 	breaklines=true,
 	breakatwhitespace=false,
-	keywordstyle=\color{tblue},
-	commentstyle=\color{tcomment},
+	keywordstyle=\color{tgreen},
+	commentstyle=\color{tblue},
 	stringstyle=\color{tred}
 }
 
@@ -116,20 +116,21 @@
 
 		Das \dns{} \cite{rfc1034, rfc1035} ist eine fundamentale Komponente des heutigen Internets.  Es
 		ermöglicht eine Abbildung von Domain-Namen auf sogenannte IP\footnote{Das Internet Protocol (IP)
-		ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite \cite{stevens1994}. Es dient der
-		Vermittlung von Daten-Paketen in einem Netzwerk, um dies zu ermöglichen erhält jeder
-		Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein Domain-Name ist eine Zeichenkette,
-		diese können sich Menschen leichter merken als eine Zahlenfolge.  Computersysteme hingegen
-		können besser und schneller mit Zahlen als mit Zeichenketten arbeiten.  Daher ist diese
-		Abbildung eine wichtige Voraussetzung für die einfache und schnelle Nutzung eines Netzwerks, im
-		Besonderen des Internets. Bei jedem Aufruf einer Website oder dem Verschicken einer E-Mail, bei
-		dem der Nutzer einen Domain-Namen nutzt, wird eine Abfrage an einen Server im DNS gestellt. Die
-		darauffolgende Antwort, ist die dem Domain-Name zugeordnete IP-Adresse. Diese IP-Adresse wird
-		dann vom Computersystem genutzt um eine Verbindung zum Ziel aufzubauen. Dieser Zusammenhang
-		verdeutlicht bereits die Wichtigkeit des DNS, denn ohne dieses System müsste jeder Nutzer eines
-		Netzwerks die benötigten IP-Adressen selber kennen. Dies ist vielleicht für ein kleines privates
-		Netzwerk durchaus möglich, in Anbetracht der Größe des heutigen Internets jedoch	kaum
-		vorstellbar. Aus diesem Grund ist ein stabiles System mit schnellen Antwortzeiten unerlässlich.
+		\cite{rfc791} ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite
+		\cite{stevens1994}. Es dient der Vermittlung von Daten-Paketen in einem Netzwerk, um dies zu
+		ermöglichen erhält jeder Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein
+		Domain-Name ist eine Zeichenkette, diese können sich Menschen leichter merken als eine
+		Zahlenfolge.  Computersysteme hingegen können besser und schneller mit Zahlen als mit
+		Zeichenketten arbeiten.  Daher ist diese Abbildung eine wichtige Voraussetzung für die einfache
+		und schnelle Nutzung eines Netzwerks, im Besonderen des Internets. Bei jedem Aufruf einer
+		Website oder dem Verschicken einer E-Mail, bei dem der Nutzer einen Domain-Namen nutzt, wird
+		eine Abfrage an einen Server im DNS gestellt. Die darauffolgende Antwort, ist die dem
+		Domain-Name zugeordnete IP-Adresse. Diese IP-Adresse wird dann vom Computersystem genutzt um
+		eine Verbindung zum Ziel aufzubauen. Dieser Zusammenhang verdeutlicht bereits die Wichtigkeit
+		des DNS, denn ohne dieses System müsste jeder Nutzer eines Netzwerks die benötigten IP-Adressen
+		selber kennen. Dies ist vielleicht für ein kleines privates Netzwerk durchaus möglich, in
+		Anbetracht der Größe des heutigen Internets jedoch	kaum vorstellbar. Aus diesem Grund ist ein
+		stabiles System mit schnellen Antwortzeiten unerlässlich.
 
 		Die Informationen im DNS werden dezentral gespeichert. Sie werden in einer verteilten,
 		baumartigen Struktur gespeichert (siehe Abbildung \ref{fig:tree}). Dabei können verschiedene
@@ -181,22 +182,22 @@
 		Lastsituationen eigenständig anpassen.
 
 		Das in \cite{zinke2007,scsczile2008} beschrieben System ist für TCP\footnote{Das Transmission
-		Control Protocol (TCP) ist ein zuverlässiges, verbindungsorientiertes und paketvermitteltes
-		Transportprotokoll der TCP/IP-Suite \cite{stevens1994}. Es wird für Verbindungen eingesetzten,
-		welche in dem Sinne verlässlich sind, dass verlorene Daten-Pakete erneut übertragen werden. Um
-		dies zu realisieren ist allerdings ein gewisser Mehraufwand beim Verbindungsaufbau und -abbau
-		nötig.  Bekanntestes Beispiel für TCP-Verbindungen stellen HTTP-Anfragen zum Abrufen und
-		kommunizieren mit Websites dar.}-Anfragen implementiert. Und wurde anhand des Apache Webservers
-		(httpd) \cite{httpd} getestet \cite{zinke2012}. Bei diesen Test wurden die Credits über ein
-		InfiniBand \cite{infiniband,zinke2007} Netzwerk übertragen und direkt in den Speicher des
-		Lastverteilers geschrieben\footnote{InfiniBand \cite{infiniband} ist eine
+		Control Protocol (TCP) \cite{rfc793} ist ein zuverlässiges, verbindungsorientiertes und
+		paketvermitteltes Transportprotokoll der TCP/IP-Suite \cite{stevens1994}. Es wird für
+		Verbindungen eingesetzten, welche in dem Sinne verlässlich sind, dass verlorene Daten-Pakete
+		erneut übertragen werden. Um dies zu realisieren ist allerdings ein gewisser Mehraufwand beim
+		Verbindungsaufbau und -abbau nötig.  Bekanntestes Beispiel für TCP-Verbindungen stellen
+		HTTP-Anfragen zum Abrufen und kommunizieren mit Websites dar.}-Anfragen implementiert. Und wurde
+		anhand des Apache Webservers (httpd) \cite{httpd} getestet \cite{zinke2012}. Bei diesen Test
+		wurden die Credits über ein InfiniBand \cite{infiniband,zinke2007} Netzwerk übertragen und direkt
+		in den Speicher des Lastverteilers geschrieben\footnote{InfiniBand \cite{infiniband} ist eine
 		Hochgeschwindigkeits-Übertragungstechnik, welche zusätzlich Remote Direct Memory Access (RDMA)
 		unterstützt. Dies ermöglicht einen direkten Speicherzugriff auf einen über das Netzwerk verbunden
 		Rechner.}. Durch diesen direkten Schreibzugriff, muss keine blockierende Kommunikation zwischen dem
 		Lastverteiler und dem Backend-Server statt finden.
 
 		Aufgabe dieser Arbeit ist es, dass bereits für TCP implementierte Verfahren ebenfalls für UDP zu
-		implementieren. Das User Datagram Protocol (UDP) \cite{stevens1994} ist ebenfalls ein
+		implementieren. Das User Datagram Protocol (UDP) \cite{stevens1994, rfc768} ist ebenfalls ein
 		paketvermitteltes Transportprotokoll aus der TCP/IP-Suite, jedoch im Gegensatz zum TCP
 		verbindungslos und unzuverlässig. Das bedeutet der Verlust eines Daten-Pakets während der
 		Übertragung wird nicht bemerkt und somit ist auch keine automatisch Wiederholung der Übertragung
@@ -234,18 +235,21 @@
 
 		Dieses Kapitel soll eine Einführung in die Verfahren und Techniken geben, die dieser Arbeit
 		zugrundeliegen.  Dazu wird zu Beginn des Kapitels in Abschnitt \ref{sec:dns} auf die Entstehung,
-		Bedeutung und Funktionsweise des \dns{} eingegangen. Daran anschließend soll in Abschnitt
-		\ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der allgemeinen
-		Lastverteilung gegeben werden. Wobei auf Besonderheiten der Lastverteilung für das DNS
-		eingegangen wird. Zum Abschluss wird diese Arbeit in die vorgestellten Konzepte eingeordnet. 
+		Bedeutung und Funktionsweise des \dns{} eingegangen. Außerdem werden Softwaresysteme
+		vorgestellt, welche zum Betreiben eines DNS-Servers geeignet sind. Daran anschließend soll in
+		Abschnitt \ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der
+		allgemeinen Lastverteilung gegeben werden. Wobei auf Besonderheiten der Lastverteilung für das
+		DNS eingegangen wird. Zum Abschluss des Kapitels wird diese Arbeit in Abschnitt
+		\ref{sec:grundlagen-fazit} in die vorgestellten Konzepte eingeordnet.
 
-		\section{Domain Name System (DNS)} % {{{
+		\section{\dns{}} % {{{
 		\label{sec:dns}
 
-		In diesem Abschnitt wird das \dns{} \cite{rfc1034,rfc1035} beschrieben. Dazu wird im ersten Teil
-		auf die Entstehung des DNS eingegangen und die Notwendigkeit eines solchen Systems dargestellt.
-		Anschließend folgt eine Erläuterung des heutigen Aufbaus des DNS und wie dieses zur
-		Informationsverteilung genutzt wird.  Abschließend wird auf die bekanntesten und verbreitetsten
+		In diesem Abschnitt wird das \dns{} \cite{rfc1034,rfc1035} beschrieben. Dazu wird im ersten
+		Abschnitt \ref{sub:entstehung} auf die Entstehung des DNS eingegangen und die Notwendigkeit
+		eines solchen Systems dargestellt.  Anschließend folgt in Abschnitt \ref{sub:aufbau} eine
+		Erläuterung des heutigen Aufbaus des DNS und wie dieses zur Informationsverteilung genutzt wird.
+		Abschließend wird in Abschnitt \ref{sub:software} auf die bekanntesten und verbreitetsten
 		Softwaresysteme eingegangen, welche aktuell zur Bereitstellung eines DNS-Servers genutzt werden.
 
 			\subsection{Entstehung und Bedeutung} % {{{
@@ -259,140 +263,206 @@
 			Verteidigungsministeriums der USA aufgebaut und finanziert wurde. Es hat mehrere große
 			Forschungseinrichtungen in den USA verbunden und diente der Zusammenarbeit und dem Austausch
 			von Daten zwischen diesen Einrichtungen. Bereits kurze Zeit nach dem die ersten Computer an
-			das ARPANET angeschlossen wurden begann die Entwicklung der TCP/IP-Suite, einer Menge an
-			Protokollen, welche den Datenpakettransport über ein Netzwerk regeln und ermöglichen.  Die
-			beiden bekanntesten Protokolle aus dieser Protokollfamilie sind das Internet Protocol (IP) und
-			das Transmission Control Protocol (TCP). Anfang der achtziger Jahre wurde die TCP/IP-Suite
-			Standard auf dem ARPANET. Gleichzeitig führte die Entwicklung des Berkeley Software
-			Distribution (BSD) Unix Betriebssystems, welches die TCP/IP-Suite zur Verfügung stellte, dazu,
-			dass immer mehr Rechenzentren und Computersysteme an das ARPANET angeschlossen wurden. Aus
-			dieser Entwicklung resultierte, dass aus einer geringen Anzahl von verbundenen Systemen ein
-			großes Netzwerk entstand. Was sich schlussendlich mit weiteren Netzwerken zu dem heutigen
-			Internet entwickelte, einem Netzwerk von Netzwerken.
+			das ARPANET angeschlossen wurden begann die Entwicklung der TCP/IP-Suite \cite{stevens1994},
+			einer Menge an Protokollen, welche den Transport von Daten-Paketen über ein Netzwerk regeln
+			und ermöglichen.  Die beiden bekanntesten Protokolle aus dieser Protokollfamilie sind das
+			Internet Protocol (IP) \cite{rfc791} und das Transmission Control Protocol (TCP)
+			\cite{rfc793}. Anfang der achtziger Jahre wurde die TCP/IP-Suite Standard auf dem ARPANET.
+			Gleichzeitig führte die Entwicklung des Berkeley Software Distribution (BSD) Unix
+			Betriebssystems, welches die TCP/IP-Suite zur Verfügung stellte, dazu, dass immer mehr
+			Rechenzentren und Computersysteme an das ARPANET angeschlossen wurden. Aus dieser Entwicklung
+			resultierte, dass aus einer geringen Anzahl von verbundenen Systemen, ein großes Netzwerk
+			entstand. Dieses Netzwerk entwickelte sich schlussendlich, mit weiteren anderen Netzwerken, zu
+			dem heutigen Internet, einem Netzwerk von Netzwerken.
 
 			Der Sinn eines Netzwerk ist es, dass die einzelnen Teilnehmer sich kontaktieren und
-			Informationen austauschen können. Dies ist zu vergleichen mit einem Telfonnetz, wo jedem
-			Nutzer eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer kann
-			ein Kommunikationspartner mit einem anderen in Verbindung treten. Das selbe Prinzip gilt auch
-			für ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige IP-Adresse
+			Informationen austauschen können. Um dies zu ermöglichen müssen die Netzwerk-Teilnehmer
+			eindeutig identifizierbar sein. Dies ist zu vergleichen mit einem Telfonnetz, wo jedem Nutzer
+			eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer kann ein
+			Kommunikationspartner mit einem anderen in Verbindung treten. Das selbe Prinzip gilt auch für
+			ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige IP-Adresse
 			erhält. Dies ist laut dem IPv4-Standard \cite{rfc791} eine 32-Bit-Adresse, welche in der Form
 			\texttt{141.89.249.102} dargestellt wird. Im neueren IPv6-Standard \cite{rfc2460} handelt es
-			sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010},
-			im Vergleich zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen
-			möglich ist sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks
-			alle IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese
-			Aufgabe abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt. Hierbei existiert
-			eine Datei im lokalen Dateisystem (bei unixoiden Systemen die Datei \texttt{/etc/hosts}),
-			welche einem privaten Adressbuch ähnelt. Sie enthält die gewünschten IP-Adressen und weißt
-			ihnen Namen zu. Dadurch ist es dem Nutzer möglich andere Netzwerk-Teilnehmer über den
-			zugewiesenen Namen zu kontaktieren. Das Betriebssystem nutzt dann die \texttt{hosts}-Datei um
-			die entsprechende IP-Adresse zu ermitteln. Für ein kleines statisches Netzwerk ist dies eine
-			durchaus ausreichende Lösung. Jedoch wuchs das ARPANET relativ schnell, was dazu führte das
-			lokale \texttt{hosts}-Dateien keine sinnvolle Lösung mehr waren. Der nächste Schritt war es
-			ein zentrales Verzeichnis bereitzustellen. Dies wurde durch die \texttt{HOSTS.TXT} realisiert,
-			welche vom Network Information Center (NIC) des Stanford Research Institute (SRI) gepflegt
-			wurde. Dieses Verzeichnis wurde zentral zur Verfügung gestellt, sodass jeder Netzwerk-Nutzer
-			immer die aktuelle Version erhalten und daraus seine lokale \texttt{hosts}-Datei generieren
-			konnte.  Dieser zentrale Ansatz hatte den Vorteil, dass schnell auf Änderungen reagiert werden
-			konnte, diese leicht zu verteilen waren und Nameskonflikte verhindert wurden.  Allerdings ist
-			auch dieser Ansatz nicht für ein Netzwerk in der Größe des heutigen Internet handhabbar.  Der
-			Zeitaufwand zum Instandhalten und der Netzwerkverkehr zum Verteilen wäre heutzutage nicht mehr
-			vertretbar. Um diese Probleme zu lösen wurde das DNS \cite{rfc1034} entwickelt, welches
-			durch einen dezentralen Ansatz die Informationen und die Last ihrer Wartung verteilt.
+			sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010}, im Vergleich
+			zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen möglich
+			ist sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks alle
+			IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese Aufgabe
+			abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt, welches einem privaten
+			Adressbuch ähnelt. Hierbei existiert eine Datei im lokalen Dateisystem (bei unixoiden Systemen
+			die Datei \texttt{/etc/hosts}), welche bekannten IP-Adressen und einen beliebigen Namen
+			zuweist. Ein Beispiel für eine \texttt{/etc/hosts}-Datei ist in Listing \ref{lst:hosts} zu
+			sehen. In ihr sind 2 Namen für den lokalen Rechner (Zeile 6-7) und 2 Namen für andere Geräte
+			im Netzwerk (Zeile 8-9) definiert. Dadurch ist es dem Nutzer möglich andere
+			Netzwerk-Teilnehmer über den zugewiesenen Namen zu kontaktieren. So würde der Nutzer im
+			Beispiel nur noch den Namen \textit{router} nutzen, wenn er auf das Geräte mit der IP-Adresse
+			\texttt{192.168.1.1} zugreifen möchte. Das Betriebssystem nutzt dann die \texttt{hosts}-Datei
+			um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses Vorgehens ist es,
+			dass wenn sich die IP-Adresse eines der Geräte im Netzwerk ändern, ein anpassen der
+			\texttt{/etc/hosts}-Datei ausreicht, der Nutzer muss sich nicht die neue Adresse merken und kann
+			weiterhin wie gewohnt den in der \texttt{hosts}-Datei definierten Namen nutzen. Für ein
+			kleines statisches Netzwerk ist dies eine durchaus ausreichende Lösung. Jedoch wuchs das
+			ARPANET relativ schnell, was dazu führte das lokale \texttt{hosts}-Dateien keine sinnvolle
+			Lösung mehr waren. Der nächste Schritt war es ein zentrales Verzeichnis bereitzustellen. Dies
+			wurde durch die \texttt{HOSTS.TXT} realisiert, welche vom Network Information Center (NIC) des
+			Stanford Research Institute (SRI) gepflegt wurde. Dieses Verzeichnis wurde zentral zur
+			Verfügung gestellt, sodass jeder Netzwerk-Nutzer immer die aktuelle Version erhalten und
+			daraus seine lokale \texttt{hosts}-Datei generieren konnte.  Dieser zentrale Ansatz hatte den
+			Vorteil, dass schnell auf Änderungen reagiert werden konnte, diese leicht zu verteilen waren
+			und Nameskonflikte verhindert wurden.  Allerdings ist auch dieser Ansatz nicht für ein
+			Netzwerk in der Größe des heutigen Internet handhabbar.  Der Zeitaufwand zum Instandhalten und
+			der Netzwerkverkehr zum Verteilen wäre heutzutage nicht mehr vertretbar. Um diese Probleme zu
+			lösen wurde das DNS \cite{rfc1034} entwickelt, welches durch einen dezentralen Ansatz die
+			Informationen und deren Pflege verteilt.
+
+			\lstinputlisting[float,language=sh,caption={Beispiel \texttt{/etc/hosts}-Datei mit 4 Einträgen},label=lst:hosts]{listings/hosts}
 
 			% subsection Entstehung und Bedeutung }}}
 
-			\subsection{Infrastruktur} % {{{
-			\label{sub:infrastruktur}
+			\subsection{Aufbau} % {{{
+			\label{sub:aufbau}
 
-			% TODO: ICANN Internet Corporation for Assigned Names and Numbers erwähnen
+			Das \dns{} ersetzte 1987 das zentrale Verzeichnis \texttt{HOSTS.TXT}. Wie bereits in Kapitel
+			\ref{cha:einleitung} beschrieben basiert es auf einem dezentralen Ansatz, bei dem die
+			Informationen in einer baumartigen Struktur gespeichert werden. So ein Baum ist auszugsweise
+			in Abbildung \ref{fig:dns-tree} zu sehen. Diese Struktur des Baums, also die Knoten, sind auch
+			in den Domain-Namen zu erkennen. Ein Domain-Name besteht aus mehreren Subdomains, welche durch
+			Punkte getrennt sind und jeweils einem Knoten im Baum entsprechen. So besteht zum Beispiel die
+			Domain \texttt{cs.uni-potsdam.de} aus den Subdomains \texttt{cs}, \texttt{uni-potsdam},
+			\texttt{de} und der Root-Domain, welche meist entfällt bzw. als leere Zeichenkette
+			\glqq{}\grqq{} dargestellt wird.
 
-			Mit dem DNS wurde es möglich die Verwaltung und Bereitstellung der Informationen, welcher
-			Netzwerkteilnehmer über welchen Namen und welche IP-Adresse erreichbar ist, dezentral zu
-			verteilen. Dazu wird das komplette Netzwerk in sogenannte Domains aufgeteilt, welche
-			anschließend an zuständige Netzwerkbetreiber delegiert werden. Diese pflegen dann die
-			Informationen für diese Domain und können wiederum weitere Subdomains delegieren. Dadurch
-			entfällt eine zentrale Verwaltung  aller Informationen, wie z.B. durch die \texttt{HOSTS.TXT}.
-			Denn jeder Domain-Verwalter ist dann dafür verantwortlich alle Informationen über seine Domain
-			bereitzustellen. Dies schließt auch die Information mit ein, welche anderen Netzwerkbetreiber
-			für etwaige Subdomains verantwortlich sind.
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{images/dns-tree-domains}
+				\caption{Ausschnitt aus der DNS-Topologie} % TODO: schön machen
+				\label{fig:dns-tree}
+			\end{figure}
 
-				\subsubsection*{Topologie} % {{{
-				
-				Das DNS ist eine verteilte Datenbank, deren Elemente (Domains) dezentral  verwaltet werden
-				und ebenfalls Subdomains besitzen können. So besteht ein vollständiger Domain-Name aus
-				mehren Subdomains, welche durch Punkte (.) getrennt sind. Die höchste Domain, welche
-				sozusagen die \textit{Wurzel} aller Domains ist, ist die Root-Domain (meist nur als
-				\glqq{}.\grqq{} notiert).
-				Diese Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
-				verwaltet. Unter der Root-Domain existieren aktuell 313
-				Top-Level-Domains (TLDs) \cite{tlds}, welche sich hauptsächlich in drei Arten unterteilen lassen:
+			Der Vorteil in der Speicherung der DNS-Informationen in einem Baum, ist dass jede Subdomain
+			nur Informationen zu dem darunter liegenden Teilbaum speichern muss. Das heißt, die Subdomain
+			\texttt{de} besitzt Informationen bezüglich den Subdomains \texttt{denic} und
+			\texttt{uni-potsdam} aber keine Informationen bezüglich \texttt{com} oder \texttt{net}.
+			Dadurch wird einer Seits die Menge an Informationen je Knoten gering gehalten und außerdem
+			kann so die Verwaltung und Pflege der Information an verschieden Betreiber delegiert werden.
 
-					\begin{itemize}
-						\item länderspezifische \textit{country-code TLDs} (ccTLDs)
-						\item allgemeine \textit{generic TLDs} (gTLDs):
-						\begin{itemize}
-							\item von ICANN verwaltete \textit{unsponsored TLDs} (uTLDs)
-							\item von privaten Organisationen vorgeschlagene \textit{sponsored TLDs}
-								(sTLDs)
-						\end{itemize}
-					\end{itemize}
-					
-				Beispiele für ccTLDs sind \texttt{de} für Deutschland, \texttt{fr} für Frankreich oder
-				\texttt{ca} für Kanada. Die bekanntesten uTLDs sind \texttt{com} ursprünglich für
-				kommerzielle Unternehmen und \texttt{org} für nichtkommerzielle Organisationen. Die
-				Verbreitung von sTLDs ist noch sehr gering, dies könnte sich aber in naher Zukunft ändern,
-				da entsprechende Infrastruktur bereitstellen kann. Nach den TLDs folgen die
-				Second-Level-Domains (SLDs), welche meist schon zu den eigentlichen Netzteilnehmern gehören
-				oder noch eine weitere Einteilungsebene einführen. So gibt es zum Beispiel in der englischen
-				\texttt{uk}-Domain noch die \texttt{co}-Domain für Firmen oder die \texttt{ac}-Domain für
-				akademische Einrichtungen. Die \texttt{uni-potsdam}-Domain in der \texttt{de}-Domain wird
-				allerdings bereits direkt von der Universität Potsdam verwaltet. Die Universität Potsdam
-				unterteilt ihre eigene SLDs wiederum weiter in Subdomains, z.B. für die einzelnen Institute
-				(\texttt{cs} für das Institut für Informatik). Diese Domains können dann wiederum von den
-				einzelnen Instituten verwaltet und weiter unterteilt werden. Eine vereinfachte schematische
-				Darstellung eines Teils der DNS-Topologie ist in Abbildung \ref{fig:dns-tree} zu sehen.
-				Dabei sind die unterschiedlichen Verwaltungsbereiche verschiedener Organisationen
-				hervorgehoben.
+			Die Root-Domain wird von der Internet Corporation for Assigned Names and Numbers (ICANN)
+			kontrolliert und auch die Vergabe der Top-Level-Domains (TLDs) ist an sie gebunden. Die ICANN
+			ist eine Non-Profit-Organisation mit Sitz in den USA. Sie ist zwar für die Vergabe der TLDs
+			verantwortlich, verwaltet und betrieben werden diese jedoch von verschieden Organisationen und
+			Unternehmen. Es existieren aktuell 313 TLDs \cite{tlds}, welche sich hauptsächlich in drei
+			Arten unterteilen lassen:
 
-				% Satz zur Grafik korrigieren
+			\begin{itemize}
+				\item länderspezifische \textit{country-code TLDs} (ccTLDs)
+				\item allgemeine \textit{generic TLDs} (gTLDs):
+				\begin{itemize}
+					\item von ICANN verwaltete \textit{unsponsored TLDs} (uTLDs)
+					\item von privaten Organisationen vorgeschlagene \textit{sponsored TLDs}
+						(sTLDs)
+				\end{itemize}
+			\end{itemize}
 
-				\begin{figure}
-					\centering
-					\includegraphics[width=\textwidth]{images/dns-tree-domains}
-					\caption{Ausschnitt aus der DNS-Topologie} % TODO: schön machen
-					\label{fig:dns-tree}
-				\end{figure}
+			In der Abbildung \ref{fig:dns-tree} sind zum Beispiel die Domains \texttt{uk} und \texttt{de}
+			ccTLDs, die Domains \texttt{com}, \texttt{org} und \texttt{net} sind uTLDs, und \texttt{mobi}
+			ist eine sTLD. Unter den TLDs folgen die sogenannten Second-Level-Domains (SLDs), welche meist
+			schon zu den eigentlichen Netzteilnehmern gehören oder noch eine weitere Einteilungsebene
+			einführen. So gibt es zum Beispiel in der englischen \texttt{uk}-Domain noch die
+			\texttt{co}-Domain für Firmen oder die \texttt{ac}-Domain für akademische Einrichtungen. Die
+			\texttt{uni-potsdam}-Domain in der \texttt{de}-Domain wird allerdings bereits direkt von der
+			Universität Potsdam verwaltet. Die Universität Potsdam unterteilt ihre eigene SLDs wiederum
+			weiter in Subdomains, zum Beispiel für die einzelnen Institute (\texttt{cs} für das Institut
+			für Informatik). Diese Domains können dann wiederum von den einzelnen Instituten verwaltet und
+			weiter unterteilt werden.
 
-				% Was sind Resolver, warum nutz man sie
+			\lstinputlisting[float,caption={Ausschnitt eines Master-Files},label=lst:master]{listings/master-file}
 
-				Dieses dezentrale System hat eine Reihe von Vorteilen. Als wichtigster Punkt ist die
-				Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch
-				zur Bereitstellung der Informationen gemeint ist. Zusätzlich ist es für die Betreiber einer
-				Domain einfacher Änderungen einzupflegen. Die Verteilung der Domain-Informationen wird durch
-				ein Netz von DNS-Servern ermöglicht. Ein DNS-Server (auch Nameserver genannt) kann
-				verschiedene Aufgaben haben. Der hauptsächliche Einsatzzweck ist das Bereitstellen von
-				Infromationen über eine Domain. Nameserver können mit sogenannten Resolvern nach bestimmten
-				Domains befragt werden. Dabei gibt es zwei Arten wie ein Nameserver auf eine Anfrage
-				antworten kann. Bei einer \textit{rekursiven} Abfrage ist der Nameserver dafür
-				verantwortlich die genaue Antwort zu ermitteln. Was dadurch realisiert wird, dass der
-				angefragte Nameserver selber Anfragen an andere Nameserver stellt, sofern er die Antwort
-				noch nicht kennt. Dies wird hauptsächlich bei lokalen DNS-Servern eingesetzt, da durch
-				solche Anfragen die ganze Last beim Nameserver liegt. Die häufigste Form ist die
-				\textit{iterative} Abfrage, dabei antwortet der Nameserver mit der genauesten Information
-				die ihm zur Verfügung steht. Das heißt die Information über einen Nameserver einer SLD ist
-				genauer als einer TLD. Durch diese Art von Anfragen verbleibt die Last beim Fragensteller.
-				Daher antworten größere Nameserver, wie für die Root-Domain oder die TLDs, nur iterativ auf
-				Anfragen. Eine beispielhafte Anfrage nach der \texttt{www.cs.uni-potsdam.de}-Domain ist in
-				Abbildung \ref{fig:bsp-request} dargestellt. Es ist zu erkennen, dass nur die Anfrage des
-				Clients an den lokalen Nameserver rekursiv ist. Die Anfragen des lokalen Nameservers sind
-				dann iterative Anfragen. Sofern der lokale DNS-Server weder die Adresse der \texttt{cs},
-				\texttt{uni-potsdam} oder \texttt{de} Domains kennt kann er nur einen Root-Server fragen.
-				Dieser kann ihm mitteilen wie die \texttt{de}-Nameserver erreichbar sind. Welche wiederum
-				den Nameserver für die \texttt{uni-potsdam}-Domain kennen.  Dieser kennt mindestens die
-				Adresse des \texttt{cs}-Nameservers, wenn nicht sogar bereits die vollständige Antwort.
-				Spätestens der \texttt{cs}-Nameserver besitzt die nötigen Informationen für die
-				\texttt{www.cs.uni-potsdam.de}-Adresse.
+			Dieser dezentrale Ansatz hat eine Reihe von Vorteilen. Als wichtigster Punkt ist die
+			Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch zur
+			Verteilung der Informationen gemeint ist. Zusätzlich ist es für die Betreiber einer Domain
+			einfacher Änderungen einzupflegen. Da ein Betreiber alle Subdomains seiner eigenen Domain
+			alleine verwalten kann spricht man bei der Verwaltung und Konfigurationen von \textit{Zonen}.
+			Eine Zone umfasst alle Domains, welche von diesem DNS-Betreiber verwaltet werden. So gehören
+			zum Beispiel alle Subdomains von \texttt{haiti.cs.uni-potsdam.de} zu einer Zone. Diese Zonen
+			werden über sogenannte Master-Files \cite{rfc1035,liualb2006} verwaltet. Listing
+			\ref{lst:master} zeigt einen Auszug aus einem Beispiel für ein Master-File. Der grundlegende
+			Aufbau ist in der Form: Domain-Name (Vollständig mit abschließendem Punkt oder Subdomain),
+			Klasse (IN für Internet), Typ (optionale weitere Parameter für spezielle Typen z.B. bei MX)
+			und abschließend die gespeicherte Information. In Listing \ref{lst:master} sind in Zeile 1-2
+			zwei \texttt{NS}-Einträge, diese geben die Nameserver einer Domain an. Zeile 4 ist ein Eintrag
+			für einen Mailserver (\texttt{MX}), dieser erhält zusätzlich einen Präferenz-Wert (10),
+			welcher bei mehreren Mailservern die Ordnung dieser definiert. Anschließend folgen in Zeile
+			6-9 vier IPv4-Adressen (\texttt{A}) für verschiedene Subdomains. Und in Zeile 11 ist der Alias
+			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Diese Beispiel zeigt
+			nur eine kleine Anzahl von möglichen Typen, deshalb sind in Tabelle \ref{tab:dns-types} die
+			wichtigsten von ihnen aufgeführt.
+
+			\begin{table}
+				\centering
+				\begin{tabular}{|c|l|}\hline
+					Typ & Beschreibung \\\hline\hline
+					A	& IPv4-Adresse\\
+					AAAA	& IPv6-Adresse\\
+					NS	& Nameserver\\
+					MX	& Mailserver\\
+					CNAME	& Kanonischer Name eines Alias\\
+					SOA	& Start einen Zonenautorität\\
+					PTR		& Zeiger von eine Adresse auf eine Domain\\\hline
+				\end{tabular}
+			\caption{Die wichtigsten Eintragstypen in einem DNS-Master-File \cite{rfc1035,rfc3596}}
+			\label{tab:dns-types}
+			\end{table}
+
+			Diese Master-Files werden von DNS-Servern gelesen und verarbeitet. Es gibt verschiedene Arten
+			von DNS-Server, welche bestimmen wie der DNS-Server auf Anfragen antwortet. Dabei
+			unterscheidet man in iterative und rekursive Nameserver.
+
+			\subsubsection*{Iterative Nameserver} % {{{
+
+			Ein iterativer Nameserver kennt nur die Informationen aus seinem eigenen Master-File, also
+			seiner eigenen Zone. Erhält ein iterativer Nameserver eine Anfrage außerhalb seiner Zone, kann
+			er diese nicht beantworten und senden deshalb die Adressen der Server zurück, welche für die
+			Root-Domain verantwortlich sind. Diese Adressen sind jedem DNS-Server bekannt. Das Ziel dieses
+			Verhaltens ist es auf dem DNS-Server keine unnötige Last zu erzeugen und die Antwortzeit so
+			gering wie möglich zu halten. Daraus lässt auch der Haupteinsatzort für solche Nameserver
+			ableiten. Alle Server, welche die Root-Domain verwalten und die TLDs sind iterative
+			Nameserver. Sie erhalten die meisten Anfragen und müssen diese schnell und effizient
+			verarbeiten. Auch die meisten DNS-Server von Firmen, welche vom Internet erreichbar sind,
+			werden ebenfalls iterative Nameserver sein.
+
+			% subsubsection Iterative Nameserver }}}
+
+			\subsubsection*{Rekursive Nameserver} % {{{
+
+			Das Gegenteil zu iterativen sind rekursive Nameserver. Auch sie beantworten Anfragen bezüglich
+			der eigenen Zone, wenn sie jedoch eine Anfrage außerhalb ihrer Zone erhalten fragen sie selber
+			bei anderen Nameservern nach der Antwort. Das heißt der gefragte rekursive Nameserver
+			unternimmt den Aufwand und ermittelt selber die Antwort auf die gestellte Frage und sende
+			diese dann an den Fragenden zurück. Um dieses Vorgehen effizienter zu gestalten werden häufig
+			Caches eingesetzt. In ihnen werden die ermittelten Informationen, welche außerhalb der eigenen
+			Zone liegen, gespeichert. Dadurch können Anfragen schneller beantwortet werden, falls die
+			Antwort bereits im Cache existiert, oder es kann schneller die Antwort gefunden werden, falls
+			im Cache bereits Informationen zu Nameserver in der Nähe der Domain existieren. Das heißt,
+			wenn die Domain \texttt{haiti.cs.uni-potsdam.de} angefragt wird und im Cache bereits die
+			Adresse des \texttt{uni-potsdam.de}-Nameservers gespeichert ist, kann die Antwort schneller
+			gefunden werden, als wenn der Nameserver sich von der Root-Domain durchfragen müsste.
+
+			Rekursive Nameserver werden vor allem im privaten Netzwerken eingesetzt, wie zum Beispiel im
+			Heimnetzwerk oder im firmeninternen Netzwerk, aber auch bei Internet Service Providern
+			(ISPs). An diesen Punkten im Internet machen solche rekursiven Nameserver am meisten Sinn,
+			dort treffen häufig die gleich oder zu mindestens ähnliche Anfragen ein. So kann man meist
+			davon ausgehen das diese Nameserver immer die aktuelle Adresse von \texttt{google.com} und
+			\texttt{wikipedia.org} etc. im Cache gespeichert haben. Und dieses Speichern von Informationen
+			ist nicht nur vorteilhaft für die Nutzer, sondern verringert auch die Last auf den anderen
+			DNS-Server im Internet. Ohne Nameserver mit Cache wäre die Last auf dem DNS-Netzwerk wohl um
+			einiges höher. Allerdings gelten die Informationen eines DNS-Servers nicht unendlich lange,
+			jede Antwort enthält eine maximale Lebensdauer der Information, danach ist sie nicht mehr
+			gültig und sollte nicht weiterverwendet werden. Das heißt auch das sie aus dem Cache entfernt
+			und neu abgefragt werden muss. Dies ist jedoch nötig, da sonst nie Änderung in einer Zone
+			weiter propagiert würden.
+
+			% subsubsection Rekursive Nameserver }}}
+
+			\subsubsection*{Resolver} % {{{
 
 				\begin{figure}
 					\centering
@@ -401,21 +471,53 @@
 					\label{fig:bsp-request}
 				\end{figure}
 
-				Für eine weitere Optimierung von DNS-Abfragen können Caches eingesetzt werden. In ihnen
-				können bereits gesammelte Informationen gespeichert und somit schneller abgerufen werden.
-				Dies ist insbesondere sinnvoll bei Nameservern die häufig gleich oder sehr ähnliche Anfragen
-				erhalten, was vor allem für lokale Nameserver und Nameserver von Internet Service Providers
-				(ISPs) zutrifft. Dies sind die zwei ersten Instanzen bei einer Anfrage von einem Client. Es
-				ist davon auszugehen, dass diese Nameserver meist die aktuelle Adresse von großen Websites,
-				wie zum Beispiel \texttt{www.google.com} und \texttt{en.wikipedia.org} in ihren Caches
-				haben, da solchen Seiten stark frequentiert werden. Dadurch können die Nameserver solche
-				Anfragen direkt aus dem Cache beantworten und auf weitere Abfragen verzichten.
+				Damit eine Anwendung, wie zum Beispiel ein Webbrowser oder ein E-Mail-Client, Adressen
+				auflösen kann, wird ein sogenannter Resolver benötigt. Seine Aufgabe ist es für die
+				Anwendung einen Domain-Namen zu der entsprechenden IP-Adresse aufzulösen. Das heißt, wenn
+				der Resolver von einer Anwendung die Anfrage nach der Adresse \texttt{www.cs.uni-potsdam.de}
+				erhält, erzeugt der Resolver eine gültige DNS-Anfrage \cite{rfc1035} nach eben dieser
+				Adresse und sendet diese an den im Betriebssystem konfigurierten primären DNS-Server. Dabei
+				handelt es sich meist um einen rekursiven Nameserver, welcher dann selber einen Resolver
+				nutzt um weitere Anfragen zu stellen, sofern er die Antwort nicht im Cache gespeichert hat.
+				In Abbildung \ref{fig:bsp-request} ist der Ablauf der Beispiel-Anfrage dargestellt. Der
+				Resolver des Clients sendet die Anfrage (1) an den lokalen DNS-Server. Dieser ist rekursiv
+				und ermittelt deshalb nun die Antwort (Annahme: Der Cache des DNS-Servers enthält keine
+				relevanten Informationen). Die Anfrage (2) wird deshalb an einen Root-Nameserver gestellt,
+				da der lokale DNS keine anderen Informationen bezüglich der Domain besitzt. Der
+				Root-Nameserver besitzt nur die Information, welcher Nameserver für die \texttt{de}-Domain
+				verantwortlich ist und sendet diese Antwort (3) an den lokalen DNS-Server zurück. Dieser
+				befragt (4) anschließend den \texttt{de}-Nameserver, welcher wiederum ein iterativer
+				Nameserver ist und somit nur die \texttt{uni-potsdam}-Domain kennt (5). Die Anfragen an den
+				\texttt{uni-potsdam}-Nameserver (6) liefert die Adresse des zuständigen Nameservers zurück
+				(7). Dieser kann nun auf die letzte Anfrage (8) mit der gewünschten Adresse antworten (9).
+				Welche dann vom lokalen DNS-Server an den Client zurückgeliefert wird (10). Alle
+				Informationen, die in den Zwischenanfragen gesammelt wurden, werden im Cache des lokalen
+				DNS-Servers gespeichert. Das heißt würde der Client nun erneut nach der Adresse
+				\texttt{www.cs.uni-potsdam.de} fragen, könnte der lokale DNS-Server sofort antworten. Oder
+				wenn die Anfrage diesmal \texttt{haiti.cs.uni-potsdam.de} wäre, würde der lokale DNS-Server
+				sofort beim \texttt{cs.uni-potsdam.de}-Nameserver anfragen, da er dessen Adresse bereits
+				kennt und weißt das dieser für die Domain zuständig ist.
 
-				% TODO: Masterfile erklären, was sind Ressource Records?, UDP einpflegen
-				
-				% subsubsection Topologie }}}
-				
-			% subsection Infrastruktur }}}
+			% subsubsection Resolver }}}
+
+			\subsubsection*{DNS Security Extension} % {{{
+
+				Mit der DNS Security Extension (DNSSEC) \cite{rfc4033,rfc4034,rfc4035,liualb2006} wurde ein
+				neuer Standard eingeführt, welcher das DNS absichern soll. Es gibt verschiedene
+				Angriffsszenarien auf das DNS \cite{lorenz2012}, wo durch Informationen verändert und somit
+				ganze Domains übernommen werden können. Mit DNSSEC soll die Authentizität und
+				Datenintegrität der Informationen gewährleistet werden und überprüfbar sein. Dazu werden
+				kryptographische Verfahren eingesetzt. Die Einführung und Umstellung auf DNSSEC ist zu
+				diesem Zeitpunkt noch nicht abgeschlossen, jedoch ergeben sich daraus interessante
+				Überlegungen bezüglich der Last auf dem DNS-Netzwerk. Durch die kryptographische
+				Abschicherung werden die DNS-Nachrichten größer und Resolver müssen kryptographische
+				Methoden nutzen, was die eine höhere Rechenleistung beim Client voraussetzt. So bald das
+				System vollständig eingeführt wurde, wird es interessant sein zu untersuchen, in welcher
+				Form sich die Veränderung auf die Auslastung des DNS auswirkt.
+
+			% subsubsection DNSsec }}}
+
+			% subsection Aufbau }}}
 
 			\subsection{DNS-Server Software} % {{{
 			\label{sub:software}
