@@ -1102,38 +1102,43 @@
 		des TCP-Sockets des Webservers erstellt. Diese gibt konkret die Anzahl der Anfragen an, welche
 		noch in der Backlog Platz finden würden. Das heißt, mehr als diese Anzahl an Anfragen sollten an
 		den Server nicht gestellt werden, sonst existiert die Gefahr, dass die Anfragen verworfen
-		werden. Aufgabe dieses Kapitels ist es verschiedene Ansätze zu beschrieben, welche eine ähnlich
-		gute Metrik für UDP-Anfragen erzeugen. 
+		werden. Aufgabe dieses Kapitels ist es verschiedene Ansätze zu beschreiben, welche eine ähnlich
+		gute Metrik für UDP-Anfragen erzeugen
 
 		\subsection*{Last-Metrik} % {{{
 
 		Wenn sich ein Server in einer Überlastsitutation befindet, kann dies oft daran erkannt werden
 		das bestimmte Ressourcen aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung dafür
-		sprechen, dass der Server an seine Grenzen gekommen ist. Daher wäre eine mögliche Metrik die
-		Sammlung entsprechender Daten und ein anschließende Abschätzung bezüglich der verbleibenden
+		sprechen, dass der Server an seine Grenzen geraten ist. Daher wäre eine mögliche Metrik die
+		Sammlung entsprechender Last-Daten und ein anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
 		
 		% subsection Last-Metrik }}}
 
 		\subsection*{Verkehr-Metrik} % {{{
 
-		Die Last eines Servers hängt von der Anzahl an einkommenden Anfragen und der Anzahl an
-		abgearbeiteten (ausgehenden) Anfragen ab. Daher wäre es eine Möglichkeit alle eingehenden und
-		ausgehenden Anfragen bzw. Antworten zu zählen. Anschließend kann abgeschätzt werden, ob der
-		Server zur Zeit mehr Anfragen abarbeitet als ihn neue erreichen. Oder ob zu viele Anfragen
-		eintreffen, welche er nicht mehr schnell genug abarbeiten kann.
-		
+		Bei Servern, welche einen Dienst für das Netzwerk bereitstellen, ist das Verhältnis der
+		eingehenden und ausgehenden Nachrichten ebenfalls eine mögliche Metrik für die Lastsitutation
+		des Servers. Ein Server der alle eingehenden Nachrichten sofort beantworten kann, und somit die
+		gleiche Anzahl an ausgehenden Nachrichten erzeugt, befindet sich in keiner Überlastsituation.
+		Hat der Server jedoch Probleme eingehenden Anfragen direkt zu beantworten, so befindet sich der
+		Server unter eine gewissen Last bis hin zur Überlast, wenn Anfragen verworfen werden müssen.
+		Somit wäre es mögliche die Anzahl der eingehenden Anfragen und abgearbeiteten (ausgehenden)
+		Anfragen zu protokollieren. Ist die Differenz nahe 0 ist von keiner hohen Last auszugehen.
+		Wächst die Differenz jedoch allmählich, befindet sich der Server unter steigender Last.
+
 		% subsection Verkehr-Metrik }}}
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
-		Ein Ansatz ähnlich des TCP-Ansatzes wäre es, die Receive-Queue des UDP-Sockets des DNS-Servers zu
-		überwachen. Anders als beim TCP-Fall werden aber in der Receive-Queue keine Verbindungen
-		verwaltet, sondern Pakete eingeordnet. Das heißt die Receive-Queue hat eine maximale Größe und
-		ist bis zu einem bestimmten Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in
-		der Receive-Queue aus. Trotzdem könnte eine Metrik darin bestehen, den verbleibenden Platz in
-		der Receive-Queue zu bestimmen. Und daraus eine Abschätzung zu treffen, wieviele weitere
-		Anfragen aufgenommen werden könnten.
+		Ein Ansatz ähnlich des TCP-Backlog-Ansatzes \cite{zinke2007,scsczile2008} wäre das Überwachen
+		der Receive-Queue des UDP-Sockets des DNS-Servers zu überwachen. Anders als beim TCP-Fall werden
+		aber in der Receive-Queue keine Verbindungen verwaltet, sondern Pakete unterschiedlicher Größe
+		gespeichert. Das heißt die Receive-Queue hat eine maximale Größe und ist bis zu einem bestimmten
+		Punkt gefüllt. Dies sagt aber nichts über die Anzahl an Paketen in der Receive-Queue aus.
+		Trotzdem könnte eine Metrik darin bestehen, den verbleibenden Platz in der Receive-Queue zu
+		bestimmen. Und daraus eine Abschätzung zu treffen, wieviele weitere Anfragen aufgenommen werden
+		könnten.
 
 		% subsection Receive-Queue-Metrik }}}
 		
@@ -1142,9 +1147,10 @@
 		\section{Auswahl} % {{{
 		\label{sec:auswahl}
 
-		Nachdem mehrere Ansätze vorgestellt wurden, sollen diese nun bewertet werden. Danach wird ein
-		Ansatz gewählt, welcher dann weiter verfeinert wird. Die Bewertung der Ansätze erfolgt nach den
-		in Kapitel \ref{cha:salbnet} aufgeführten Anforderungen an eine Metrik:
+		Nachdem im Abschnitte \ref{sec:ansaetze} mehrere Ansätze vorgestellt wurden, sollen diese nun
+		bewertet werden. Danach wird ein Ansatz ausgewählt, welcher dann weiter verfeinert wird. Die
+		Bewertung der Ansätze erfolgt nach den in Kapitel \ref{cha:salbnet} aufgeführten Anforderungen
+		an eine Metrik:
 
 		\begin{itemize}
 			\item Sie sollte einfach zu berechnen sein.
