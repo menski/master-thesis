@@ -233,12 +233,12 @@
 	\label{cha:grundlagen}
 
 		Dieses Kapitel soll eine Einführung in die Verfahren und Techniken geben, die dieser Arbeit
-		zugrundeliegen.  Dazu wird zu Beginn des Kapitels in Abschnitt \ref{sec:dns} auf die Entstehung,
+		zu Grunde liegen.  Dazu wird zu Beginn des Kapitels im Abschnitt \ref{sec:dns} auf die Entstehung,
 		Bedeutung und Funktionsweise des \dns{} eingegangen. Außerdem werden Softwaresysteme
-		vorgestellt, welche zum Betreiben eines DNS-Servers geeignet sind. Daran anschließend soll in
+		vorgestellt, welche zum Betreiben eines DNS-Servers geeignet sind. Daran anschließend soll im
 		Abschnitt \ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der
-		allgemeinen Lastverteilung gegeben werden. Wobei auf Besonderheiten der Lastverteilung für das
-		DNS eingegangen wird. Zum Abschluss des Kapitels wird diese Arbeit in Abschnitt
+		allgemeinen Lastverteilung gegeben werden, wobei auf Besonderheiten der Lastverteilung für das
+		DNS eingegangen wird. Zum Abschluss des Kapitels wird diese Arbeit im Abschnitt
 		\ref{sec:grundlagen-fazit} in die vorgestellten Konzepte eingeordnet.
 
 		\section{\dns{}} % {{{
@@ -247,58 +247,60 @@
 		In diesem Abschnitt wird das \dns{} \cite{rfc1034,rfc1035} beschrieben. Dazu wird im ersten
 		Abschnitt \ref{sub:entstehung} auf die Entstehung des DNS eingegangen und die Notwendigkeit
 		eines solchen Systems dargestellt.  Anschließend folgt in Abschnitt \ref{sub:aufbau} eine
-		Erläuterung des heutigen Aufbaus des DNS und wie dieses zur Informationsverteilung genutzt wird.
-		Abschließend wird in Abschnitt \ref{sub:software} auf die bekanntesten und verbreitetsten
+		Erläuterung des heutigen Aufbaus des DNS und seine Nutzung zur Informationsverteilung.
+		Zum Schluss wird im Abschnitt \ref{sub:software} auf die bekanntesten und verbreitetsten
 		Softwaresysteme eingegangen, welche aktuell zur Bereitstellung eines DNS-Servers genutzt werden.
 
 			\subsection{Entstehung und Bedeutung} % {{{
 			\label{sub:entstehung}
 
-			Um die Entstehung des \dns{} zu verstehen ist es entscheidend zu wissen wie das Internet
+			Um die Entstehung des \dns{} zu verstehen, ist es entscheidend zu wissen, wie das Internet
 			entstanden und aufgebaut ist.
 			
 			Das sogenannte ARPANET ist ein Wide Area Network (WAN) gewesen, welches in den späten
 			sechziger Jahren von der Advanced Research Projects Agency (ARPA) des
 			Verteidigungsministeriums der USA aufgebaut und finanziert wurde. Es hat mehrere große
 			Forschungseinrichtungen in den USA verbunden und diente der Zusammenarbeit und dem Austausch
-			von Daten zwischen diesen Einrichtungen. Bereits kurze Zeit nach dem die ersten Computer an
-			das ARPANET angeschlossen wurden begann die Entwicklung der TCP/IP-Suite \cite{stevens1994},
+			von Daten zwischen diesen Einrichtungen. Bereits kurze Zeit nachdem die ersten Computer an
+			das ARPANET angeschlossen wurden, begann die Entwicklung der TCP/IP-Suite \cite{stevens1994},
 			einer Menge an Protokollen, welche den Transport von Datenpaketen über ein Netzwerk regeln
 			und ermöglichen.  Die beiden bekanntesten Protokolle aus dieser Protokollfamilie sind das
 			Internet Protocol (IP) \cite{rfc791} und das Transmission Control Protocol (TCP)
 			\cite{rfc793}. Anfang der achtziger Jahre wurde die TCP/IP-Suite Standard auf dem ARPANET.
 			Gleichzeitig führte die Entwicklung des Berkeley Software Distribution (BSD) Unix
 			Betriebssystems, welches die TCP/IP-Suite zur Verfügung stellte, dazu, dass immer mehr
-			Rechenzentren und Computersysteme an das ARPANET angeschlossen wurden. Aus dieser Entwicklung
-			resultierte, dass aus einer geringen Anzahl von verbundenen Systemen, ein großes Netzwerk
-			entstand. Dieses Netzwerk entwickelte sich schlussendlich, mit weiteren anderen Netzwerken, zu
+			Rechenzentren und Computersysteme an das ARPANET angeschlossen wurden. Das Resultat dieser Entwicklung
+			war, dass aus einer geringen Anzahl von verbundenen Systemen ein großes Netzwerk
+			entstand. Dieses Netzwerk entwickelte sich schließlich, mit weiteren anderen Netzwerken, zu
 			dem heutigen Internet, einem Netzwerk von Netzwerken.
 
-			Der Sinn eines Netzwerk ist es, dass die einzelnen Teilnehmer sich kontaktieren und
-			Informationen austauschen können. Um dies zu ermöglichen müssen die Netzwerk-Teilnehmer
-			eindeutig identifizierbar sein. Dies ist zu vergleichen mit einem Telfonnetz, wo jedem Nutzer
+			Der Sinn eines Netzwerkes ist es, dass die einzelnen Teilnehmer sich kontaktieren und
+			Informationen austauschen können. Um das zu ermöglichen, müssen die Netzwerkteilnehmer
+			eindeutig identifizierbar sein. Dies ist mit einem Telefonnetz zu vergleichen, wo jedem
+			Teilnehmer
 			eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer kann ein
-			Kommunikationspartner mit einem anderen in Verbindung treten. Das selbe Prinzip gilt auch für
+			Kommunikationspartner mit einem anderen in Verbindung treten. Dasselbe Prinzip gilt auch für
 			ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige IP-Adresse
 			erhält. Dies ist laut dem IPv4-Standard \cite{rfc791} eine 32-Bit-Adresse, welche in der Form
 			\texttt{141.89.249.102} dargestellt wird. Im neueren IPv6-Standard \cite{rfc2460} handelt es
 			sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010}, im Vergleich
 			zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen möglich
-			ist sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks alle
+			ist, sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks alle
 			IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese Aufgabe
 			abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt, welches einem privaten
 			Adressbuch ähnelt. Hierbei existiert eine Datei im lokalen Dateisystem (bei unixoiden Systemen
-			die Datei \texttt{/etc/hosts}), welche bekannten IP-Adressen und einen beliebigen Namen
+			die Datei \texttt{/etc/hosts}), welche bekannten IP-Adressen einen beliebigen Namen
 			zuweist. Ein Beispiel für eine \texttt{/etc/hosts}-Datei ist in Listing \ref{lst:hosts} zu
 			sehen. In ihr sind 2 Namen für den lokalen Rechner (Zeile 6-7) und 2 Namen für andere Geräte
 			im Netzwerk (Zeile 8-9) definiert. Dadurch ist es dem Nutzer möglich andere
 			Netzwerk-Teilnehmer über den zugewiesenen Namen zu kontaktieren. So würde der Nutzer im
-			Beispiel nur noch den Namen \textit{router} nutzen, wenn er auf das Geräte mit der IP-Adresse
+			Beispiel nur noch den Namen \textit{router} verwenden, wenn er auf das Gerät mit der IP-Adresse
 			\texttt{192.168.1.1} zugreifen möchte. Das Betriebssystem nutzt dann die \texttt{hosts}-Datei
-			um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses Vorgehens ist es,
-			dass wenn sich die IP-Adresse eines der Geräte im Netzwerk ändern, ein anpassen der
-			\texttt{/etc/hosts}-Datei ausreicht, der Nutzer muss sich nicht die neue Adresse merken und kann
-			weiterhin wie gewohnt den in der \texttt{hosts}-Datei definierten Namen nutzen. Für ein
+			um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses Vorgehens besteht
+			darins,
+			dass, wenn sich die IP-Adresse eines der Geräte im Netzwerk ändert, ein Anpassen der
+			\texttt{/etc/hosts}-Datei ausreicht. Der Nutzer muss sich nicht die neue Adresse merken und kann
+			weiterhin, wie gewohnt, den in der \texttt{hosts}-Datei definierten Namen einsetzen. Für ein
 			kleines statisches Netzwerk ist dies eine durchaus ausreichende Lösung. Jedoch wuchs das
 			ARPANET relativ schnell, was dazu führte das lokale \texttt{hosts}-Dateien keine sinnvolle
 			Lösung mehr waren. Der nächste Schritt war es ein zentrales Verzeichnis bereitzustellen. Dies
@@ -309,8 +311,8 @@
 			Vorteil, dass schnell auf Änderungen reagiert werden konnte, diese leicht zu verteilen waren
 			und Nameskonflikte verhindert wurden.  Allerdings ist auch dieser Ansatz nicht für ein
 			Netzwerk in der Größe des heutigen Internet handhabbar.  Der Zeitaufwand zum Instandhalten und
-			der Netzwerkverkehr zum Verteilen wäre heutzutage nicht mehr vertretbar. Um diese Probleme zu
-			lösen wurde das DNS \cite{rfc1034} entwickelt, welches durch einen dezentralen Ansatz die
+			der Netzwerkverkehr zum Verteilen wären heutzutage nicht mehr vertretbar. Um diese Probleme zu
+			lösen, wurde das DNS \cite{rfc1034} entwickelt, welches durch einen dezentralen Ansatz die
 			Informationen und deren Pflege verteilt.
 
 			\lstinputlisting[float,language=sh,caption={Beispiel \texttt{/etc/hosts}-Datei mit 4 Einträgen},label=lst:hosts]{listings/hosts}
@@ -320,15 +322,15 @@
 			\subsection{Aufbau} % {{{
 			\label{sub:aufbau}
 
-			Das \dns{} ersetzte 1987 das zentrale Verzeichnis \texttt{HOSTS.TXT}. Wie bereits in Kapitel
-			\ref{cha:einleitung} beschrieben basiert es auf einem dezentralen Ansatz, bei dem die
+			Das \dns{} ersetzte 1987 das zentrale Verzeichnis \texttt{HOSTS.TXT}. Wie bereits im Kapitel
+			\ref{cha:einleitung} beschrieben, basiert es auf einem dezentralen Ansatz, bei dem die
 			Informationen in einer baumartigen Struktur gespeichert werden. So ein Baum ist auszugsweise
 			in Abbildung \ref{fig:dns-tree} zu sehen. Diese Struktur des Baums, also die Knoten, sind auch
 			in den Domain-Namen zu erkennen. Ein Domain-Name besteht aus mehreren Subdomains, welche durch
 			Punkte getrennt sind und jeweils einem Knoten im Baum entsprechen. So besteht zum Beispiel die
 			Domain \texttt{cs.uni-potsdam.de} aus den Subdomains \texttt{cs}, \texttt{uni-potsdam},
 			\texttt{de} und der Root-Domain, welche meist entfällt bzw. als leere Zeichenkette
-			\glqq{}\grqq{} dargestellt wird.
+			(\glqq{}\grqq{}) dargestellt wird.
 
 			\begin{figure}
 				\centering
@@ -337,19 +339,19 @@
 				\label{fig:dns-tree}
 			\end{figure}
 
-			Der Vorteil in der Speicherung der DNS-Informationen in einem Baum, ist dass jede Subdomain
+			Der Vorteil der Speicherung der DNS-Informationen in einem Baum besteht darin, dass jede Subdomain
 			nur Informationen zu dem darunter liegenden Teilbaum speichern muss. Das heißt, die Subdomain
 			\texttt{de} besitzt Informationen bezüglich den Subdomains \texttt{denic} und
-			\texttt{uni-potsdam} aber keine Informationen bezüglich \texttt{com} oder \texttt{net}.
-			Dadurch wird einer Seits die Menge an Informationen je Knoten gering gehalten und außerdem
-			kann so die Verwaltung und Pflege der Information an verschieden Betreiber delegiert werden.
+			\texttt{uni-potsdam}, aber keine Informationen bezüglich \texttt{com} oder \texttt{net}.
+			Dadurch wird einerseits die Menge an Informationen je Knoten gering gehalten, und außerdem
+			kann so die Verwaltung und Pflege der Information an verschiedene Betreiber delegiert werden.
 
 			Die Root-Domain, welche aktuell von 13 Root-Servern \cite{rootserver} bereitgestellt wird,
-			wird von der Internet Corporation for Assigned Names and Numbers (ICANN) kontrolliert und auch
+			steht unter der Kontrolle der Internet Corporation for Assigned Names and Numbers (ICANN). Auch
 			die Vergabe der Top-Level-Domains (TLDs) ist an sie gebunden. Die ICANN ist eine
 			Non-Profit-Organisation mit Sitz in den USA. Sie ist zwar für die Vergabe der TLDs
 			verantwortlich, verwaltet und betrieben werden diese jedoch von verschieden Organisationen und
-			Unternehmen. Es existieren aktuell 313 TLDs \cite{tlds}, welche sich hauptsächlich in drei
+			Unternehmen. Es existieren aktuell 313 TLDs \cite{tlds}, welche sich hauptsächlich in folgende
 			Arten unterteilen lassen:
 
 			\begin{itemize}
@@ -369,7 +371,7 @@
 			einführen. So gibt es zum Beispiel in der englischen \texttt{uk}-Domain noch die
 			\texttt{co}-Domain für Firmen oder die \texttt{ac}-Domain für akademische Einrichtungen. Die
 			\texttt{uni-potsdam}-Domain in der \texttt{de}-Domain wird allerdings bereits direkt von der
-			Universität Potsdam verwaltet. Die Universität Potsdam unterteilt ihre eigene SLDs wiederum
+			Universität Potsdam verwaltet. Die Universität Potsdam unterteilt ihre eigene SLD wiederum
 			weiter in Subdomains, zum Beispiel für die einzelnen Institute (\texttt{cs} für das Institut
 			für Informatik). Diese Domains können dann wiederum von den einzelnen Instituten verwaltet und
 			weiter unterteilt werden.
@@ -378,18 +380,18 @@
 
 			Dieser dezentrale Ansatz hat eine Reihe von Vorteilen. Als wichtigster Punkt ist die
 			Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch zur
-			Verteilung der Informationen gemeint ist. Zusätzlich ist es für die Betreiber einer Domain
+			Verteilung der Informationen gemeint ist. Außerdem ist es für die Betreiber einer Domain
 			einfacher Änderungen einzupflegen. Da ein Betreiber alle Subdomains seiner eigenen Domain
-			alleine verwalten kann spricht man bei der Verwaltung und Konfigurationen von \textit{Zonen}.
-			Eine Zone umfasst alle Domains, welche von diesem DNS-Betreiber verwaltet werden. So gehören
+			alleine verwalten kann, spricht man dabei von einer \textit{Zone}.
+			Eine Zone umfasst alle Domains, die von diesem DNS-Betreiber administriert werden. So gehören
 			zum Beispiel alle Subdomains von \texttt{haiti.cs.uni-potsdam.de} zu einer Zone. Diese Zonen
-			werden über sogenannte Master-Files \cite{rfc1035,liualb2006} verwaltet. Listing
+			werden über sogenannte Master-Files \cite{rfc1035,liualb2006} konfiguriert. Listing
 			\ref{lst:master} zeigt einen Auszug aus einem Beispiel für ein Master-File. Der grundlegende
-			Aufbau ist in der Form: Domain-Name (Vollständig mit abschließendem Punkt oder Subdomain),
+			Aufbau ist in der Form: Domain-Name (vollständig mit abschließendem Punkt oder Subdomain),
 			Klasse (IN für Internet), Typ (optionale weitere Parameter für spezielle Typen z.B. bei MX)
 			und abschließend die gespeicherte Information. In Listing \ref{lst:master} sind in Zeile 1-2
-			zwei \texttt{NS}-Einträge, diese geben die Nameserver einer Domain an. Zeile 4 ist ein Eintrag
-			für einen Mailserver (\texttt{MX}), dieser erhält zusätzlich einen Präferenz-Wert (10),
+			zwei \texttt{NS}-Einträge. Diese geben die Nameserver einer Domain an. In Zeile 4 ist ein Eintrag
+			für einen Mailserver (\texttt{MX}). Er enthält zusätzlich einen Präferenz-Wert (10),
 			welcher bei mehreren Mailservern die Ordnung dieser definiert. Anschließend folgen in Zeile
 			6-9 vier IPv4-Adressen (\texttt{A}) für verschiedene Subdomains. Und in Zeile 11 ist der Alias
 			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Diese Beispiel zeigt
@@ -413,18 +415,18 @@
 			\end{table}
 
 			Diese Master-Files werden von DNS-Servern gelesen und verarbeitet. Es gibt verschiedene Arten
-			von DNS-Server, welche bestimmen wie der DNS-Server auf Anfragen antwortet. Dabei
-			unterscheidet man in iterative und rekursive Nameserver.
+			von DNS-Servern, die bestimmen, wie der DNS-Server auf Anfragen antwortet. Dabei
+			unterscheidet man iterative und rekursive Nameserver.
 
 			\subsubsection*{Iterative Nameserver} % {{{
 
 			Ein iterativer Nameserver kennt nur die Informationen aus seinem eigenen Master-File, also
 			seiner eigenen Zone. Erhält ein iterativer Nameserver eine Anfrage außerhalb seiner Zone, kann
-			er diese nicht beantworten und senden deshalb die Adressen der Server zurück, welche für die
+			er diese nicht beantworten und sendet deshalb die Adressen der Server zurück, welche für die
 			Root-Domain verantwortlich sind. Diese Adressen sind jedem DNS-Server bekannt. Das Ziel dieses
-			Verhaltens ist es auf dem DNS-Server keine unnötige Last zu erzeugen und die Antwortzeit so
-			gering wie möglich zu halten. Daraus lässt auch der Haupteinsatzort für solche Nameserver
-			ableiten. Alle Server, welche die Root-Domain verwalten und die TLDs sind iterative
+			Verhaltens ist es, auf dem DNS-Server keine unnötige Last zu erzeugen und die Antwortzeit so
+			gering wie möglich zu halten. Daraus lässt sich auch der Haupteinsatzort für solche Nameserver
+			ableiten. Alle Server, welche die Root-Domain und die TLDs verwalten, sind iterative
 			Nameserver. Sie erhalten die meisten Anfragen und müssen diese schnell und effizient
 			verarbeiten. Auch die meisten DNS-Server von Firmen, welche vom Internet erreichbar sind,
 			werden ebenfalls iterative Nameserver sein.
@@ -434,10 +436,10 @@
 			\subsubsection*{Rekursive Nameserver} % {{{
 
 			Das Gegenteil zu iterativen sind rekursive Nameserver. Auch sie beantworten Anfragen bezüglich
-			der eigenen Zone, wenn sie jedoch eine Anfrage außerhalb ihrer Zone erhalten fragen sie selber
-			bei anderen Nameservern nach der Antwort. Das heißt der gefragte rekursive Nameserver
-			unternimmt den Aufwand und ermittelt selber die Antwort auf die gestellte Frage und sende
-			diese dann an den Fragenden zurück. Um dieses Vorgehen effizienter zu gestalten werden häufig
+			der eigenen Zone, wenn sie jedoch eine Anfrage außerhalb ihrer Zone erhalten, erfragen sie die
+			Antwort			selber bei anderen Nameservern. Das heißt, der gefragte rekursive Nameserver
+			unternimmt den Aufwand und ermittelt selber die Antwort auf die gestellte Frage. Er sendet
+			diese dann an den Fragenden zurück. Um dieses Vorgehen effizienter zu gestalten, werden häufig
 			Caches eingesetzt. In ihnen werden die ermittelten Informationen, welche außerhalb der eigenen
 			Zone liegen, gespeichert. Dadurch können Anfragen schneller beantwortet werden, falls die
 			Antwort bereits im Cache existiert, oder es kann schneller die Antwort gefunden werden, falls
@@ -446,18 +448,18 @@
 			Adresse des \texttt{uni-potsdam.de}-Nameservers gespeichert ist, kann die Antwort schneller
 			gefunden werden, als wenn der Nameserver sich von der Root-Domain durchfragen müsste.
 
-			Rekursive Nameserver werden vor allem im privaten Netzwerken eingesetzt, wie zum Beispiel im
-			Heimnetzwerk oder im firmeninternen Netzwerk, aber auch bei Internet Service Providern
+			Rekursive Nameserver werden vor allem im privaten Netzwerken eingesetzt, wie zum Beispiel in
+			Heimnetzwerken oder firmeninternen Netzwerken, aber auch bei Internet Service Providern
 			(ISPs). An diesen Punkten im Internet machen solche rekursiven Nameserver am meisten Sinn,
-			dort treffen häufig die gleich oder zu mindestens ähnliche Anfragen ein. So kann man meist
-			davon ausgehen das diese Nameserver immer die aktuelle Adresse von \texttt{google.com} und
-			\texttt{wikipedia.org} etc. im Cache gespeichert haben. Und dieses Speichern von Informationen
+			denn dort treffen häufig die gleichen oder zu mindestens ähnliche Anfragen ein. So kann man
+			oft davon ausgehen, dass diese Nameserver immer die aktuelle Adresse von \texttt{google.com} und
+			\texttt{wikipedia.org} etc. im Cache gespeichert haben. Dieses Speichern von Informationen
 			ist nicht nur vorteilhaft für die Nutzer, sondern verringert auch die Last auf den anderen
 			DNS-Server im Internet. Ohne Nameserver mit Cache wäre die Last auf dem DNS-Netzwerk wohl um
-			einiges höher. Allerdings gelten die Informationen eines DNS-Servers nicht unendlich lange,
-			jede Antwort enthält eine maximale Lebensdauer der Information, danach ist sie nicht mehr
-			gültig und sollte nicht weiterverwendet werden. Das heißt auch das sie aus dem Cache entfernt
-			und neu abgefragt werden muss. Dies ist jedoch nötig, da sonst nie Änderung in einer Zone
+			einiges höher. Allerdings gelten die Informationen eines DNS-Servers nicht unendlich lange.
+			Jede Antwort enthält eine maximale Lebensdauer der Information, danach ist sie nicht mehr
+			gültig und sollte nicht weiterverwendet werden. Das heißt auch, dass sie aus dem Cache entfernt
+			und neu abgefragt werden muss. Dies ist jedoch nötig, da sonst nie Änderungen innerhalb einer Zone
 			weiter propagiert würden.
 
 			% subsubsection Rekursive Nameserver }}}
@@ -472,13 +474,13 @@
 				\end{figure}
 
 				Damit eine Anwendung, wie zum Beispiel ein Webbrowser oder ein E-Mail-Client, Adressen
-				auflösen kann, wird ein sogenannter Resolver benötigt. Seine Aufgabe ist es für die
+				auflösen kann, wird ein sogenannter Resolver benötigt. Seine Aufgabe ist es, für die
 				Anwendung einen Domain-Namen zu der entsprechenden IP-Adresse aufzulösen. Das heißt, wenn
 				der Resolver von einer Anwendung die Anfrage nach der Adresse \texttt{www.cs.uni-potsdam.de}
 				erhält, erzeugt der Resolver eine gültige DNS-Anfrage \cite{rfc1035} nach eben dieser
-				Adresse und sendet diese an den im Betriebssystem konfigurierten primären DNS-Server. Dabei
+				Adresse und sendet sie an den im Betriebssystem konfigurierten primären DNS-Server. Dabei
 				handelt es sich meist um einen rekursiven Nameserver, welcher dann selber einen Resolver
-				nutzt um weitere Anfragen zu stellen, sofern er die Antwort nicht im Cache gespeichert hat.
+				nutzt, um weitere Anfragen zu stellen, sofern er die Antwort nicht im Cache gespeichert hat.
 				In Abbildung \ref{fig:bsp-request} ist der Ablauf der Beispiel-Anfrage dargestellt. Der
 				Resolver des Clients sendet die Anfrage (1) an den lokalen DNS-Server. Dieser ist rekursiv
 				und ermittelt deshalb nun die Antwort (Annahme: Der Cache des DNS-Servers enthält keine
@@ -489,14 +491,14 @@
 				befragt (4) anschließend den \texttt{de}-Nameserver, welcher wiederum ein iterativer
 				Nameserver ist und somit nur die \texttt{uni-potsdam}-Domain kennt (5). Die Anfragen an den
 				\texttt{uni-potsdam}-Nameserver (6) liefert die Adresse des zuständigen Nameservers zurück
-				(7). Dieser kann nun auf die letzte Anfrage (8) mit der gewünschten Adresse antworten (9).
-				Welche dann vom lokalen DNS-Server an den Client zurückgeliefert wird (10). Alle
+				(7). Dieser kann nun auf die letzte Anfrage (8) mit der gewünschten Adresse antworten (9)
+				und lokale DNS-Server liefert sie an den Client zurück (10). Alle
 				Informationen, die in den Zwischenanfragen gesammelt wurden, werden im Cache des lokalen
-				DNS-Servers gespeichert. Das heißt würde der Client nun erneut nach der Adresse
+				DNS-Servers gespeichert. Würde nun der Client erneut nach der Adresse
 				\texttt{www.cs.uni-potsdam.de} fragen, könnte der lokale DNS-Server sofort antworten. Oder
 				wenn die Anfrage diesmal \texttt{haiti.cs.uni-potsdam.de} wäre, würde der lokale DNS-Server
 				sofort beim \texttt{cs.uni-potsdam.de}-Nameserver anfragen, da er dessen Adresse bereits
-				kennt und weißt das dieser für die Domain zuständig ist.
+				kennt und weiß, dass dieser für die Domain zuständig ist.
 
 			% subsubsection Resolver }}}
 
@@ -504,14 +506,14 @@
 
 				Mit der DNS Security Extension (DNSSEC) \cite{rfc4033,rfc4034,rfc4035,liualb2006} wurde ein
 				neuer Standard eingeführt, welcher das DNS absichern soll. Es gibt verschiedene
-				Angriffsszenarien auf das DNS \cite{lorenz2012}, wo durch Informationen verändert und somit
+				Angriffsszenarien auf das DNS \cite{lorenz2012}, wodurch Informationen verändert und somit
 				ganze Domains übernommen werden können. Mit DNSSEC soll die Authentizität und
 				Datenintegrität der Informationen gewährleistet werden und überprüfbar sein. Dazu werden
 				kryptographische Verfahren eingesetzt. Die Einführung und Umstellung auf DNSSEC ist zu
 				diesem Zeitpunkt noch nicht abgeschlossen, jedoch ergeben sich daraus interessante
 				Überlegungen bezüglich der Last auf dem DNS-Netzwerk. Durch die kryptographische
-				Abschicherung werden die DNS-Nachrichten größer und Resolver müssen kryptographische
-				Methoden nutzen, was die eine höhere Rechenleistung beim Client voraussetzt. So bald das
+				Absicherung werden die DNS-Nachrichten größer und Resolver müssen kryptographische
+				Methoden nutzen, was eine höhere Rechenleistung beim Client voraussetzt. Sobald das
 				System vollständig eingeführt wurde, wird es interessant sein zu untersuchen, in welcher
 				Form sich die Veränderung auf die Auslastung des DNS auswirkt.
 
@@ -527,13 +529,13 @@
 				und 2009 zur Verteilung von DNS-Server-Software ausgewählt. Die erste Studie
 				\cite{survey2004} wurde am 23. Mai 2004 abgeschlossen und untersuchte 37.836.997 SLDs unter
 				den TLDs \texttt{com}, \texttt{net}, \texttt{org},	\texttt{info} und \texttt{biz}. Die
-				zweite Studie \cite{survey2009} ist vom Oktober 2009, dabei wurden 3.308.662 SLDs unter den
-				TLDs \texttt{com}, \texttt{net} und \texttt{org} untersucht. Es wurde jeweils versucht die
-				Version der eingesetzen DNS-Server-Software zu ermitteln. Dabei wurden die Systeme BIND,
+				zweite Studie \cite{survey2009} ist vom Oktober 2009. In ihr wurden 3.308.662 SLDs unter den
+				TLDs \texttt{com}, \texttt{net} und \texttt{org} untersucht. Man versuchte jeweils die
+				Version der eingesetzten DNS-Server-Software zu ermitteln. Dabei wurden die Systeme BIND,
 				djbdns, Microsoft DNS und NSD als vier der häufigsten Systeme ermittelt (siehe Tabelle
-				\ref{tab:verteilung}). Die genannten vier Systeme werden im folgenden vorgestellt.
-				Zusätzlich wird auf den dnsmasq Server eingegangen, welcher eine sehr spezielle Form eines
-				DNS-Servers darstellt.
+				\ref{tab:verteilung}). Die genannten vier Systeme werden im Folgenden vorgestellt.
+				Zusätzlich wird auf den dnsmasq Server eingegangen. Er stellt eine sehr spezielle Form eines
+				DNS-Servers dar.
 				
 				\begin{table}
 					\centering
@@ -550,13 +552,13 @@
 
 				\subsubsection*{BIND} % {{{
 
-				Die erste Version des Berkeley Internet Name Domain (BIND) \cite{bind} Server wurde am
+				Die erste Version des Berkeley Internet Name Domain (BIND) \cite{bind} Server wurde
 				Anfang der achtziger Jahre an der University of California, Berkeley entwickelt und mit
 				4.3BSD erstmals veröffentlicht. Inzwischen wird BIND von dem Internet Systems Consortium
 				(ISC) weiterentwickelt und gepflegt. BIND hat sich zu dem De-facto-Standard für DNS-Server
 				entwickelt. Er wird auf 10 der 13 Root-Server eingesetzt und ist auch sonst bei TLDs
-				weitverbreitet. Die erste Version des aktuellen BIND 9 Servers wurde 2000 veröffentlicht,
-				ein Nachfolger wird seit 2 Jahren entwickelt um die aktuellsten Standards (z.B. DNSSEC) zu
+				weitverbreitet. Die erste Version des aktuellen BIND 9 Servers wurde 2000 veröffentlicht.
+				Ein Nachfolger wird seit 2 Jahren entwickelt, um die aktuellsten Standards (z.B. DNSSEC) zu
 				unterstützen.
 
 				Für diese Arbeit wurde der BIND Server als DNS-Server gewählt, da er der weitverbreitetste ist und
@@ -568,13 +570,13 @@
 				\subsubsection*{Name Server Daemon (NSD)} % {{{
 
 				Der Name Server Daemon (NSD) \cite{nsd} wird von den
-				NLnet Labs entwickelt und hat als Hauptziel die Vielfalt unter den Root-Servern zu erhöhen.
+				NLnet Labs entwickelt und sein Hauptziel ist die Vielfalt unter den Root-Servern zu erhöhen.
 				Das soll dazu führen, dass nicht alle Root-Server durch einen Fehler im BIND Server
 				angreifbar sind. Aktuell nutzen auch bereits 3 der 13 Root-Server den NSD als DNS-Server.
-				Mit der Zielsetzung vor allem auf Root-Server und TLD-Server eingesetzt zu werden, erklären
+				Mit der Zielsetzung, vor allem auf Root-Servern und TLD-Servern eingesetzt zu werden, erklären
 				sich auch die meisten Charakteristiken des NSD. Er ist ausschließlich ein autoritativer
-				DNS-Server, das heißt er beantwortet keine rekursiven Anfragen. Was seinen Einsatz als
-				DNS-Server in einem lokalen Netzwerk ausschließt. Daher kann bei dem NSD auf unnötige
+				DNS-Server, das heißt, er beantwortet keine rekursiven Anfragen. Dadurch ist sein Einsatz
+				als	DNS-Server in einem lokalen Netzwerk ausgeschlossen. Deshalb kann bei dem NSD auf unnötige
 				Funktionen verzichtet werden und somit auf hohe Belastbarkeit optimiert werden. Die erste
 				Version des aktuellen NSD 3 wurde 2006 veröffentlicht.
 				
@@ -583,36 +585,36 @@
 				\subsubsection*{Microsoft DNS} % {{{
 
 				Der Microsoft DNS Server \cite{msdns} ist eine Implementation von Microsoft, welche mit den
-				Windows Server Produkten ausgeliefert wird. Er kann sowohl als authoritativer und rekursiver
+				Windows Server Produkten ausgeliefert wird. Er kann sowohl als autoritativer und rekursiver
 				Nameserver betrieben werden. Durch seinen Einsatz auf Windows Servern kommt er vor allem in
 				lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des Microsoft DNS Servers ist,
-				dass es nicht nur möglich ist die DNS-Informationen aus einem Master-File zu erhalten
-				sondern auch aus einem Active Directory.
+				dass die DNS-Informationen nicht nur aus einem Master-File gelesen werden, sondern auch aus
+				einem Active Directory stammen können.
 				
 				% subsubsection Microsoft DNS }}}
 
 				\subsubsection*{djbdns} % {{{
 
-				Das von Daniel J. Bernstein entwickelte Softwarepaket djbdns \cite{djbdns} ist einer der
-				verbreitetsten DNS-Server. Daniel J.  Bernstein ist ein Mathematiker, Programmierer und
-				Kryptologe aus den USA. Er veröffentlichte djbdns im Jahr 2001 und setzte eine Belohung
-				\cite{guarantee} von \$1000 aus, für den ersten der einen Fehler in djbdns findet. Die
-				Besonderheit von djbdns liegt darin, dass es ein Softwarepaket aus mehreren Programmen ist,
-				welche immer einen speziellen Einsatzzweck erfüllen. Somit verringert sich die Code-Basis
-				und die Komplexität der Programme. Die Hauptkomponenten sind \texttt{tinydns} ein
-				authoritativer Nameserver und \texttt{dnscache} ein rekursiver Nameserver. Für andere
-				Funktionen wie das Austauschen von kompletten Zone-Informationen oder Blacklisting
-				existieren ebenfalls eigene Programme.
+				Das von Daniel J. Bernstein entwickelte Softwarepaket djbdns \cite{djbdns} ist eines der am
+				häufigsten benutzten Systeme zum Betrieb eines DNS-Servers. Daniel J.  Bernstein ist ein
+				Mathematiker, Programmierer und Kryptologe aus den USA. Er veröffentlichte djbdns im Jahr
+				2001 und setzte eine Belohung \cite{guarantee} von \$1000 aus, für den ersten, der einen
+				Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein Softwarepaket
+				aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck erfüllen. Somit
+				verringert sich die Code-Basis und die Komplexität der Programme. Die Hauptkomponenten sind
+				\texttt{tinydns}, ein autoritativer Nameserver, und \texttt{dnscache}, ein rekursiver
+				Nameserver. Für andere Funktionen, wie das Austauschen von kompletten Zone-Informationen oder
+				Blacklisting, existieren ebenfalls eigene Programme.
 				
 				% subsubsection Djbdns }}}
 
 				\subsubsection*{dnsmasq} % {{{
 
-				Das Programm dnsmasq \cite{dnsmasq} wurde ausschließlich für Heimnetzwerke entwickelt. Es
-				stellt DNS und DHCP\footnote{Das Dynamic Host Configuration Protocol (DHCP) \cite{rfc2131}
-				ermöglicht es Clients in einem Netzwerk dynamisch IP-Adressen zuzuweisen, so kann zum
+				Das Programm dnsmasq \cite{dnsmasq} wird ausschließlich für Heimnetzwerke entwickelt. Es
+				stellt DNS- und DHCP\footnote{Das Dynamic Host Configuration Protocol (DHCP) \cite{rfc2131}
+				ermöglicht es, Clients in einem Netzwerk dynamisch IP-Adressen zuzuweisen. So kann zum
 				Beispiel in einem Heimnetzwerk auf die Konfiguration von statischen IP-Adressen verzichtet
-				werden.} Dienste für ein kleines Netzwerk zur Verfügung. Dabei ist die Idee, dass dnsmasq
+				werden.}-Dienste für ein kleines Netzwerk zur Verfügung. Die Grundidee besteht darin, dass dnsmasq
 				die Netzwerkknoten im Heimnetz über DNS verfügbar macht, indem es entweder die
 				\texttt{/etc/hosts} oder DHCP Informationen nutzt. Dadurch müssen die lokalen Rechner keine
 				eigene \texttt{hosts}-Datei pflegen.  Zusätzlich bietet es einen einfachen Cache für
@@ -640,35 +642,35 @@
 		In diesem Abschnitt sollen Problemlösungen vorgestellt werden, welche dazu dienen die Last einer
 		einzelnen Netzwerkressource zu verringern. Dies ist immer dann nötig und sinnvoll, wenn eine
 		einzelne Ressource im Netzwerk einer so hohen Last ausgesetzt ist, dass sie diese nicht mehr
-		allein abarbeiten kann. Zu hohe Last führt dazu, dass einzelne Anfragen an die Ressource nicht
-		mehr beantwortet werden oder im ungünstigsten Fall ein Totalausfall droht. Ein häufiges Beispiel
-		für hohe Lastsituationen sind Webserver, welche ab einer gewissen Anzahl an Anfragen pro Sekunde
-		nicht mehr in der Lage sind alle Anfragen abzuarbeiten. Um die Überlastung einzelner Ressourcen
-		zu verhindern gibt es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource
-		durch eine leistungsfähigere Variante auszutauschen. Dies wird oft bei Datenbanken genutzt, wo
-		der Server durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies
-		meist die einfachere Lösung, da es problematisch sein kann eine Datenbank zu verteilen und dabei
-		die Daten konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt
-		zum Beispiel weitere Server bereitzustellen. So kann der Dienst des Servers, wie in Abbildung
-		\ref{fig:lastverteilung} zu sehen, von mehreren Servern dem Internet bereitgestellt werden.
-		Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von dynmaischen
+		allein abarbeiten kann. Bei zu hoher Last können einzelne Anfragen an die Ressource nicht mehr
+		beantwortet werden oder im ungünstigsten Fall droht ein Totalausfall. Ein Beispiel für hohe
+		Lastsituationen sind Webserver, welche ab einer gewissen Anzahl von Anfragen pro Sekunde nicht
+		mehr in der Lage sind, alle abzuarbeiten. Um die Überlastung einzelner Ressourcen zu verhindern
+		gibt, es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource durch eine
+		leistungsfähigere Variante auszutauschen. Dies wird oft bei Datenbanken genutzt, wo der Server
+		durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies oft die
+		einfachere Lösung, da es problematisch sein kann, sie zu verteilen und dabei die Daten
+		konsistent zu halten. Die andere Variante ist eine Skalierung in die Breite, das heißt, zum
+		Beispiel weitere Server bereitzustellen. So kann der Dienst des Servers, wie in Abbildung
+		\ref{fig:lastverteilung} zu sehen ist, von mehreren Servern dem Internet bereitgestellt werden.
+		Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von dynamischen
 		Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite hat Vorteile gegenüber
 		der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die Anwendung zulässt.  Allein
-		durch die Bereitstellung eines zusätzlichen Servers erhöht sich die Ausfallsicherheit und
-		gleichzeitig auch die Wartbarkeit.  Durch diese Verteilung kann ein einzelner Server ausfallen
-		oder überprüft werden, währende der andere Server die Anwendung weiterhin zur Verfügung stellt.
-		Zudem ist die Erweiterbarkeit und weitere Skalierung sehr einfach, wenn einmal die Infrastruktur
-		geschaffen wurde mehrere Server zu nutzen. Ein weiterer nicht zu vernachlässigender Punkt ist
-		die Kostenfrage. So ist die Anschaffung zweier identischer Systeme meist günstiger als ein
-		einzelnes System, welches die gleiche Last verarbeiten kann.  Hinzu kommt die Möglichkeit
-		gezielt Ressourcen zu entfernen um Strom zu sparen. So könnten Server nur dann angeschaltet
-		werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.  Ein Beispiel hierfür könnte
-		eine Verkaufsplattform sein, die zusätzliche Ressourcen benötigt, wenn	besonders vor Feiertagen
-		eine hohe Anzahl an Bestellungen eingeht.
+		durch die Bereitstellung eines zusätzlichen Servers ist es einfacher, einzelne Server zu warten
+		und die Gefahr eines Totalausfalls verringert sich. Durch diese Verteilung kann ein einzelner
+		Server ausfallen oder überprüft werden, währende der andere Server die Anwendung weiterhin zur
+		Verfügung stellt.  Zudem ist die Erweiterbarkeit zur weitere Skalierung einfacher, wenn
+		bereits die Infrastruktur geschaffen wurde, mehrere Server zu nutzen. Dieses Variante ist im
+		Vergleich zur vorherigen kostengünstiger, da die Anschaffung zweier identischer Systeme
+		meist preiswerter als ein einzelnes System ist, welches die gleiche Last verarbeiten kann.  Hinzu
+		kommt die Möglichkeit, gezielt Ressourcen zu entfernen, um Strom zu sparen. So könnten Server nur
+		dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.  Ein
+		Beispiel hierfür wäre eine Verkaufsplattform, die zusätzliche Ressourcen benötigt, wenn
+		zum Beispiel vor Feiertagen eine hohe Anzahl Bestellungen eingeht.
 
-		Im Folgenden werden verschiede Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
+		Im Folgenden werden verschiedene Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
 		Sie unterscheiden sich in der Umsetzung der Lastverteilung und bieten jeweils gewisse Vor- und
-		Nachteile. Der Hauptanwendungsfall für diese Systeme ist die Verteilung von HTTP-Anfragen.
+		Nachteile. Die Hauptanwendung für diese Systeme ist die Verteilung von HTTP-Anfragen.
 		Diese unterscheiden sich von DNS-Anfragen in mehreren Punkten, weshalb anschließend noch
 		Besonderheiten und existierende Verfahren der Lastverteilung von DNS-Verkehr erklärt werden.
 	
@@ -693,22 +695,22 @@
 				\item Entgegennehmen des kompletten Netzwerkverkehrs, welcher an die Anwendung gerichtet ist
 					(z.B. HTTP-Anfragen an eine Website).
 				\item Verteilung des angenommenen Netzwerkverkehrs auf die Backend-Server.
-				\item Überwachung der Last der einzelnen Backend-Server und entsprechenden Anpassung der
+				\item Überwachung der Last der einzelnen Backend-Server und entsprechende Anpassung der
 					Verteilung des Netzwerkverkehrs.
 			\end{itemize}
 
-			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Es kann hierbei
-			unterschieden werden ob ein Lastverteiler im Kernelspace oder Userspace des Betreibssystems
-			implementiert ist. Ansätze für Userspace-basierte Lastverteiler sind zum Beispiel das Programm
+			Diese Anforderungen können durch unterschiedliche Systeme realisiert werden. Ein Lastverteiler
+			kann im Kernelspace oder Userspace des Betreibssystems
+			implementiert sein. Ansätze für Userspace-basierte Lastverteiler sind zum Beispiel das Programm
 			perlbal \cite{perlbal} oder das Apache-Modul mod\_proxy\_balancer \cite{modproxy}.  Eine
 			Implementierung im Userspace hat den Vorteil, dass der Lastverteiler unabhängig von konkreten
 			Betriebssystemen und Kernel-Versionen ist. Außerdem benötigt dieser keine \texttt{root}-Rechte
 			um konfiguriert und gestartet zu werden. Da es sich um Anwendungen im Userspace handelt,
 			findet hier die Lastverteilung auf einer höheren OSI-Schicht \cite{tanenbaum1988} statt.
 			Dadurch stehen dem Lastverteiler anwendungsspezifischere Informationen zu einer Anfrage
-			bereit. Dies kann zum Beispiel dazu genutzt werden, die Abfrage nach deren Inhalt zu filtern
-			und so ein kontextsensitives Verteilen zu ermöglichen.  Ein Nachteil, welcher vor allem bei
-			hohem Netzwerkverkehr zum Tragen kommt, ist der nötige Kontextwechsel damit der Lastverteiler
+			bereit. Dies kann dazu genutzt werden, die Abfragen nach deren Inhalt zu filtern
+			und so ein kontextsensitives Verteilen zu ermöglichen.  Ein Nachteil, der vor allem bei
+			hohem Netzwerkverkehr entsteht, ist der nötige Kontextwechsel, damit der Lastverteiler
 			im Userspace die Netzwerkpakete auswerten kann. Dazu muss das Netzwerkpaket in den Userspace
 			und zum Weiterversenden wiederum in den Kernelspace kopiert werden. Hierzu ist jeweils ein
 			Kontextwechsel nötig, welcher bei hohem Netzwerkverkehr zu Leistungseinbußen führen kann
@@ -717,9 +719,9 @@
 			OpenBSD als bekannteste Beispiele.  Indem die Pakete bereits im Kernelspace verarbeitet
 			werden, findet kein Kontextwechsel statt und die Verarbeitung kann schneller erfolgen.
 			Allerdings findet die Verarbeitung auf einer der unteren Schichten des OSI-Modells statt, was
-			dazu führt das keine anwendungsspezifischen Informationen vorliegen. Jedoch bieten dieser
+			dazu führt, dass keine anwendungsspezifischen Informationen vorliegen. Jedoch bietet dieser
 			Ansatz eben genau dies auch als Vorteil, denn so kann eine Lastverteilung unabhängig von
-			Anwendungen statt finden.  Das heißt ein Lastverteiler, wie der LVS, kann so konfiguriert
+			Anwendungen stattfinden.  Das heißt, ein Lastverteiler, wie der LVS, kann so konfiguriert
 			werden, dass er gleichzeitig unterschiedlichen Netzwerkverkehr (z.B. unterschiedliche
 			Transportprotokolle oder Portnummern) separat verteilt. Dies ist mit einer anwendungsbasierten
 			Lösung nicht ohne weiteres realisierbar.
@@ -728,17 +730,17 @@
 			ein entscheidendes Kriterium. Es existieren mehrere Algorithmen für dieses Problem
 			\cite{zinke2007}, wobei es von der gewählten Software abhängt, welche überhaupt zur Verfügung
 			stehen.  Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
-			Least-Connection-Verfahren. Beim Round-Robin-Algorithmus wählt der Lastverteiler, aus einer
-			Liste von Servern, den nächsten aus. Dies geschieht zyklisch, was dazu führt, dass die
+			Least-Connection-Verfahren. Beim Round-Robin-Algorithmus wählt der Lastverteiler aus einer
+			Liste von Servern den nächsten aus. Das geschieht zyklisch, was dazu führt, dass die
 			Reihenfolge der Server immer gleich bleibt. Dies ist ein sehr einfacher Algorithmus der aber
 			bei homogenen Clustern und homogenen Anfragen ausreicht, um die Last sinnvoll zu verteilen.
 			Handelt es sich nicht um ein homogenes Cluster, so kann durch eine gewichtete Variante des
 			Algorithmus die Last entsprechend der Leistung der Server verteilt werden. Sind jedoch die
-			Anfragen an das Cluster nicht homogen, das heißt jede Anfrage erzeugt eine unterschiedliche
-			Last bei den Backend-Servern, kann dies nicht durch den Round-Robin-Algorithmus ausgeglichen
-			werden. Der zweite bekante Algorithmus ist Least-Connection. Dieser Algorithmus beachtet bei
-			der Verteilung die aktuelle Anzahl an Verbindungen zu den Backend-Servern, das heißt wenn ein
-			Server schneller seine Anfragen abarbeitet als ein anderer, erhält dieser Server früher wieder
+			Anfragen an das Cluster nicht homogen, das heißt, jede Anfrage erzeugt eine unterschiedliche
+			Last bei den Backend-Servern, kann das nicht durch den Round-Robin-Algorithmus ausgeglichen
+			werden. Der zweite bekannte Algorithmus ist Least-Connection. Dieser Algorithmus beachtet bei
+			der Verteilung die aktuelle Anzahl an Verbindungen zu den Backend-Servern. Arbeitet ein Server
+			schneller seine Anfragen ab als ein anderer, erhält dieser Server früher wieder
 			Anfragen. Auch von diesem Algorithmus gibt es eine gewichtete Variante, welche die bereits
 			dynamisch getroffene Entscheidung noch einmal verbessern soll. Daher ist anzunehmen, dass
 			Least-Connection bessere Ergebnisse auf heterogenen Clustern als Round-Robin erzielt und auch
@@ -759,31 +761,31 @@
 			Existiert kein Cluster oder es soll auf einen zusätzlichen Server verzichtet werden, bietet
 			sich eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag
 			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Ein möglicher
-			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt, dabei wird als
+			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt, hier wird als
 			erstes der DNS-Server befragt, welcher dann eine Liste aller möglichen Adressen liefert. Dabei
 			existiert keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge
 			er die IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit
-			eine gewissen Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt
-			das Caching von lokalen Nameservern dazu, dass alle Anfragen zu der Adresse im Cache geleitet
-			werden. Weiterhin hat der DNS-Server keine Informationen über die Last der Server oder ob
-			diese überhaupt erreichbar sind. Dadurch wird ein Server, der ausgefallen ist, trotzdem immer
-			wieder als Antwort zurückgeliefert. Auch ist es nicht möglich Gewichte für die Verteilung der
-			Last auf den Server anzugeben, weshalb eine Heterogenität der Server nicht ausgeglichen werden
-			kann. Dieses Problem sollte durch den DNS-Typen \texttt{SRV} \cite{rfc2782} behoben werden.
-			Ein Beispiel eines \texttt{SRV}-Eintrags für einen Webserver ist in Tabelle \ref{tab:srv} zu
-			sehen. Durch den Domain-Namen wird definiert, dass dieser Eintrag nur für HTTP-Anfragen über
-			TCP an die Domain \texttt{bsp.de} gilt. In dem Beispiel wird anschließend den Domains
-			\texttt{www.bsp.de} und \texttt{www2.bsp.de} eine Priorität von 0 und \texttt{backup.bsp.de}
-			von 1 zugeordnet. Dabei muss von einem Client der Server mit der kleinsten Priorität gewählt
-			werden, sofern dieser erreichbar ist. Gibt es mehrere Server mit der selben Priorität (wie im
-			Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte die Wahl eines Server mit einem
-			höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch der Port für das Ziel angegeben.
-			Diese Verfahren führt zwei Gewichtungen ein, welche auf der Client-Seite ausgewertet werden.
-			Allerdings ist dies das größte Problem. Denn die Unterstützung auf der Clientseite für
-			\texttt{SRV}-Einträge ist gering. Außerdem bleibt das Problem bestehen, das der DNS-Server
-			nicht die Last und Funktionstüchtigkeit der Server kennt.  Jedoch gibt es dem Client einen
-			Anhaltspunkt, welchen Server er als nächstes kontaktieren sollte, sofern ein Server nicht
-			erreichbar ist.
+			eine gewisse Lastverteilung erreicht. Dieses Verfahren hat jedoch einige Nachteile. So führt
+			das Caching von lokalen Nameservern dazu, dass alle Anfragen zu derselben Adresse geleitet
+			werden. Weiterhin hat der DNS-Server keine Informationen über die Last der Server oder
+			darüber, ob diese überhaupt erreichbar sind. Dadurch wird ein Server, der ausgefallen ist,
+			trotzdem immer wieder als Antwort zurückgeliefert. Es ist auch nicht möglich, Gewichte für die
+			Verteilung der Last auf den Server anzugeben, weshalb eine Heterogenität der Server nicht
+			ausgeglichen werden kann. Dieses Problem sollte durch den DNS-Typen \texttt{SRV}
+			\cite{rfc2782} behoben werden.  Ein Beispiel eines \texttt{SRV}-Eintrags für einen Webserver
+			ist in Tabelle \ref{tab:srv} zu sehen. Durch den Domain-Namen wird definiert, dass dieser
+			Eintrag nur für HTTP-Anfragen über TCP an die Domain \texttt{bsp.de} gilt. In dem Beispiel
+			wird anschließend den Domains \texttt{www.bsp.de} und \texttt{www2.bsp.de} eine Priorität von
+			0 und \texttt{backup.bsp.de} von 1 zugeordnet. Dabei muss von einem Client der Server mit der
+			kleinsten Priorität gewählt werden, sofern dieser erreichbar ist. Gibt es mehrere Server mit
+			derselben Priorität (wie im Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte die
+			Wahl eines Server mit einem höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch der
+			Port für das Ziel angegeben.  Dieses Verfahren führt zwei Gewichtungen ein, welche auf der
+			Client-Seite ausgewertet werden.  Das ist ein großes Problem, denn die Unterstützung auf der
+			Clientseite für \texttt{SRV}-Einträge ist gering. Zusätzlich ergibt sich noch, dass der
+			DNS-Server nicht die Last und Funktionstüchtigkeit der Server kennt.  Jedoch gibt es dem
+			Client einen Anhaltspunkt, welchen Server er als nächstes kontaktieren sollte, sofern ein
+			Server nicht erreichbar ist.
 
 			\begin{table}
 				\centering
@@ -797,21 +799,21 @@
 				\label{tab:srv}
 			\end{table} 
 			
-			Mit Geotargeting oder auch GeoIP genannt, ist es möglich anhand der IP-Adresse einen Aussage
+			Mit Geotargeting oder auch GeoIP genannt, ist es möglich, anhand der IP-Adresse einen Aussage
 			über die ungefähre geografische Position des Inhabers zu treffen. Diese Information wird zum
-			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet wodurch der
-			DNS-Server seine Antwort an die geografische Position des Fragestellers anpassen kann. Die
+			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet, wodurch der
+			DNS-Server seine Antwort an die geografische Position des Fragestellers anpassen kann. Der
 			Gedanke dabei ist, dass ein geografisch naher Server auch der schnellere Server ist. Dies muss
 			nicht immer der Fall sein und außerdem kann es sein, dass der Client über einen DNS-Server
-			Anfragen stellt, welcher selber nicht geografisch nah ist. Dadurch kann dies zu negativen
-			Effekten führen.
+			Anfragen stellt, welcher selbst nicht geografisch nah ist. Dadurch kann es zu negativen
+			Effekten kommen.
 
 			Auch Kombinationen der Server-Lastverteilung und DNS-Lastverteilung sind möglich. Dabei wird ein
 			DNS-Server um Lastverteilungsfunktionen erweitert. So beschreibt \cite{chyuyi2003} ein
 			Verfahren, bei dem der DNS-Lastverteiler die Zeit überwacht, welche jeder Backend-Server für
 			die Abfrage einer Antwort benötigt. Dadurch kann die DNS-Antwort entsprechend der
-			Lastsitutation angepasst werden. Ein ähnlichen Ansatz beschreiben \cite{mookim2005}, dabei
-			werden Backend-Server die überlastet sind aus der Round-Robin-Liste des DNS-Servers entfernt
+			Lastsitutation angepasst werden. Einen ähnlichen Ansatz findet man in \cite{mookim2005}. Dabei
+			werden Backend-Server, die überlastet sind, aus der Round-Robin-Liste des DNS-Servers entfernt
 			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben.
 
 			% subsection DNS-basierte Lastverteilung }}}
@@ -821,24 +823,24 @@
 
 			% TODO: das mit den Sessions überlegen
 
-			Die Verteilung von DNS-Anfragen unterschiedet sich in mehreren Punkten von HTTP-Anfragen. So
-			ist das genutzte Transport-Protokoll UDP statt TCP und die Nachrichten dürfen nicht größer als
+			Die Verteilung von DNS-Anfragen unterscheidet sich in mehreren Punkten von HTTP-Anfragen. So
+			ist das genutzte Transport-Protokoll UDP, statt TCP, und die Nachrichten dürfen nicht größer als
 			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
-			zustandsbehafteten HTTP-Anwendungen, wo ein Client während einer Session immer mit dem selben Server
+			zustandsbehafteten HTTP-Anwendungen, wo ein Client während einer Session immer mit demselben Server
 			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
-			als bei HTTP-Anfragen. Firmen und Organisationen haben selten einen so hohe Anzahl an
+			als bei HTTP-Anfragen. Firmen und Organisationen haben selten eine so hohe Anzahl an
 			DNS-Anfragen, dass sie Überlastsituationen erreichen. Dies schließt nicht aus, dass mehrere
 			DNS-Server existieren, welche aber oft nur als Schutz vor Ausfällen und anderen Störungen
-			dienen.  In lokalen Netzwerken und kleinere Firmen reicht es daher Lastverteilung mit Hilfe
+			dienen.  In lokalen Netzwerken und kleinere Firmen reicht es daher aus, Lastverteilung mit Hilfe
 			von DNS-Einträgen durchzuführen. Bei größeren Firmen, die eine höhere Anzahl an DNS-Anfragen
-			zu bewältigen haben ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
+			zu bewältigen haben, ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
 			größte Last liegt bei den Betreiber von TLDs und den Root-Servern. Für diese Anwendungsfälle
 			sind DNS-Cluster nötig. Zusätzlich kommt Anycast \cite{rfc4786, sapate2005} zum Einsatz. Dabei
-			werden mehrere DNS Server mit der selben Anycast-IP-Adresse mit dem Internet verbunden. Sendet
-			nun ein Client eine Anfrage an diese Anycast-Adresse antwortet der Server, der als erster die
-			Frage erhält. Die Idee dahinter ist, dass durch den DNS-Server, der die kürzeste Route zum
+			werden mehrere DNS Server mit derselben Anycast-IP-Adresse mit dem Internet verbunden. Sendet
+			nun ein Client eine Anfrage an diese Anycast-Adresse, antwortet der Server, der als erster die
+			Frage erhält. Die Idee dabei ist, dass durch den DNS-Server, der die kürzeste Route zum
 			Fragesteller hat, die beste Antwort gegeben werden kann. Vor allem bei den Root-Servern ist
-			dies sinnvoll. Es existieren insgesamt 13 Root-Server
+			das sinnvoll. Es existieren insgesamt 13 Root-Server
 			(A-M) \cite{rootserver}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
 			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA. 
 				
