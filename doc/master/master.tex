@@ -850,6 +850,8 @@
 		\section{Fazit} % {{{
 		\label{sec:grundlagen-fazit}
 		
+			% Einordnung der Arbeit
+
 		% section Fazit }}}
 
   % chapter Grundlagen }}}
@@ -870,12 +872,12 @@
 	\label{cha:salbnet}
 
 		Dieses Kapitel beschreibt salbnet \cite{salbnet}, einen Credit-basierten
-		Lastverteilungsansatz.  Es basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
+		Lastverteilungsansatz.  Er basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
 		TCP-Verkehr vor allem in InfiniBand-Netzwerken \cite{zinke2007, scsczile2008,
 		schneidenbach2009}. Die Besonderheit an diesem Lastverteilungsverfahren ist, dass es sowohl eine
 		Komponente auf dem Lastverteiler als auch auf den Backend-Servern gibt. Dabei werden auf den
 		Backend-Servern Credits bestimmt, welche die Verfügbarkeit des Servers wiederspiegeln sollen,
-		und an den Lastverteiler übermittelt werden. Der Lastverteiler wählt dann anhand der gemeldeten
+		und an den Lastverteiler übermittelt. Der Lastverteiler wählt dann anhand der gemeldeten
 		Credits die Backend-Server aus. Dieser Aufbau von salbnet ist in Abbildung \ref{fig:salbnet} zu
 		sehen, wobei die Komponenten von salbnet blau hervorgehoben sind. Sie sollen im Folgenden kurz
 		vorgestellt werden.
@@ -893,8 +895,9 @@
 			Übertragung sowohl UDP und TCP als auch InfiniBand unterstützt. Außerdem kann bei InfiniBand
 			die Remote Direct Memory Access (RDMA) Eigenschaft genutzt werden. In salbnet wird die
 			Bibliothek genutzt um die Credits von den Backend-Server an den Lastverteiler zu melden. Wird
-			InfiniBand genutzt können die neuen Credits direkt in den Kernelspeicher des Lastverteilers
-			geschrieben werden. Dieses Vorgehen ist in Abbildung \ref{fig:salbnet} dargestellt.
+			InfiniBand genutzt können die neuen Credits mit Hilfe von RDMA direkt in den Kernelspeicher
+			des Lastverteilers geschrieben werden. Dieses Vorgehen ist in Abbildung \ref{fig:salbnet}
+			dargestellt.
 
 		% subsection libnetmsg }}}
 		
@@ -910,15 +913,14 @@
 
 		% subsection libnethook }}}
 
-
 		\subsection*{salbd} % {{{
 
 			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
 			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler stellt salbd einmal ein Kernelmodul
-			bereit, welches den salbnet scheduler für LVS implementiert. Dieser wählt Round-Robin den
-			nächsten Backend-Server aus allen Servern, welche noch Credits größer 0 besitzen. Außerdem
+			bereit, welches den salbnet Scheduler für LVS implementiert. Dieser wählt Round-Robin den
+			nächsten Backend-Server aus allen Servern aus, welche noch Credits größer 0 besitzen. Außerdem
 			wird salbd genutzt um die Credits von den Backend-Servern zu empfangen und bei Übertragungen
-			ohne RDMA auch um die Credits in den Kernelspace zum salbnet Scheduler zu übermitteln.  Im
+			ohne RDMA, auch um die Credits in den Kernelspace zum salbnet Scheduler zu übermitteln.  Im
 			Backend ist salbd zur Bestimmung der Credits anhand der aktuellen Last der Webserver
 			verantwortlich. Dazu werden verschiedene Metriken genutzt und anhand der ermittelten Werte
 			verschiedene Meldestrategien verfolgt. Dieser Ablauf ist schematisch in Abbildung
@@ -928,161 +930,158 @@
 
 		% subsection salbd }}}
 
-
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/salbd-concept.png}
 			\caption{Konzept von salbd (übernommen aus \cite{zinke2012})}
 			\label{fig:salbd}
 		\end{figure}
-		
-		% Auf dem Backend-Server dient salbd dazu
-		% Backend-Servern dient dazu, durch entsprechende Metriken, die aktuelle Last des Servers zu
-		% bestimmen. Aus diesen Werten wird anschließend eine Anzahl an Credits berechnet. Diese Credits
-		% geben an wieviel Anfragen der Backend-Server zu diesem Zeitpunkt noch abarbeiten könnte ohne
-		% überlastet zu sein. Dabei entspricht ein Credit einer Anfrage. Diese Credits werden dann von den
-		% Backend-Servern an den Lastverteiler übermittelt. Der Lastverteiler wählt anschließend anhand
-		% der gemeldeten Credits die Backend-Server aus. Dieses System ist in dem Sinne selbst-adaptiv,
-		% dass Server deren Credits verbraucht sind und die keine neuen Credits melden, durch den
-		% Lastverteiler ausgelassen werden.  Denn es ist davon auszugehen, dass der Server überlastet oder
-		% ausgefallen ist. Sollte sich ein Server von einer Überlastsituation erholen und dem
-		% Lastverteiler neue Credits übermitteln, wird dieser wieder in die Lastverteilung mit
-		% aufgenommen.
 
+		\section{Metrik und Credits} % {{{
+		\label{sub:metrik}
 
-		% Durch dieses Verfahren kann auf dem Lastverteiler ein einfacher Algorithmus wie Round-Robin
-		% angewandt werden und es müssen keine Gewichte für die Verteilung bestimmt werden. Damit ist
-		% dieses System durch seine eigene Anpassung besonders bei heterogenen Clustern geeignet.
+			In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.
+			Dabei ist die Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet,
+			dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
+			Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum aktuellen Zeitpunkt
+			zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
+			Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per einfachen Round-Robin-Verfahren,
+			welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits besitzen
+			durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins
+			verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine neuen Credits,
+			fällt der Server aus der Liste der verfügbaren Server heraus. Meldet ein Server, dessen Credits
+			bereits auf 0 gefallen waren, erneut Credits wird er wieder in die Verteilung mitaufgenommen. Die
+			beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur Berechnung der Credits und
+			die Meldestrategie der Backend-Server.
 
-		% Im Folgenden werden kurz die einzelnen Komponenten von salbnet vorgestellt.
+			Die Metrik hat folgende Anforderungen zu erfüllen \cite{scsczile2008}:
 
-	$~$\\
+			\begin{itemize}
+				\item Sie sollte einfach zu berechnen sein.
+				\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
+				\item Sie sollte applikationsunabhängig sein.
+				\item Sie sollte auch für Dienste mit mehreren Tausend Clients skalieren.
+			\end{itemize}
 
-	In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.
-	Dabei ist die Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet,
-	dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
-	Credit-Anzahl, diese soll der Anzahl an Anfragen entsprechen, welche zum aktuellen Zeitpunkt
-	zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
-	Lastverteiler gemeldet. Der Lastverteiler entscheidet dann per einfachen Round-Robin-Verfahren,
-	welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits besitzen
-	durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins
-	verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine neuen Credits,
-	fällt der Server aus der Liste der verfügbaren Server heraus. Meldet ein Server, dessen Credits
-	bereits auf 0 gefallen waren, erneut Credits wird er wieder in die Verteilung mitaufgenommen. Die
-	beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur Berechnung der Credits und
-	die Meldestrategie der Backend-Server.
+			Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine
+			Metrik beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle
+			gestellten Anforderungen an eine gute Metrik. Sie ist einfach zu berechnen, da der aktuelle
+			Füllstand und der maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers
+			entspricht einer Warteschlange für den Server. Solange die Backlog leer ist, kann der
+			Webserver alle Anfragen sofort beantworten.  Sobald Anfragen in der Backlog gespeichert
+			werden, ist der Server nicht mehr zu einer sofortigen Abarbeitung in der Lage, daher werden
+			die wartenden Anfragen in der Backlog gespeichert. Das heißt, die Anzahl der noch freien
+			Plätze in der Backlog gibt die Anzahl der noch möglichen Verbindungen an, bevor die Backlog
+			voll ist. Wenn die Backlog voll ist und weitere Anfragen eintreffen, werden diese verworfen.
+			Somit kann die Anfrage nicht beantwortet werden.  Daher entspricht der aktuelle Füllstand der
+			Backlog genau den aktuell zur Verfügung stehenden Ressourcen des Servers. Dadurch, dass die
+			TCP-Backlog überwacht wird, ist diese Methode allgemein für alle Webserver nutzbar und somit
+			applikationsunabhängig. Außerdem benötigt die Metrik keine besonderen Ressourcen, das heißt sie
+			ist weder Speicher- noch CPU-intensiv, und somit beeinflusst sie nicht die Leistung des
+			Webservers.
 
-	Die Metrik hat folgende Anforderungen zu erfüllen \cite{scsczile2008}:
+			Die Betrachtung der Backlog zeigt auch zwei wichtige Metriken zur Bewertung einer Lastverteilung
+			für Webserver. Das Verwerfen einer Anfrage muss mit allen Möglichkeiten verhindert werden. Jede
+			verworfene Anfrage kann einem verlorenen Nutzer oder Kunden entsprechen. Muss eine Anfrage sehr
+			lange in der Backlog warten, ist dies zwar nicht so ungünstig, wie eine verworfene Anfrage, aber
+			es bedeute eine längere Wartezeit für den Nutzer. Wenn dieser nicht bereit ist so lange auf eine
+			Antwort zu warten, ist dies ebenfalls ein verlorener Nutzer oder Kunde. Das heißt eine gute
+			Lastverteilung sollte zu einer geringen Zahl an verworfenen Anfragen und einer minimalen
+			Antwortzeit führen.
 
-	\begin{itemize}
-		\item Sie sollte einfach zu berechnen sein.
-		\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
-		\item Sie sollte applikationsunabhängig sein.
-		\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
-	\end{itemize}
+		% section Metrik und Credits }}}
 
-	Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine Metrik
-	beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle gestellten
-	Anforderungen an eine gute Metrik. Sie ist einfach zu berechnen, da der aktuelle Füllstand und der
-	maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers entspricht einer
-	Warteschlange für den Server. Solange die Backlog leer ist, kann der Webserver alle Anfragen sofort
-	beantworten.  Sobald Anfragen in der Backlog gespeichert werden, ist der Server nicht mehr zu
-	einer sofortigen Abarbeitung in der Lage, daher werden die wartenden Anfragen in der Backlog
-	gespeichert. Das heißt, die Anzahl der noch freien Plätze in der Backlog gibt die Anzahl der noch
-	möglichen Verbindungen an, bevor die Backlog voll ist. Wenn die Backlog voll ist und weitere
-	Anfragen eintreffen, werden diese fallen gelassen. Somit kann die Anfrage nicht beantwortet
-	werden.  Daher entspricht der aktuelle Füllstand der Backlog genau den aktuell zur Verfügung
-	stehenden Ressourcen des Servers. Dadurch, dass die TCP-Backlog überwacht wird, ist diese Methode
-	allgemein für alle Webserver nutzbar und somit applikationsunabhängig. Außerdem benötigt die
-	Metrik keine besonderen Ressource, das heißt sie ist weder Speicher noch CPU-intensiv, und somit
-	beeinflusst sie nicht die Leistung des Webservers. 
+		\section{Meldestrategien} % {{{
+		\label{sub:meldestrategien}
 
-	Die Betrachtung der Backlog zeigt auch zwei wichtige Metriken zur Bewertung einer Lastverteilung
-	für Webserver. Das Verwerfen einer Anfrage muss mit allen Möglichkeiten verhindert werden. Jede
-	verworfene Anfrage kann einem verlorenen Nutzer oder Kunden entsprechen. Muss eine Anfrage sehr
-	lange in der Backlog warten, ist dies zwar nicht so ungünstig, wie eine verworfene Anfrage, aber
-	es bedeute eine längere Wartezeit für den Nutzer. Wenn dieser nicht bereit ist so lange auf eine
-	Antwort zu warten, ist dies ebenfalls ein verlorener Nutzer oder Kunde. Das heißt eine gute
-	Lastverteilung sollte zu einer geringen Zahl an verworfenen Anfragen und einer minimalen
-	Antwortzeit führen.
+			Als zweiter wichtiger Faktor des Credit-Ansatzes zählt neben der Metrik die Meldestrategie. Dabei
+			ist es entscheident, wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
+			könnte eine zusätzliche Last auf den Backend-Servern erzeugen. Werden Credits zu selten gemeldet
+			kann es sein, dass der Backend-Server beim Lastverteiler aussortiert wird, weil seine Credits auf
+			0 gefallen sind. Folgend werden 4 mögliche Meldestrategien vorgestellt \cite{scsczile2008,
+			schneidenbach2009}.
 
-	Als zweiter wichtiger Faktor des Credit-Ansatzes zählt neben der Metrik die Meldestrategie. Dabei
-	ist es entscheident, wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
-	könnte eine zusätzliche Last auf den Backend-Servern erzeugen. Werden Credits zu selten gemeldet
-	kann es sein, dass der Backend-Server beim Lastverteiler aussortiert wird, weil seine Credits auf
-	0 gefallen sind. Folgend werden 4 mögliche Meldestrategien vorgestellt \cite{scsczile2008,
-	schneidenbach2009}.
+			\paragraph{Plain} % {{{
+			\label{par:plain}
 
-	\paragraph{Plain} % {{{
-	\label{par:plain}
+				Plain stellt die einfachste Lösung vor. Dabei wird immer nach einem fixen Intervall die
+				Differenz zwischen der maximalen Größe der Backlog und dem aktuellen Füllstand der Backlog
+				gemeldet. Dies entspricht allen aktuell verfügbaren Ressourcen.
 
-		Plain stellt die einfachste Lösung vor. Dabei wird immer nach einem fixen Intervall die
-		Differenz zwischen der maximalen Größe der Backlog und dem aktuellen Füllstand der Backlog
-		gemeldet. Dies entspricht allen aktuell verfügbaren Ressourcen.
+			% paragraph Plain }}}
 
-	% paragraph Plain }}}
+			\paragraph{Soft + Hard Credits} % {{{
+			\label{par:soft-hard-credits}
 
-	\paragraph{Soft + Hard Credits} % {{{
-	\label{par:soft-hard-credits}
+			Bei diesem Algorithmus werden dem Lastverteiler zweimal Credits mitgeteilt. Die Hard-Credits
+			entsprechen den aktuell verfügbaren Ressourcen wie schon beim Plain-Algorithmus. Die Soft-Credits
+			sind eine Empfehlung vom Backend-Server an den Lastverteiler. Sie ergeben sich aus den
+			Hard-Credits und der aktuellen Lastsitutation, das heißt wenn der Server Probleme hat die Backlog
+			abzuarbeiten sinken die Soft-Credits. Somit soll verhindert werden, dass zu viele Requests an den
+			schon unter Last stehenden Server gesendet werden. Für den Lastverteiler sind grundsätzlich die
+			Soft-Credits das ausschlaggebende Maß. Erst, wenn kein Server mehr über Soft-Credits verfügt
+			werden die Hard-Credits beachtet.
 
-	Bei diesem Algorithmus werden dem Lastverteiler zweimal Credits mitgeteilt. Die Hard-Credits
-	entsprechen den aktuell verfügbaren Ressourcen wie schon beim Plain-Algorithmus. Die Soft-Credits
-	sind eine Empfehlung vom Backend-Server an den Lastverteiler. Sie ergeben sich aus den
-	Hard-Credits und der aktuellen Lastsitutation, das heißt wenn der Server Probleme hat die Backlog
-	abzuarbeiten sinken die Soft-Credits. Somit soll verhindert werden, dass zu viele Requests an den
-	schon unter Last stehenden Server gesendet werden. Für den Lastverteiler sind grundsätzlich die
-	Soft-Credits das ausschlaggebende Maß. Erst, wenn kein Server mehr über Soft-Credits verfügt
-	werden die Hard-Credits beachtet.
+			% paragraph Soft + Hard Credits }}}
 
-	% paragraph Soft + Hard Credits }}}
+			\paragraph{Dynamic Report} % {{{
+			\label{par:dynamic-report}
 
-	\paragraph{Dynamic Report} % {{{
-	\label{par:dynamic-report}
+			Dynamic Report ersetzt das feste Meldeintervall des vorherigen Algorithmus durch ein dynamisch
+			berechnetes. Dabei bildet ein festes Intervall eine Untergrenze. Dies verhindert eine Meldung nach
+			jeder abgearbeitet Anfrage. Dieser Algorithmus meldet oft Credits, wenn die Backlog nur leicht
+			gefüllt ist und eine geringe Last	auf dem Server ist. Ist die Backlog stark gefüllt und der
+			Server mit der Abarbeitung der Anfragen beschäftigt, werden die Credits seltener gemeldet. Das
+			führt dazu, dass bei vielen Anfragen keine zusätzliche Last durch unnötige Credit-Meldungen entsteht
+			und bei geringer Last der Lastverteiler immer aktuelle Werte vom Backend-Server besitzt.
 
-	Dynamic Report ersetzt das feste Meldeintervall des vorherigen Algorithmus durch ein dynamisch
-	berechnetes. Dabei bildet ein festes Intervall eine Untergrenze. Dies verhindert eine Meldung nach
-	jeder abgearbeitet Anfrage. Dieser Algorithmus meldet oft Credits, wenn die Backlog nur leicht
-	gefüllt ist und eine geringe Last	auf dem Server ist. Ist die Backlog stark gefüllt und der
-	Server mit der Abarbeitung der Anfragen beschäftigt, werden die Credits seltener gemeldet. Das
-	führt dazu, dass bei vielen Anfragen keine zusätzliche Last durch unnötige Credit-Meldungen entsteht
-	und bei geringer Last der Lastverteiler immer aktuelle Werte vom Backend-Server besitzt.
+			% paragraph Dynamic Report }}}
 
-	% paragraph Dynamic Report }}}
+			\paragraph{Dynamic Pressure Relieve} % {{{
+			\label{par:dynamic-pressure-relieve}
 
-	\paragraph{Dynamic Pressure Relieve} % {{{
-	\label{par:dynamic-pressure-relieve}
+			Der Dynamic Pressure Relive Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
+			wiederum Hard- und Soft-Credits. Allerdings werden die Hard-Credits spätestens nach einem fixen
+			Intervall gemeldet. Die Soft-Credits werden nach dem dynamischen Intervall aus dem Dynamic Report
+			Algorithmus gemeldet. Allerdings werden falls die Soft-Credits gemeldet werden gleichzeitig auch
+			die Hard-Credits gemeldet, da es eh schon zu einer Kommunikation zwischen Backend-Server und
+			Lastverteiler kommt. Dieses Vorgehen soll verhindern, dass zu selten Hard-Credits bei hoher Last
+			gemeldet werden, was zu eine unnötig hohen Anzahl an verworfenen Anfragen führen kann.und somit die Anzahl der Verworfenen Anfragen verringern.
 
-	Der Dynamic Pressure Relive Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
-	wiederum Hard und Soft-Credits. Allerdings werden die Hard-Credits spätestens nach einem fixen
-	Intervall gemeldet. Die Soft-Credits werden nach dem dynamischen Intervall aus dem Dynamic Report
-	Algorithmus gemeldet. Allerdings werden falls die Soft-Credits gemeldet werden gleichzeitig auch
-	die Hard-Credits gemeldet, da es eh schon zu einer Kommunikation zwischen Backend-Server und
-	Lastverteiler kommt. Dieses Vorgehen soll verhindern, dass zu selten Hard-Credits bei hoher Last
-	gemeldet werden und somit die Anzahl der Verworfenen Anfragen verringern.
+			% paragraph Dynamic Pressure Relieve }}}
 
-	% paragraph Dynamic Pressure Relieve }}}
-$~$\\
+			Bei einer Simulation der verschiedenen Meldestrategien hat der Dynamic Pressure Relieve
+			Algorithmus die besten Ergebnisse erzielt \cite{scsczile2008}.
 
-	Bei einer Simulation der verschiedenen Meldestrategien hat der Dynamic Pressure Relieve
-	Algorithmus die besten Ergebnisse erzielt \cite{scsczile2008}.
+		% section Meldestrategien }}}
 
-	Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload \cite{habenschuss2011}
-	entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und diese
-	modifizieren kann. So können alle Anfragen vervielfacht werden, Spitzenlasten verstärkt werden
-	oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die Charakteristik
-	des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche Benchmark, welcher
-	das von servprep vorbereitete Log wieder einspielt. Dabei ist servprep in der Programmiersprache
-	Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks, wurde servprep in
-	servload integriert. Dadurch konnte eine noch bessere Leistung erziehlt werden und der
-	Ressourcenverbrauch minimiert werden. Im Rahmen einer Semesterarbeit \cite{menski2012} wurde
-	servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten und DNS-Anfragen über
-	UDP versenden kann. Somit ist es möglich, servload in dieser Arbeit als Benchmark einzusetzen.
+		\section{Benchmark} % {{{
+		\label{sec:Benchmark}
 
-	In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
-	Meldealgorithmen von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
-	Kapitel ein Konzept erarbeitet, wie sich salbnet auf DNS-Anfragen anpassen lässt. Außerdem wurde
-	ein Benchmark vorgestellt, welcher dazu geeignet ist die Erweiterung von salbnet auf seine
-	Funktion zu testen und mit bestehenden Algorithmen zu vergleichen. 
+			Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload \cite{habenschuss2011}
+			entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und diese
+			modifizieren kann. So können alle Anfragen vervielfacht werden, Spitzenlasten verstärkt werden
+			oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die Charakteristik
+			des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche Benchmark, welcher
+			das von servprep vorbereitete Log wieder einspielt. Dabei ist servprep in der Programmiersprache
+			Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks, wurde servprep in
+			servload integriert. Dadurch konnte eine noch bessere Leistung erziehlt werden und der
+			Ressourcenverbrauch minimiert werden. Im Rahmen einer Semesterarbeit \cite{menski2012} wurde
+			servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten und DNS-Anfragen über
+			UDP versenden kann. Somit ist es möglich, servload in dieser Arbeit als Benchmark einzusetzen.
+
+		% section Benchmark }}}
+
+		\section{Fazit} % {{{
+		\label{sub:salbnet-fazit}
+
+			In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
+			Meldestrategien von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
+			Kapitel ein Konzept erarbeitet, wie sich salbnet auf DNS-Anfragen anpassen lässt. Außerdem wurde
+			ein Benchmark vorgestellt, welcher dazu geeignet ist die Erweiterung von salbnet auf seine
+			Funktion zu testen und mit bestehenden Algorithmen zu vergleichen.
+
+		% section Fazit }}}
 
 	% chapter salbnet }}}
 
@@ -1151,7 +1150,7 @@ $~$\\
 			\item Sie sollte einfach zu berechnen sein.
 			\item Sie sollte die aktuell zur Verfügung stehenden Ressourcen des Servers angeben.
 			\item Sie sollte applikationsunabhängig sein.
-			\item Sie sollte auch für Dienste mit mehreren Tausend Clients funktionieren.
+			\item Sie sollte auch für Dienste mit mehreren Tausend Clients skalieren.
 		\end{itemize}
 
 		\subsection*{Last-Metrik} % {{{
