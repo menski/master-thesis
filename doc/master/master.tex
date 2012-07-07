@@ -10,7 +10,7 @@
 	pdfborder={0 0 0},
 ]{hyperref}
 \usepackage{epstopdf}
-\usepackage[numbers]{natbib}
+\usepackage[numbers,sort]{natbib}
 \usepackage{setspace}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{scrpage2}
@@ -119,23 +119,23 @@
 		\cite{rfc791} ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite
 		\cite{stevens1994}. Es dient der Vermittlung von Datenpaketen in einem Netzwerk, um dies zu
 		ermöglichen, erhält jeder Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein
-		Domain-Name ist eine Zeichenkette, diese können sich Menschen leichter merken als eine
+		Domain-Name ist eine Zeichenkette, welche Menschen leichter merken können als eine
 		Zahlenfolge.  Computersysteme hingegen arbeiten besser und schneller mit Zahlen als mit
 		Zeichenketten.  Daher ist diese Abbildung eine wichtige Voraussetzung für die einfache
 		und schnelle Nutzung eines Netzwerks, im Besonderen des Internets. Bei jedem Aufruf einer
 		Website oder dem Verschicken einer E-Mail, bei dem der Nutzer einen Domain-Namen verwendet, wird
 		eine Abfrage an einen Server im DNS gestellt. Die darauffolgende Antwort, ist die dem
 		Domain-Name zugeordnete IP-Adresse. Diese IP-Adresse wird dann vom Computersystem genutzt, um
-		eine Verbindung zum Ziel aufzubauen. Dieser Zusammenhang verdeutlicht bereits die Wichtigkeit
-		des DNS, denn ohne dieses System müsste jeder Nutzer eines Netzwerks die benötigten IP-Adressen
-		selber kennen. Das ist vielleicht für ein kleines privates Netzwerk durchaus möglich, in
+		eine Verbindung zum Ziel aufzubauen. Bereits dieser Zusammenhang verdeutlicht die Wichtigkeit
+		des DNS, da ohne dieses System jeder Nutzer eines Netzwerks die benötigten IP-Adressen
+		selber kennen müsste. Das ist vielleicht für ein kleines privates Netzwerk durchaus möglich, in
 		Anbetracht der Größe des heutigen Internets jedoch	kaum vorstellbar. Aus diesem Grund ist ein
 		stabiles System mit schnellen Antwortzeiten unerlässlich.
 
 		Die Informationen im DNS werden dezentral gespeichert. Sie werden in einer verteilten,
 		baumartigen Struktur gespeichert (siehe Abbildung \ref{fig:tree}). Dabei können verschiedene
 		Server, die einzelnen Knoten des Baums und die dazugehörigen Informationen verwalten. Diese
-		Server werden im Folgenden DNS-Server oder Nameserver genannten und haben die Aufgabe, Fragen an
+		Server werden im Folgenden DNS-Server oder Nameserver genannt und haben die Aufgabe, Fragen an
 		das DNS zu beantworten. Aus der Struktur, des in Abbildung \ref{fig:tree} dargestellten Baums, ist
 		zu erkennen, dass die kritischste Infrastruktur in den ersten beiden Ebenen des Baums existiert.
 		Dabei handelt es sich um den Root-Server und alle Server der Top-Level-Domains (TLDs). Diese
@@ -150,6 +150,8 @@
 			\caption{Baumstruktur des \dns{}}
 			\label{fig:tree}
 		\end{figure}
+
+		%Überleitung
 
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
 		auch an viele andere Netzwerk-Dienste gestellt werden. Um diese Anforderungen zu erfüllen,
@@ -169,7 +171,7 @@
 		Diese Arbeit beschäftigt sich mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu wird ein
 		bestehendes System \cite{zinke2007,scsczile2008,zinke2012,salbnet} zur selbst-adaptiven
 		Lastverteilung von TCP-Anfragen so erweitert, dass es ebenfalls UDP-Anfragen verarbeiten kann.
-		Dieses System ist in dem Sinne selbst-adaptive, weil der Lastverteiler keine eigenständigen
+		Dieses System ist in dem Sinne selbst-adaptiv, weil der Lastverteiler keine eigenständigen
 		Annahmen über die Last der Backend-Server trifft. Jeder Backend-Server ermittelt eigenständig
 		eine Einschätzung der aktuellen Lastsituation, welche dem Lastverteiler über Credits
 		mitgeteilt wird. Dabei entspricht ein Credit einer weiteren Verbindung, die von dem Server
@@ -213,19 +215,19 @@
 		dass dieses selbst-adaptive System auch über blockierende Kommunikation effizient ist.
 
 		Die Arbeit ist in 8 Kapitel aufgeteilt. Im Kapitel \ref{cha:grundlagen} werden die Grundlagen
-		dieser Arbeit erklärt. Es handelt sich dabei um das \dns{} und Lastverteilungsansätze. Außerdem
-		wird eine Einordnung dieser Arbeit in die vorgestellten Konzepte vorgenommen. Anschließend
-		werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche sich mit DNS-Clustern
-		und Lastsituationen in eben diesen befassen. Das zu erweiternde System zur selbst-adaptiven
-		Lastverteilung salbnet \cite{zinke2012,salbnet} wird im Kapitel \ref{cha:salbnet} beschrieben.
-		Im \ref{cha:konzept}. Kapitel werden das Konzept der erarbeiteten Erweiterung und die dazugehörigen
-		Vorüberlegungen aufgezeigt.  Im darauf folgenden Kapitel \ref{cha:implementierung} wird die
-		konkrete Umsetzung des vorher dargestellten Konzepts beschrieben.  Es wird hierbei auf
-		Besonderheiten und Probleme bei der Implementation eingegangen.  Daran anschließend werden in
-		Kapitel \ref{cha:messungen} die Ergebnisse einer Funktionsmessung und eine Einschätzung der
-		Implementation vorgestellt. Am Ende dieser Arbeit folgen im Kapitel \ref{cha:zusammenfassung}
-		eine Zusammenfassung, Einschätzung und Bewertung der erreichten Ziele und ein Ausblick auf
-		mögliche Erweiterungen des Konzepts.
+		dieser Arbeit erklärt. Es handelt sich dabei um das \dns{} und Lastverteilungsansätze.  Darüber
+		hinaus wird eine Einordnung dieser Arbeit in die vorgestellten Konzepte vorgenommen.
+		Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche sich mit
+		DNS-Clustern und Lastsituationen in eben diesen befassen. Das zu erweiternde System zur
+		selbst-adaptiven Lastverteilung salbnet \cite{zinke2012,salbnet} wird im Kapitel
+		\ref{cha:salbnet} beschrieben.  Im \ref{cha:konzept}. Kapitel werden das Konzept der
+		erarbeiteten Erweiterung und die dazugehörigen Vorüberlegungen aufgezeigt.  Im darauf folgenden
+		Kapitel \ref{cha:implementierung} wird die konkrete Umsetzung des vorher dargestellten Konzepts
+		beschrieben.  Es wird hierbei auf Besonderheiten und Probleme bei der Implementation
+		eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer
+		Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit
+		folgen im Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, Einschätzung und Bewertung der
+		erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
 
 	% chapter Einleitung }}}
 
@@ -276,44 +278,42 @@
 
 			Der Sinn eines Netzwerkes ist es, dass die einzelnen Teilnehmer sich kontaktieren und
 			Informationen austauschen können. Um das zu ermöglichen, müssen die Netzwerkteilnehmer
-			eindeutig identifizierbar sein. Dies ist mit einem Telefonnetz zu vergleichen, wo jedem
-			Teilnehmer
-			eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer kann ein
-			Kommunikationspartner mit einem anderen in Verbindung treten. Dasselbe Prinzip gilt auch für
-			ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige IP-Adresse
-			erhält. Dies ist laut dem IPv4-Standard \cite{rfc791} eine 32-Bit-Adresse, welche in der Form
-			\texttt{141.89.249.102} dargestellt wird. Im neueren IPv6-Standard \cite{rfc2460} handelt es
-			sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010}, im Vergleich
-			zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen möglich
-			ist, sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks alle
-			IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese Aufgabe
-			abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt, welches einem privaten
-			Adressbuch ähnelt. Hierbei existiert eine Datei im lokalen Dateisystem (bei unixoiden Systemen
-			die Datei \texttt{/etc/hosts}), welche bekannten IP-Adressen einen beliebigen Namen
+			eindeutig identifizierbar sein. Dies ist mit einem Telefonnetz vergleichbar, wo jedem
+			Teilnehmer eine eindeutige Kennung, die Telefonnummer, zugewiesen ist. Durch diese Rufnummer
+			kann ein Kommunikationspartner mit einem anderen in Verbindung treten. Dasselbe Prinzip gilt
+			auch für ein TCP/IP-Netzwerk, wobei jedes verbundene Netzwerkinterface eine eindeutige
+			IP-Adresse erhält. Dies ist laut dem IPv4-Standard \cite{rfc791} eine 32-Bit-Adresse, welche
+			in der Form \texttt{141.89.249.102} dargestellt wird. Im neueren IPv6-Standard \cite{rfc2460}
+			handelt es sich um 128-Bit-Adressen, welche mit der Form \texttt{2a00:1450:4016:800::1010}, im
+			Vergleich zu IPv4-Adressen, deutlich komplexer sind und es somit kaum noch für einen Menschen
+			möglich ist, sich diese Kennung zu merken. Darüber hinaus benötigt ein Nutzer des Netzwerks
+			alle IP-Adressen der Rechner, die er über das Netzwerk erreichen will. Um den Nutzern diese
+			Aufgabe abzunehmen, wurde das Prinzip der \texttt{hosts}-Dateien entwickelt, welches einem
+			privaten Adressbuch ähnelt. Hierbei existiert eine Datei im lokalen Dateisystem (bei unixoiden
+			Systemen die Datei \texttt{/etc/hosts}), welche bekannten IP-Adressen einen beliebigen Namen
 			zuweist. Ein Beispiel für eine \texttt{/etc/hosts}-Datei ist in Listing \ref{lst:hosts} zu
 			sehen. In ihr sind 2 Namen für den lokalen Rechner (Zeile 6-7) und 2 Namen für andere Geräte
 			im Netzwerk (Zeile 8-9) definiert. Dadurch ist es dem Nutzer möglich andere
-			Netzwerk-Teilnehmer über den zugewiesenen Namen zu kontaktieren. So würde der Nutzer im
-			Beispiel nur noch den Namen \textit{router} verwenden, wenn er auf das Gerät mit der IP-Adresse
-			\texttt{192.168.1.1} zugreifen möchte. Das Betriebssystem nutzt dann die \texttt{hosts}-Datei
-			um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses Vorgehens besteht
-			darins,
-			dass, wenn sich die IP-Adresse eines der Geräte im Netzwerk ändert, ein Anpassen der
-			\texttt{/etc/hosts}-Datei ausreicht. Der Nutzer muss sich nicht die neue Adresse merken und kann
-			weiterhin, wie gewohnt, den in der \texttt{hosts}-Datei definierten Namen einsetzen. Für ein
-			kleines statisches Netzwerk ist dies eine durchaus ausreichende Lösung. Jedoch wuchs das
-			ARPANET relativ schnell, was dazu führte das lokale \texttt{hosts}-Dateien keine sinnvolle
-			Lösung mehr waren. Der nächste Schritt war es ein zentrales Verzeichnis bereitzustellen. Dies
-			wurde durch die \texttt{HOSTS.TXT} realisiert, welche vom Network Information Center (NIC) des
-			Stanford Research Institute (SRI) gepflegt wurde. Dieses Verzeichnis wurde zentral zur
-			Verfügung gestellt, sodass jeder Netzwerk-Nutzer immer die aktuelle Version erhalten und
-			daraus seine lokale \texttt{hosts}-Datei generieren konnte.  Dieser zentrale Ansatz hatte den
-			Vorteil, dass schnell auf Änderungen reagiert werden konnte, diese leicht zu verteilen waren
-			und Nameskonflikte verhindert wurden.  Allerdings ist auch dieser Ansatz nicht für ein
-			Netzwerk in der Größe des heutigen Internet handhabbar.  Der Zeitaufwand zum Instandhalten und
-			der Netzwerkverkehr zum Verteilen wären heutzutage nicht mehr vertretbar. Um diese Probleme zu
-			lösen, wurde das DNS \cite{rfc1034} entwickelt, welches durch einen dezentralen Ansatz die
-			Informationen und deren Pflege verteilt.
+			Netzwerk-Teilnehmer über den zugewiesenen Namen zu kontaktieren. Der Nutzer bräuchte im
+			Beispiel nur noch den Namen \textit{router} verwenden, wenn er auf das Gerät mit der
+			IP-Adresse \texttt{192.168.1.1} zugreifen möchte. Das Betriebssystem nutzt dann die
+			\texttt{hosts}-Datei um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses
+			Vorgehens besteht darin, dass, wenn sich die IP-Adresse eines der Geräte im Netzwerk ändert,
+			ein Anpassen der \texttt{/etc/hosts}-Datei ausreicht. Der Nutzer muss sich nicht die neue
+			Adresse merken und kann weiterhin, wie gewohnt, den in der \texttt{hosts}-Datei definierten
+			Namen einsetzen. Für ein kleines statisches Netzwerk ist dies eine durchaus ausreichende
+			Lösung. Jedoch wuchs das ARPANET relativ schnell, was dazu führte das lokale
+			\texttt{hosts}-Dateien keine sinnvolle Lösung mehr waren. Der nächste Schritt war es ein
+			zentrales Verzeichnis bereitzustellen. Dies wurde durch die \texttt{HOSTS.TXT} realisiert,
+			welche vom Network Information Center (NIC) des Stanford Research Institute (SRI) gepflegt
+			wurde. Dieses Verzeichnis wurde zentral zur Verfügung gestellt, sodass jeder Netzwerk-Nutzer
+			immer die aktuelle Version erhalten und daraus seine lokale \texttt{hosts}-Datei generieren
+			konnte.  Dieser zentrale Ansatz hatte den Vorteil, dass schnell auf Änderungen reagiert werden
+			konnte, diese leicht zu verteilen waren und Nameskonflikte verhindert wurden.  Allerdings ist
+			auch dieser Ansatz nicht für ein Netzwerk in der Größe des heutigen Internet handhabbar.  Der
+			Zeitaufwand zum Instandhalten und der Netzwerkverkehr zum Verteilen wären heutzutage nicht
+			mehr vertretbar. Um diese Probleme zu lösen, wurde das DNS \cite{rfc1034} entwickelt, welches
+			durch einen dezentralen Ansatz die Informationen und deren Pflege verteilt.
 
 			\lstinputlisting[float,language=sh,caption={Beispiel \texttt{/etc/hosts}-Datei mit 4 Einträgen},label=lst:hosts]{listings/hosts}
 
@@ -355,12 +355,11 @@
 			Arten unterteilen lassen:
 
 			\begin{itemize}
-				\item länderspezifische \textit{country-code TLDs} (ccTLDs)
+				\item länderspezifische \textit{country-code TLDs} (ccTLDs) und
 				\item allgemeine \textit{generic TLDs} (gTLDs):
 				\begin{itemize}
-					\item von ICANN verwaltete \textit{unsponsored TLDs} (uTLDs)
-					\item von privaten Organisationen vorgeschlagene \textit{sponsored TLDs}
-						(sTLDs)
+					\item von ICANN verwaltete \textit{unsponsored TLDs} (uTLDs),
+					\item von privaten Organisationen vorgeschlagene \textit{sponsored TLDs} (sTLDs).
 				\end{itemize}
 			\end{itemize}
 
@@ -382,7 +381,7 @@
 			Verteilung der Last zu nennen, womit sowohl der Aufwand zur Wartung einer Domain, als auch zur
 			Verteilung der Informationen gemeint ist. Außerdem ist es für die Betreiber einer Domain
 			einfacher Änderungen einzupflegen. Da ein Betreiber alle Subdomains seiner eigenen Domain
-			alleine verwalten kann, spricht man dabei von einer \textit{Zone}.
+			allein verwalten kann, spricht man dabei von einer \textit{Zone}.
 			Eine Zone umfasst alle Domains, die von diesem DNS-Betreiber administriert werden. So gehören
 			zum Beispiel alle Subdomains von \texttt{haiti.cs.uni-potsdam.de} zu einer Zone. Diese Zonen
 			werden über sogenannte Master-Files \cite{rfc1035,liualb2006} konfiguriert. Listing
@@ -394,9 +393,9 @@
 			für einen Mailserver (\texttt{MX}). Er enthält zusätzlich einen Präferenz-Wert (10),
 			welcher bei mehreren Mailservern die Ordnung dieser definiert. Anschließend folgen in Zeile
 			6-9 vier IPv4-Adressen (\texttt{A}) für verschiedene Subdomains. Und in Zeile 11 ist der Alias
-			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Diese Beispiel zeigt
-			nur eine kleine Anzahl von möglichen Typen, deshalb sind in Tabelle \ref{tab:dns-types} die
-			wichtigsten von ihnen aufgeführt.
+			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Dieses Beispiel zeigt
+			nur eine kleine Anzahl von möglichen Typen, weshalb in Tabelle \ref{tab:dns-types} die
+			wichtigsten von ihnen aufgeführt sind.
 
 			\begin{table}
 				\centering
@@ -428,35 +427,36 @@
 			gering wie möglich zu halten. Daraus lässt sich auch der Haupteinsatzort für solche Nameserver
 			ableiten. Alle Server, welche die Root-Domain und die TLDs verwalten, sind iterative
 			Nameserver. Sie erhalten die meisten Anfragen und müssen diese schnell und effizient
-			verarbeiten. Auch die meisten DNS-Server von Firmen, welche vom Internet erreichbar sind,
-			werden ebenfalls iterative Nameserver sein.
+			verarbeiten. Auch die meisten DNS-Server von Firmen, welche durch das Internet erreichbar
+			sind, werden ebenfalls iterative Nameserver sein.
 
 			% subsubsection Iterative Nameserver }}}
 
 			\subsubsection*{Rekursive Nameserver} % {{{
 
 			Das Gegenteil zu iterativen sind rekursive Nameserver. Auch sie beantworten Anfragen bezüglich
-			der eigenen Zone, wenn sie jedoch eine Anfrage außerhalb ihrer Zone erhalten, erfragen sie die
-			Antwort			selber bei anderen Nameservern. Das heißt, der gefragte rekursive Nameserver
-			unternimmt den Aufwand und ermittelt selber die Antwort auf die gestellte Frage. Er sendet
+			der eigenen Zone. Wenn sie jedoch eine Anfrage außerhalb ihrer Zone erhalten, erfragen sie die
+			Antwort selbst bei anderen Nameservern. Das heißt, der gefragte rekursive Nameserver
+			unternimmt den Aufwand und ermittelt selbst die Antwort auf die gestellte Frage. Er sendet
 			diese dann an den Fragenden zurück. Um dieses Vorgehen effizienter zu gestalten, werden häufig
 			Caches eingesetzt. In ihnen werden die ermittelten Informationen, welche außerhalb der eigenen
 			Zone liegen, gespeichert. Dadurch können Anfragen schneller beantwortet werden, falls die
-			Antwort bereits im Cache existiert, oder es kann schneller die Antwort gefunden werden, falls
-			im Cache bereits Informationen zu Nameserver in der Nähe der Domain existieren. Das heißt,
-			wenn die Domain \texttt{haiti.cs.uni-potsdam.de} angefragt wird und im Cache bereits die
-			Adresse des \texttt{uni-potsdam.de}-Nameservers gespeichert ist, kann die Antwort schneller
-			gefunden werden, als wenn der Nameserver sich von der Root-Domain durchfragen müsste.
+			Antwort bereits im Cache existiert. Falls dies nicht der Falls ist, kann trotzdem schneller
+			die Antwort gefunden werden, falls im Cache bereits Informationen zu einem Nameserver in der
+			Nähe der Domain existieren. Das heißt, wenn die Domain \texttt{haiti.cs.uni-potsdam.de}
+			angefragt wird und im Cache bereits die Adresse des \texttt{uni-potsdam.de}-Nameservers
+			gespeichert ist, kann die Antwort schneller gefunden werden, als wenn der Nameserver sich von
+			der Root-Domain durchfragen müsste.
 
-			Rekursive Nameserver werden vor allem im privaten Netzwerken eingesetzt, wie zum Beispiel in
-			Heimnetzwerken oder firmeninternen Netzwerken, aber auch bei Internet Service Providern
-			(ISPs). An diesen Punkten im Internet machen solche rekursiven Nameserver am meisten Sinn,
+			Rekursive Nameserver werden vor allem in privaten Netzwerken eingesetzt, wie zum Beispiel
+			Heimnetzwerke oder firmeninternen Netzwerke, aber auch bei Internet Service Providern
+			(ISPs). An diesen Punkten im Internet ist der Einsatz rekursiver Nameserver am sinnvollsten,
 			denn dort treffen häufig die gleichen oder zu mindestens ähnliche Anfragen ein. So kann man
 			oft davon ausgehen, dass diese Nameserver immer die aktuelle Adresse von \texttt{google.com} und
 			\texttt{wikipedia.org} etc. im Cache gespeichert haben. Dieses Speichern von Informationen
-			ist nicht nur vorteilhaft für die Nutzer, sondern verringert auch die Last auf den anderen
-			DNS-Server im Internet. Ohne Nameserver mit Cache wäre die Last auf dem DNS-Netzwerk wohl um
-			einiges höher. Allerdings gelten die Informationen eines DNS-Servers nicht unendlich lange.
+			ist nicht nur vorteilhaft für die Nutzer, sondern verringert auch die Last auf anderen
+			DNS-Servern im Internet. Ohne Nameserver mit Cache wäre die Last auf dem DNS-Netzwerk wohl um
+			einiges höher. Allerdings sind die Informationen eines DNS-Servers nur begrenzt gültig.
 			Jede Antwort enthält eine maximale Lebensdauer der Information, danach ist sie nicht mehr
 			gültig und sollte nicht weiterverwendet werden. Das heißt auch, dass sie aus dem Cache entfernt
 			und neu abgefragt werden muss. Dies ist jedoch nötig, da sonst nie Änderungen innerhalb einer Zone
@@ -483,22 +483,22 @@
 				nutzt, um weitere Anfragen zu stellen, sofern er die Antwort nicht im Cache gespeichert hat.
 				In Abbildung \ref{fig:bsp-request} ist der Ablauf der Beispiel-Anfrage dargestellt. Der
 				Resolver des Clients sendet die Anfrage (1) an den lokalen DNS-Server. Dieser ist rekursiv
-				und ermittelt deshalb nun die Antwort (Annahme: Der Cache des DNS-Servers enthält keine
-				relevanten Informationen). Die Anfrage (2) wird deshalb an einen Root-Nameserver gestellt,
-				da der lokale DNS keine anderen Informationen bezüglich der Domain besitzt. Der
+				und ermittelt deshalb nun die Antwort\footnote{Annahme: Der Cache des DNS-Servers enthält
+				keine relevanten Informationen.}. Die Anfrage (2) wird deshalb an einen Root-Nameserver
+				gestellt, da der lokale DNS keine anderen Informationen bezüglich der Domain besitzt. Der
 				Root-Nameserver besitzt nur die Information, welcher Nameserver für die \texttt{de}-Domain
 				verantwortlich ist und sendet diese Antwort (3) an den lokalen DNS-Server zurück. Dieser
 				befragt (4) anschließend den \texttt{de}-Nameserver, welcher wiederum ein iterativer
 				Nameserver ist und somit nur die \texttt{uni-potsdam}-Domain kennt (5). Die Anfragen an den
 				\texttt{uni-potsdam}-Nameserver (6) liefert die Adresse des zuständigen Nameservers zurück
 				(7). Dieser kann nun auf die letzte Anfrage (8) mit der gewünschten Adresse antworten (9)
-				und lokale DNS-Server liefert sie an den Client zurück (10). Alle
-				Informationen, die in den Zwischenanfragen gesammelt wurden, werden im Cache des lokalen
-				DNS-Servers gespeichert. Würde nun der Client erneut nach der Adresse
-				\texttt{www.cs.uni-potsdam.de} fragen, könnte der lokale DNS-Server sofort antworten. Oder
-				wenn die Anfrage diesmal \texttt{haiti.cs.uni-potsdam.de} wäre, würde der lokale DNS-Server
-				sofort beim \texttt{cs.uni-potsdam.de}-Nameserver anfragen, da er dessen Adresse bereits
-				kennt und weiß, dass dieser für die Domain zuständig ist.
+				und der lokale DNS-Server liefert sie an den Client zurück (10). Alle Informationen, die in
+				den Zwischenanfragen gesammelt wurden, werden im Cache des lokalen DNS-Servers gespeichert.
+				Würde nun der Client erneut nach der Adresse \texttt{www.cs.uni-potsdam.de} fragen, könnte
+				der lokale DNS-Server sofort antworten. Oder wenn die Anfrage diesmal
+				\texttt{haiti.cs.uni-potsdam.de} wäre, würde der lokale DNS-Server sofort beim
+				\texttt{cs.uni-potsdam.de}-Nameserver anfragen, da er dessen Adresse bereits kennt und weiß,
+				dass dieser für die Domain zuständig ist.
 
 			% subsubsection Resolver }}}
 
@@ -529,13 +529,13 @@
 				und 2009 zur Verteilung von DNS-Server-Software ausgewählt. Die erste Studie
 				\cite{survey2004} wurde am 23. Mai 2004 abgeschlossen und untersuchte 37.836.997 SLDs unter
 				den TLDs \texttt{com}, \texttt{net}, \texttt{org},	\texttt{info} und \texttt{biz}. Die
-				zweite Studie \cite{survey2009} ist vom Oktober 2009. In ihr wurden 3.308.662 SLDs unter den
+				zweite Studie \cite{survey2009} ist von Oktober 2009. In ihr wurden 3.308.662 SLDs unter den
 				TLDs \texttt{com}, \texttt{net} und \texttt{org} untersucht. Man versuchte jeweils die
 				Version der eingesetzten DNS-Server-Software zu ermitteln. Dabei wurden die Systeme BIND,
 				djbdns, Microsoft DNS und NSD als vier der häufigsten Systeme ermittelt (siehe Tabelle
 				\ref{tab:verteilung}). Die genannten vier Systeme werden im Folgenden vorgestellt.
-				Zusätzlich wird auf den dnsmasq Server eingegangen. Er stellt eine sehr spezielle Form eines
-				DNS-Servers dar.
+				Zusätzlich wird auf den dnsmasq Server eingegangen, welcher eine sehr spezielle Form eines
+				DNS-Servers darstellt.
 				
 				\begin{table}
 					\centering
@@ -561,36 +561,37 @@
 				Ein Nachfolger wird seit 2 Jahren entwickelt, um die aktuellsten Standards (z.B. DNSSEC) zu
 				unterstützen.
 
-				Für diese Arbeit wurde der BIND Server als DNS-Server gewählt, da er der weitverbreitetste ist und
-				ebenfalls am Institut für Informatik eingesetzt wird. Dadurch konnten Testmessungen in einem
-				realistischen Umfeld mit realen Server-Logs ausgeführt werden. 
-				
+				Für diese Arbeit wurde der BIND Server als DNS-Server gewählt, da er der weitverbreitetste
+				ist und ebenfalls am Institut für Informatik der Universität Potsdam eingesetzt wird.
+				Dadurch konnten Testmessungen in einem realistischen Umfeld mit realen Server-Logs
+				ausgeführt werden.
+
 				% subsubsection BIND }}}
 
 				\subsubsection*{Name Server Daemon (NSD)} % {{{
 
-				Der Name Server Daemon (NSD) \cite{nsd} wird von den
-				NLnet Labs entwickelt und sein Hauptziel ist die Vielfalt unter den Root-Servern zu erhöhen.
-				Das soll dazu führen, dass nicht alle Root-Server durch einen Fehler im BIND Server
-				angreifbar sind. Aktuell nutzen auch bereits 3 der 13 Root-Server den NSD als DNS-Server.
-				Mit der Zielsetzung, vor allem auf Root-Servern und TLD-Servern eingesetzt zu werden, erklären
-				sich auch die meisten Charakteristiken des NSD. Er ist ausschließlich ein autoritativer
-				DNS-Server, das heißt, er beantwortet keine rekursiven Anfragen. Dadurch ist sein Einsatz
-				als	DNS-Server in einem lokalen Netzwerk ausgeschlossen. Deshalb kann bei dem NSD auf unnötige
-				Funktionen verzichtet werden und somit auf hohe Belastbarkeit optimiert werden. Die erste
-				Version des aktuellen NSD 3 wurde 2006 veröffentlicht.
-				
+				Der Name Server Daemon (NSD) \cite{nsd} wird von den NLnet Labs entwickelt und sein
+				Hauptziel ist die Vielfalt unter den Root-Servern zu erhöhen.  Das soll dazu führen, dass
+				nicht alle Root-Server durch einen Fehler im BIND Server angreifbar sind. Aktuell nutzen
+				auch bereits 3 der 13 Root-Server den NSD als DNS-Server.  Mit der Zielsetzung, vor allem
+				auf Root-Servern und TLD-Servern eingesetzt zu werden, erklären sich auch die meisten
+				Charakteristiken des NSD. Er ist ausschließlich ein autoritativer DNS-Server, das heißt, er
+				beantwortet keine rekursiven Anfragen. Dadurch ist sein Einsatz als DNS-Server in einem
+				lokalen Netzwerk ausgeschlossen. Bei dem NSD kann deshalb auf unnötige Funktionen verzichtet
+				und somit auf hohe Belastbarkeit optimiert werden. Die erste Version des aktuellen NSD 3
+				wurde 2006 veröffentlicht.
+
 				% subsubsection Name Server Daemon (NSD) }}}
 
 				\subsubsection*{Microsoft DNS} % {{{
 
 				Der Microsoft DNS Server \cite{msdns} ist eine Implementation von Microsoft, welche mit den
-				Windows Server Produkten ausgeliefert wird. Er kann sowohl als autoritativer und rekursiver
+				Windows Server Produkten ausgeliefert wird. Er kann als autoritativer und rekursiver
 				Nameserver betrieben werden. Durch seinen Einsatz auf Windows Servern kommt er vor allem in
 				lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des Microsoft DNS Servers ist,
 				dass die DNS-Informationen nicht nur aus einem Master-File gelesen werden, sondern auch aus
 				einem Active Directory stammen können.
-				
+
 				% subsubsection Microsoft DNS }}}
 
 				\subsubsection*{djbdns} % {{{
@@ -602,10 +603,10 @@
 				Fehler in djbdns findet. Die Besonderheit von djbdns liegt darin, dass es ein Softwarepaket
 				aus mehreren Programmen ist, welche immer einen speziellen Einsatzzweck erfüllen. Somit
 				verringert sich die Code-Basis und die Komplexität der Programme. Die Hauptkomponenten sind
-				\texttt{tinydns}, ein autoritativer Nameserver, und \texttt{dnscache}, ein rekursiver
+				\texttt{tinydns}, ein autoritativer, und \texttt{dnscache}, ein rekursiver
 				Nameserver. Für andere Funktionen, wie das Austauschen von kompletten Zone-Informationen oder
 				Blacklisting, existieren ebenfalls eigene Programme.
-				
+
 				% subsubsection Djbdns }}}
 
 				\subsubsection*{dnsmasq} % {{{
@@ -621,12 +622,11 @@
 				DNS-Anfragen, was zu einer Beschleunigung im lokalen Netz führen kann. Somit ist dnsmasq
 				kein üblicher DNS-Server und eignet sich auch nicht zum Verwalten von Domains, zeigt jedoch
 				eine alternative resourcenschonende lokale Verwendung des DNS auf.
-				
+
 				% subsubsection Dnsmasq }}}
 
 			% subsection DNS-Server Software }}}
 
-			
 		% section Domain Name System (DNS) }}}
 
 		\section{Lastverteilung} % {{{
@@ -1310,7 +1310,7 @@
 	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. Im Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
 	einem Standard-Algorithmus vergleichen.
-		
+
 		\section{Anforderungen} % {{{
 		\label{sec:anforderungen}
 
@@ -1359,28 +1359,27 @@
 		bestimmten UDP-Socket ermittelt werden.
 
 		Der Nachteil vom \texttt{/proc}-Dateisystem ist, dass beim wiederholten Abfragen eines Wertes
-		jedesmal eine Datei geöffnet, gelesen und geschlossen werden muss. Danach muss der Inhalt
-		der Datei ausgewertet werden, um den gesuchten Wert zu finden. Einen möglichen Ersatz, vor allem
-		bei der Netzwerkkonfiguration, bieten \texttt{Netlink}-Sockets \cite{rfc3549, gusowski2009}.
-		Durch sie ist es möglich, zwischen dem Kernel- und Userspace über einen Socket zu kommunizieren.
-		Dies hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial ein Socket
-		erstellt werden muss, welcher danach weiterverwendet werden kann. Es können aber auch Werte gezielt
+		jedesmal eine Datei geöffnet, gelesen und geschlossen werden muss. Danach muss der Inhalt der
+		Datei ausgewertet werden, um den gesuchten Wert zu finden. Einen möglichen Ersatz, vor allem bei
+		der Netzwerkkonfiguration, bieten \texttt{Netlink}-Sockets \cite{rfc3549, gusowski2009}.  Durch
+		sie ist es möglich, zwischen dem Kernel- und Userspace über einen Socket zu kommunizieren.  Dies
+		hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial ein Socket erstellt
+		werden muss, welcher danach weiterverwendet werden kann. Es können aber auch Werte gezielt
 		abgefragt werden, ohne sie aus einer Textrepräsentation extrahieren zu müssen. In der
 		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt, um
 		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend, ein ähnliches
-		Vorgehen auch für	die UDP-Receive-Queue zu evaluieren. Allerdings wurde das Kernelmodul des
+		Vorgehen auch für die UDP-Receive-Queue zu evaluieren. Allerdings wurde das Kernelmodul des
 		salbnet Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne Anpassungen mit
 		neueren Versionen genutzt werden. Eine Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul
-		\cite{udpnetlink}	wurde jedoch erst im Kernel 3.3 aufgenommen. Somit ist die Verwendung eines
-		\texttt{Netlink}-Sockets in salbnet für UDP nicht möglich.
+		\cite{udpnetlink} wurde jedoch erst im Linux-Kernel 3.3 aufgenommen. Somit ist die Verwendung
+		eines \texttt{Netlink}-Sockets, zur Abfrage des aktuell belegten Speicherplatzes in der
+		UDP-Receive-Queue, in salbnet nicht möglich.
 
 		\lstinputlisting[float,caption={/proc/net/udp	Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
 
 		% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
 		\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{%{{{
-
-		\lstinputlisting[float,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von \texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
 
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
 		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
@@ -1394,6 +1393,8 @@
 		der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der Rückgabewert der Funktion
 		gibt die Größe des Paketes in Byte an. In diesem Beispiel war das DNS-Paket 45 Byte groß. Somit
 		ist es möglich, den Funktions-Aufruf des BIND abzufangen und die Paketgröße zu ermitteln.
+
+		\lstinputlisting[float,lastline=12,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von \texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
 
 		Jedoch ist die Größe des DNS-Paketes, wie sie von der Funktion \texttt{recvmsg}
 		zurückgegeben wird, nicht der komplette Speicherbedarf des Pakets in der Receive-Queue. Im
@@ -1468,11 +1469,18 @@
 
 		% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
-			
+
 		% section Anforderungen }}}
 
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
+
+    Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sub:entwurf}
+    entworfenen Receive-Queue-Metrik. Die dafür benötigten Werte werden wie in Abschnitt
+    \ref{sub:anforderungen} vorgestellten ermittelt. Für die Ermittlung von $q_{max}$,
+    $q_{current}$ und $q_{median}$ muss die Komponente von salbd erweitert werden, welche für das
+    Sammeln der Messwerte zuständig ist.
+
 
 		\lstinputlisting[float,firstline=42,lastline=60,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
 		\lstinputlisting[float,lastline=39,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
