@@ -797,7 +797,7 @@
 				\end{tabular}
 				\caption{Beispiel für einen \texttt{SRV}-Eintrag für einen Webserver}
 				\label{tab:srv}
-			\end{table} 
+			\end{table}
 			
 			Mit Geotargeting oder auch GeoIP genannt, ist es möglich, anhand der IP-Adresse eine Aussage
 			über die ungefähre geografische Position des Inhabers zu treffen. Diese Information wird zum
@@ -840,7 +840,7 @@
 			Fragesteller hat, die beste Antwort gegeben werden kann. Vor allem bei den Root-Servern ist
 			das sinnvoll. Es existieren insgesamt 13 Root-Server
 			(A-M) \cite{rootserver}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
-			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA. 
+			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA.
 				
 			% subsection Lastverteilung von DNS-Verkehr }}}
 
@@ -937,7 +937,7 @@
 		\end{figure}
 
 		\section{Metrik und Credits} % {{{
-		\label{sub:metrik}
+		\label{sec:metrik}
 
 			In \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.  Dabei ist die
 			Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
@@ -989,7 +989,7 @@
 		% section Metrik und Credits }}}
 
 		\section{Meldestrategien} % {{{
-		\label{sub:meldestrategien}
+		\label{sec:meldestrategien}
 
 			Als zweiter wichtiger Faktor des Credit-Ansatzes zählt neben der Metrik die Meldestrategie. Dabei
 			ist es entscheident, wieviele und wie oft Credits gemeldet werden. Eine häufige Meldung von Credits
@@ -1071,7 +1071,7 @@
 		% section Benchmark }}}
 
 		\section{Fazit} % {{{
-		\label{sub:salbnet-fazit}
+		\label{sec:salbnet-fazit}
 
 			In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
 			Meldestrategien von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
@@ -1227,7 +1227,7 @@
 
 		% section Auswahl }}}
 
-		\section{Entwurf} % {{{ 
+		\section{Entwurf} % {{{
 		\label{sec:entwurf}
 
 		Die ausgewählte Receive-Queue-Metrik wird in diesem Abschnitt im Detail beschrieben.
@@ -1244,7 +1244,7 @@
 
 		Mit Hilfe dieser Messwerte kann eine Abschätzung getroffen werden, wieviel weitere Pakete
 		$p_{additional}$ (Anfragen) noch angenommen werden können, ohne dass eine Anfrage verworfen wird.
-		Die Abschätzung ist in der Formel \ref{eq:additional} dargestellt. 
+		Die Abschätzung ist in der Formel \ref{eq:additional} dargestellt.
 
 		\begin{equation}
 			p_{additional} = \frac{q_{max} - q_{current}}{p_{median}}
@@ -1490,14 +1490,12 @@
 			Bei der Erstellung eines UDP-Sockets erhält die Recevie-Queue des Sockets eine Standardgröße.
 			Diese Größe ist, wie bereits in Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
 			\texttt{rmem\_default} im Verzeichniss \texttt{/proc/sys/net/core/} zu finden. In Listing
-			\ref{lst:metric-max-udp} wird in Zeile 2 überprüft, ob bereits die maximale Kapazität der
+			\ref{lst:metric-max-udp} wird in Zeile 1 überprüft, ob bereits die maximale Kapazität der
 			UDP-Recevie-Queue ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
 			salbnet nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
-			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 3 die entsprechende Datei im
-			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 9 gelesen. Dabei wird der gesuchte Wert
-			direkt in die \texttt{maximum}-Variable der Metrik gespeichert. Wenn keine Fehler aufgetreten
-			sind, wird die Datei in Zeile 14 geschlossen und die Ermittlung der maximalen Kapazität der
-			UDP-Receive-Queue ist abgeschlossen.
+			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 2 die entsprechende Datei im
+			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 7 gelesen. Dabei wird der gesuchte Wert
+			direkt in die \texttt{maximum}-Variable der Metrik gespeichert.
 
 			\lstinputlisting[firstline=32,lastline=43,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
 
@@ -1508,14 +1506,14 @@
 				Da zur Ermittlung des aktuell belegten Speicherplatzes in der UDP-Receive-Queue, wie in
 				Abschnitt \ref{sec:anforderungen} beschrieben, kein \texttt{Netlink}-Socket genutzt werden
 				kann muss dieser aus der Datei \texttt{/proc/net/udp} gelesen werden. Dazu wird in Listing
-				\ref{lst:metric-udp-proc} die Datei in Zeile 2 geöffnet und in Zeile 7 wird die Kopfzeile
-				übersprungen. Danach wird in einer Schleife ab Zeile 12 der UDP-Socket des BIND Servers
-				gesucht. Dazu wird in Zeile 14 die aktuelle Zeile der Datei eingelesen. Danach wird in Zeile
-				19 die Adresse und der Port des Sockets, der eben gelesen Zeile, in einer
+				\ref{lst:metric-udp-proc} die Datei in Zeile 1 geöffnet und in Zeile 6 wird die Kopfzeile
+				übersprungen. Danach wird in einer Schleife ab Zeile 11 der UDP-Socket des BIND Servers
+				gesucht. Dazu wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Danach wird in Zeile
+				18 die Adresse und der Port des Sockets, der eben gelesen Zeile, in einer
 				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird anschließend in der Zeile
-				25 mit der in salbd konfigurierten Adresse verglichen. Wurde der gesuchte Socket gefunden,
-				wird der belegte Speicherplatz in Zeile 26 in der Variablen \texttt{current} der Metrik
-				gespeicher und die Schleife in Zeile 27 verlassen.
+				24 mit der in salbd konfigurierten Adresse verglichen. Wurde der gesuchte Socket gefunden,
+				wird der belegte Speicherplatz in Zeile 25 in der Variablen \texttt{current} der Metrik
+				gespeichert und die Schleife in Zeile 27 verlassen.
 
 			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
 
@@ -1537,7 +1535,7 @@
 				und gespeichert. Danach wird in Zeile 15 diese Funktion aufgerufen und der Rückgabewert
 				gespeichert. Dieser Rückgabewert entspricht der Größe des DNS-Pakets, welcher anschließend
 				in Zeile 21 in das neue Feld \texttt{recv\_size} der \texttt{nethook\_data}-Datenstruktur
-				gespeichert wird. Am Ende der Funktion wird der Rückgabewert der originalen
+				gespeichert wird. Zum Schluss wird der Rückgabewert der originalen
 				\texttt{recvmsg}-Funktion zurückgegeben.
 
 			\lstinputlisting[caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
@@ -1552,7 +1550,7 @@
 				Datei \texttt{/proc/net/snmp} geöffnet. In der Schleife von Zeile 5 bis 17 wird in Zeile 7
 				die aktuelle Zeile gelesen. Handelt es sich nicht um die richtige Zeile, wird diese
 				übersprungen und mit der nächsten fortgefahren. Ist die richtige Zeile erreicht wird die
-				aktuelle Anzahl der verworfenen Anfragen in Variablen \texttt{current} der Metrik
+				aktuelle Anzahl der verworfenen Anfragen in die Variablen \texttt{current} der Metrik
 				gespeichert. Anschließend wird in Zeile 13 dieser Wert um 1 erhöht, um ihn von 0, also dem
 				Zustand, dass noch kein Wert gelesen wurde, zu unterscheiden. Dies wird benötigt um zu
 				verhindern, dass beim Start von salbd 0 Credits gemeldet werden, weil bereits DNS-Pakete
@@ -1564,15 +1562,42 @@
 			% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
 			\subsection*{Bestimmung der Hard- und Soft-Credits} % {{{
-			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel	\ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
+
+			Nach dem alle Werte für die Receive-Queue-Metrik aus Abschnitt \ref{sec:entwurf} ermittelt
+			wurden können nun die Hard- und Soft-Credits bestimmt werden. Dazu wird die in Abschnitt
+			\ref{sec:anforderungen} entwickelte Formel \ref{eq:recvmsg} benötigt, mit der der
+			Speicherplatzbedarf eines DNS-Pakets in der Receive-Queue anhand seiner Größe ermittelt werden
+			kann. Diese Formel wird in Listing \ref{lst:hard-soft-credits} Zeile 1 als C-Makro
+			\texttt{UDP\_TRUESIZE} (siehe Listing \ref{lst:truesize}) genutzt um den Median der
+			Paketgrößen in der UDP-Receive-Queue zu berechnen. Anschließend wird in Zeile 2 überprüft ob
+			bereits 2 Messwerte für die Anzahl der verworfenen Pakete vorliegen. Ist dies der Fall wird in
+			Zeile 3 die Differenz gebildet und somit die Anzahl der verworfenen Anfragen seit der letzten
+			Credit-Meldung ermittelt. Ist diese größer 0 werden die Hard- und Soft-Credits in Zeile 4-5
+			auf 0 gesetzt. Wurden keine Anfragen verworfen, berechnen sich die Hard-Credits in Zeile 8 aus
+			der Differenz der maximalen Größe der Receive-Queue und des aktuell belegten Speicherplatzes
+			geteilt durch den Median der Paketgrößen in der Receive-Queue (siehe Formel \ref{eq:credits}).
+			Die Berechnung der Soft-Credits in Zeile 9 erfolgt ebenfalls nach der Formel \ref{eq:credits}
+			nur das statt dem aktuell belegten Speicherplatz der Receive-Queue der Median der letzten 16
+			Erhebungen verwendet wird.
+
+			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel \ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
 			
-			\lstinputlisting[firstline=3,lastline=19,caption={Bestimmung der Hard- und Soft-Credits (\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
+			\lstinputlisting[firstline=3,lastline=12,caption={Bestimmung der Hard- und Soft-Credits	(\texttt{client\_report.c} aus salbd)},label=lst:hard-soft-credits]{listings/client_report.c}
 			
 			% subsection Bestimmung der Hard- und Soft-Credits }}}
 
-			\subsection*{Bestimmung der Auslastung der Receive-Queue} % {{{
+			\subsection*{Unterstützung der Meldestrategien} % {{{
 
-			\lstinputlisting[firstline=22,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
+			Um die verschiedenen Meldestrategien, welche in salbnet implementiert und in Abschnitt
+			\ref{sec:meldestrategien} vorgestellt wurden, zu unterstützen, müssen noch zwei weitere
+			Kennzahlen berechnet werden. Dabei gibt die Kennzahl \texttt{maximum} in Listing
+			\ref{lst:auslastung} an, wie oft das größte bisher verarbeitet DNS-Paket in der Receive-Queue
+			gespeichert werden könnte, und \texttt{current}, wieviele Pakete aktuell in der Receive-Queue
+			gespeichert sind, ausgehend vom Median der Paketgrößen der letzten 16 verarbeiteten DNS-Pakete.
+			Mit Hilfe dieser Werte wird anschließend, ausgehend von der gewählten Meldestrategie,
+			entschieden ob Credits an den Lastverteiler gemeldet werden müssen.
+
+			\lstinputlisting[firstline=15,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:auslastung]{listings/client_report.c}
 
 			% subsection Bestimmung der Auslastung der Receive-Queue }}}
 
@@ -1743,7 +1768,7 @@
 		Um die Messungen auszuwerten wurden während der Messungen minütlich die Werte der aktuellen CPU
 		und Memory-Auslastung sowie der Load-Wert der Maschinene ib1, ib4, ib6 und ib8 abgefragt. Dies
 		wurde mit Hilfe von \texttt{net-snmp}\ durchgeführt. Außerdem wurden die Ausgaben vom servload
-		Benchmark gespeichert. 
+		Benchmark gespeichert.
 			
 		% section Auswertung }}}
 
@@ -1780,10 +1805,10 @@
 
 	% Mainmatter }}}
 
-	% Appendix {{{ 
+	% Appendix {{{
 	\appendix
 
-	\chapter{Messumgebung} % {{{ 
+	\chapter{Messumgebung} % {{{
 	\label{cha:messumgebung}
 
 	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1	(LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
