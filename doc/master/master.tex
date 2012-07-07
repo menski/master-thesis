@@ -29,6 +29,7 @@
 	numbers=left,
 	frame=single,
 	basicstyle=\footnotesize,
+	showstringspaces=false,
 	captionpos=b,
 	breaklines=true,
 	breakatwhitespace=false,
@@ -646,7 +647,7 @@
 		beantwortet werden oder im ungünstigsten Fall droht ein Totalausfall. Ein Beispiel für hohe
 		Lastsituationen sind Webserver, welche ab einer gewissen Anzahl von Anfragen pro Sekunde nicht
 		mehr in der Lage sind, alle abzuarbeiten. Um die Überlastung einzelner Ressourcen zu verhindern
-		gibt, es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource durch eine
+		gibt es zwei Möglichkeiten. Die erste Variante ist, die entsprechende Ressource durch eine
 		leistungsfähigere Variante auszutauschen. Dies wird oft bei Datenbanken genutzt, wo der Server
 		durch neue Hardware und bessere Ausstattung erweitert wird.  Für Datenbanken ist dies oft die
 		einfachere Lösung, da es problematisch sein kann, sie zu verteilen und dabei die Daten
@@ -654,19 +655,19 @@
 		Beispiel weitere Server bereitzustellen. So kann der Dienst des Servers, wie in Abbildung
 		\ref{fig:lastverteilung} zu sehen ist, von mehreren Servern dem Internet bereitgestellt werden.
 		Dieses Vorgehen eignet sich oft bei Webservern, welche durch die Auslieferung von dynamischen
-		Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite hat Vorteile gegenüber
-		der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die Anwendung zulässt.  Allein
-		durch die Bereitstellung eines zusätzlichen Servers ist es einfacher, einzelne Server zu warten
-		und die Gefahr eines Totalausfalls verringert sich. Durch diese Verteilung kann ein einzelner
-		Server ausfallen oder überprüft werden, währende der andere Server die Anwendung weiterhin zur
-		Verfügung stellt.  Zudem ist die Erweiterbarkeit zur weitere Skalierung einfacher, wenn
-		bereits die Infrastruktur geschaffen wurde, mehrere Server zu nutzen. Dieses Variante ist im
-		Vergleich zur vorherigen kostengünstiger, da die Anschaffung zweier identischer Systeme
-		meist preiswerter als ein einzelnes System ist, welches die gleiche Last verarbeiten kann.  Hinzu
-		kommt die Möglichkeit, gezielt Ressourcen zu entfernen, um Strom zu sparen. So könnten Server nur
-		dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht.  Ein
-		Beispiel hierfür wäre eine Verkaufsplattform, die zusätzliche Ressourcen benötigt, wenn
-		zum Beispiel vor Feiertagen eine hohe Anzahl Bestellungen eingeht.
+		Inhalten (z.B. PHP-Seiten) ausgelastet sind. Das Skalieren in die Breite bietet Vorteile
+		gegenüber der ersten Variante und ist deshalb dieser vorzuziehen, sofern es die Anwendung
+		zulässt. Allein durch die Bereitstellung eines zusätzlichen Servers ist es einfacher, einzelne
+		Server zu warten und die Gefahr eines Totalausfalls verringert sich. Durch diese Verteilung kann
+		ein einzelner Server ausfallen oder überprüft werden, währende der andere Server die Anwendung
+		weiterhin zur Verfügung stellt. Zudem ist die Erweiterbarkeit zur weiteren Skalierung einfacher,
+		wenn bereits die Infrastruktur geschaffen wurde, mehrere Server zu nutzen. Dieses Variante ist
+		im Vergleich zur vorherigen kostengünstiger, da die Anschaffung zweier identischer Systeme meist
+		preiswerter als ein einzelnes System ist, welches die gleiche Last verarbeiten kann.  Hinzu
+		kommt die Möglichkeit, gezielt Ressourcen zu entfernen, um Strom zu sparen. So könnten Server
+		nur dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht. Ein
+		Beispiel hierfür wäre eine Verkaufsplattform, die zusätzliche Ressourcen benötigt, wenn zum
+		Beispiel vor Feiertagen eine hohe Anzahl Bestellungen eingeht.
 
 		Im Folgenden werden verschiedene Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
 		Sie unterscheiden sich in der Umsetzung der Lastverteilung und bieten jeweils gewisse Vor- und
@@ -712,7 +713,7 @@
 			und so ein kontextsensitives Verteilen zu ermöglichen.  Ein Nachteil, der vor allem bei
 			hohem Netzwerkverkehr entsteht, ist der nötige Kontextwechsel, damit der Lastverteiler
 			im Userspace die Netzwerkpakete auswerten kann. Dazu muss das Netzwerkpaket in den Userspace
-			und zum Weiterversenden wiederum in den Kernelspace kopiert werden. Hierzu ist jeweils ein
+			und zum Weiterversenden wiederum in den Kernelspace kopiert werden. Hierbei ist jeweils ein
 			Kontextwechsel nötig, welcher bei hohem Netzwerkverkehr zu Leistungseinbußen führen kann
 			\cite{boehme2006}.  Im Vergleich zu diesen Ansätzen im Userspace gibt es im Kernelspace den
 			Linux Virtual Server (LVS) \cite{lvs,zhang2000} für Linux und den Paketfilter pf \cite{pf} für
@@ -758,10 +759,10 @@
 				\label{fig:lastverteilung-dns}
 			\end{figure}
 
-			Existiert kein Cluster oder es soll auf einen zusätzlichen Server verzichtet werden, bietet
-			sich eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag
-			für eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Ein möglicher
-			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt, hier wird als
+			Existiert kein Cluster oder soll auf einen zusätzlichen Server verzichtet werden, bietet sich
+			eine DNS-basierte Lastverteilung an. Diese nutzt die Möglichkeit, dass einem DNS-Eintrag für
+			eine Domain mehrere IP-Adressen zugeordnet werden können \cite{rfc1034}. Ein möglicher
+			Verbindungsablauf ist in Abbildung \ref{fig:lastverteilung-dns} dargestellt. Hier wird als
 			erstes der DNS-Server befragt, welcher dann eine Liste aller möglichen Adressen liefert. Dabei
 			existiert keine Ordnung dieser Einträge und der DNS-Server entscheidet, in welcher Reihenfolge
 			er die IP-Adressen zurückliefert. Oft wird dazu ein Round-Robin-Algorithmus genutzt und somit
@@ -781,11 +782,10 @@
 			derselben Priorität (wie im Beispiel \texttt{www.bsp.de} und \texttt{www2.bsp.de}), sollte die
 			Wahl eines Server mit einem höheren Gewicht wahrscheinlicher sein. Zusätzlich wird noch der
 			Port für das Ziel angegeben.  Dieses Verfahren führt zwei Gewichtungen ein, welche auf der
-			Client-Seite ausgewertet werden.  Das ist ein großes Problem, denn die Unterstützung auf der
-			Clientseite für \texttt{SRV}-Einträge ist gering. Zusätzlich ergibt sich noch, dass der
-			DNS-Server nicht die Last und Funktionstüchtigkeit der Server kennt.  Jedoch gibt es dem
-			Client einen Anhaltspunkt, welchen Server er als nächstes kontaktieren sollte, sofern ein
-			Server nicht erreichbar ist.
+			Client-Seite ausgewertet werden.  Allerdings ist die Unterstützung auf der Clientseite für
+			\texttt{SRV}-Einträge sehr gering. Zusätzlich ergibt sich noch, dass der DNS-Server nicht die
+			Last und Funktionstüchtigkeit der Server kennt.  Jedoch gibt es dem Client einen Anhaltspunkt,
+			welchen Server er als nächstes kontaktieren sollte, sofern ein Server nicht erreichbar ist.
 
 			\begin{table}
 				\centering
@@ -799,12 +799,12 @@
 				\label{tab:srv}
 			\end{table} 
 			
-			Mit Geotargeting oder auch GeoIP genannt, ist es möglich, anhand der IP-Adresse einen Aussage
+			Mit Geotargeting oder auch GeoIP genannt, ist es möglich, anhand der IP-Adresse eine Aussage
 			über die ungefähre geografische Position des Inhabers zu treffen. Diese Information wird zum
 			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet, wodurch der
 			DNS-Server seine Antwort an die geografische Position des Fragestellers anpassen kann. Der
 			Gedanke dabei ist, dass ein geografisch naher Server auch der schnellere Server ist. Dies muss
-			nicht immer der Fall sein und außerdem kann es sein, dass der Client über einen DNS-Server
+			nicht immer der Fall sein und außerdem kann ist es möglich, dass der Client über einen DNS-Server
 			Anfragen stellt, welcher selbst nicht geografisch nah ist. Dadurch kann es zu negativen
 			Effekten kommen.
 
@@ -821,8 +821,6 @@
 			\subsection{Lastverteilung von DNS-Verkehr} % {{{
 			\label{sub:lastverteilung-dns}
 
-			% TODO: das mit den Sessions überlegen
-
 			Die Verteilung von DNS-Anfragen unterscheidet sich in mehreren Punkten von HTTP-Anfragen. So
 			ist das genutzte Transport-Protokoll UDP, statt TCP, und die Nachrichten dürfen nicht größer als
 			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
@@ -834,7 +832,7 @@
 			dienen.  In lokalen Netzwerken und kleinere Firmen reicht es daher aus, Lastverteilung mit Hilfe
 			von DNS-Einträgen durchzuführen. Bei größeren Firmen, die eine höhere Anzahl an DNS-Anfragen
 			zu bewältigen haben, ist der Einsatz eines DNS-Clusters und Server-Lastverteilers sinnvoll. Die
-			größte Last liegt bei den Betreiber von TLDs und den Root-Servern. Für diese Anwendungsfälle
+			größte Last liegt bei den Betreibern von TLDs und den Root-Servern. Für diese Anwendungsfälle
 			sind DNS-Cluster nötig. Zusätzlich kommt Anycast \cite{rfc4786, sapate2005} zum Einsatz. Dabei
 			werden mehrere DNS Server mit derselben Anycast-IP-Adresse mit dem Internet verbunden. Sendet
 			nun ein Client eine Anfrage an diese Anycast-Adresse, antwortet der Server, der als erster die
@@ -1311,7 +1309,7 @@
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
 	einem Standard-Algorithmus vergleichen.
 
-		\section{Anforderungen} % {{{
+		\section{Anforderungen} %  {{{
 		\label{sec:anforderungen}
 
 		In diesem Abschnitt sollen Möglichkeiten diskutiert werden, mit deren Hilfe die einzelnen
@@ -1379,7 +1377,7 @@
 
 		% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
-		\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{%{{{
+		\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
 		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
@@ -1450,7 +1448,7 @@
 		\end{equation}
 
 
-		% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}%}}}
+		% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}
 
 		\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
 
@@ -1475,24 +1473,69 @@
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
 
-    Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sub:entwurf}
-    entworfenen Receive-Queue-Metrik. Die dafür benötigten Werte werden wie in Abschnitt
-    \ref{sub:anforderungen} vorgestellten ermittelt. Für die Ermittlung von $q_{max}$,
-    $q_{current}$ und $q_{median}$ muss die Komponente von salbd erweitert werden, welche für das
-    Sammeln der Messwerte zuständig ist.
+		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sub:entwurf}
+		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
+		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
+		und $q_{drop}$ muss die Komponente von salbd erweitert werden, welche für das Sammeln der
+		Messwerte zuständig ist. Das geschieht in der Datei \texttt{linux/client\_metric.c} von salbd.
+		Um den Median der Paketgrößen zu berechnen muss, wie beschrieben, der Funktionsaufruf
+		\texttt{recvmsg} vom BIND Server abgefangen werden. Dazu wird in der Datei \texttt{nethook.c}
+		der libnethook-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
+		\texttt{libc} überlagert. Abschließend müssen aus den gesammelten Werten die Credits berechnet
+		werden. Diese Berechnung findet in der Datei \texttt{client\_report.c} in salbd statt. Im
+		Folgenden werden die genauen Änderungen am Quellcode beschrieben.
+
+			\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
+
+			Bei der Erstellung eines UDP-Sockets erhält die Recevie-Queue des Sockets eine Standardgröße.
+			Diese Größe ist, wie bereits in Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
+			\texttt{rmem\_default} im Verzeichniss \texttt{/proc/sys/net/core/} zu finden. In Listing
+			\ref{lst:metric-max-udp} wird in Zeile 2 überprüft, ob bereits die maximale Kapazität der
+			UDP-Recevie-Queue ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
+			salbnet nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
+			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 3 die entsprechende Datei im
+			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 9 gelesen. Dabei wird der gesuchte Wert
+			direkt in die \texttt{maximum}-Variable der Metrik geschrieben. Wenn keine Fehler aufgetreten
+			sind wird die Datei in Zeile 14 geschlossen und die Ermittlung der maximalen Kapazität der
+			UDP-Receive-Queue ist abgeschlossen.
+
+			\lstinputlisting[float,language=C,firstline=42,lastline=60,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
+
+			% subsection Maximale Kapazität der UDP-Receive-Queue }}}
+
+			\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
+
+			\lstinputlisting[float,lastline=39,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
+
+			% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
+
+			\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
+
+			\lstinputlisting[float,caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
+
+			\lstinputlisting[float,caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
+
+			% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}
+
+			\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
+
+			\lstinputlisting[float,firstline=63,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
 
 
-		\lstinputlisting[float,firstline=42,lastline=60,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
-		\lstinputlisting[float,lastline=39,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
-		\lstinputlisting[float,firstline=63,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
+			% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
-		\lstinputlisting[float,lastline=38,caption={Bestimmung der Hard- und Soft-Credits	(\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
-		\lstinputlisting[float,firstline=40,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
-
-		\lstinputlisting[float,caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
-
-		\lstinputlisting[float,caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
+			\subsection*{Bestimmung der Hard- und Soft-Credits} % {{{
 			
+			\lstinputlisting[float,lastline=38,caption={Bestimmung der Hard- und Soft-Credits (\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
+			
+			% subsection Bestimmung der Hard- und Soft-Credits }}}
+
+			\subsection*{Bestimmung der Auslastung der Receive-Queue} % {{{
+
+			\lstinputlisting[float,firstline=40,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
+
+			% subsection Bestimmung der Auslastung der Receive-Queue }}}
+
 		% section Erweiterung von salbnet }}}
 
 		\section{Fazit} % {{{
