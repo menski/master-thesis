@@ -1473,12 +1473,12 @@
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
 
-		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sec:entwurf}
-		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
+		Dieser Abschnitt stellt die konkrete Implementation, der im Abschnitt \ref{sec:entwurf}
+		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie im Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
 		und $q_{drop}$ muss die Komponente von salbd erweitert werden, welche für das Sammeln der
 		Messwerte zuständig ist. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
-		salbd.  Um den Median der Paketgrößen zu berechnen muss, wie beschrieben, der Funktionsaufruf
+		salbd.  Um den Median der Paketgrößen zu berechnen, muss, wie beschrieben, der Funktionsaufruf
 		\texttt{recvmsg} vom BIND Server abgefangen werden. Dazu wird in der Datei \texttt{nethook.c}
 		der libnethook-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
 		\texttt{libc} überlagert. Abschließend müssen aus den gesammelten Werten die Credits berechnet
@@ -1488,73 +1488,73 @@
 			\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
 
 			Bei der Erstellung eines UDP-Sockets erhält die Recevie-Queue des Sockets eine Standardgröße.
-			Diese Größe ist, wie bereits in Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
+			Diese Größe ist, wie bereits im Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
 			\texttt{rmem\_default} im Verzeichniss \texttt{/proc/sys/net/core/} zu finden. In Listing
-			\ref{lst:metric-max-udp} wird in Zeile 1 überprüft, ob bereits die maximale Kapazität der
-			UDP-Recevie-Queue ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
+			\ref{lst:metric-max-udp} wird in Zeile 1 überprüft, ob die maximale Kapazität der
+			UDP-Recevie-Queue bereits ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
 			salbnet nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
 			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 2 die entsprechende Datei im
 			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 7 gelesen. Dabei wird der gesuchte Wert
 			direkt in die \texttt{maximum}-Variable der Metrik gespeichert.
 
-			\lstinputlisting[firstline=32,lastline=43,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
+			\lstinputlisting[firstline=32,lastline=43,caption={Bestimmung der maximalen Kapazität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
 
 			% subsection Maximale Kapazität der UDP-Receive-Queue }}}
 
 			\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
 
-				Da zur Ermittlung des aktuell belegten Speicherplatzes in der UDP-Receive-Queue, wie in
+				Da zur Ermittlung des aktuell belegten Speicherplatzes in der UDP-Receive-Queue, wie im
 				Abschnitt \ref{sec:anforderungen} beschrieben, kein \texttt{Netlink}-Socket genutzt werden
-				kann muss dieser aus der Datei \texttt{/proc/net/udp} gelesen werden. Dazu wird in Listing
-				\ref{lst:metric-udp-proc} die Datei in Zeile 1 geöffnet und in Zeile 6 wird die Kopfzeile
+				kann, muss dieser aus der Datei \texttt{/proc/net/udp} gelesen werden. Dazu wird in Listing
+				\ref{lst:metric-udp-proc} die Datei in Zeile 1 geöffnet und in Zeile 6 die Kopfzeile
 				übersprungen. Danach wird in einer Schleife ab Zeile 11 der UDP-Socket des BIND Servers
-				gesucht. Dazu wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Danach wird in Zeile
-				18 die Adresse und der Port des Sockets, der eben gelesen Zeile, in einer
-				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird anschließend in der Zeile
-				24 mit der in salbd konfigurierten Adresse verglichen. Wurde der gesuchte Socket gefunden,
-				wird der belegte Speicherplatz in Zeile 25 in der Variablen \texttt{current} der Metrik
-				gespeichert und die Schleife in Zeile 27 verlassen.
+				gesucht. Dabei wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Danach wird in
+				Zeile 18 die Adresse und der Port des Sockets, der eben gelesenen Zeile, in einer
+				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird in der Zeile 24 mit der in
+				salbd konfigurierten Adresse verglichen. Wenn der gesuchte Socket gefunden wurde, wird der
+				belegte Speicherplatz in Zeile 25 in der Variablen \texttt{current} der Metrik gespeichert
+				und die Schleife in Zeile 27 verlassen.
 
-			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
+			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatzes in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
 
 			% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
 			\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
-				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll wie in Abschnitt
+				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll, wie im Abschnitt
 				\ref{sec:entwurf} beschrieben, der \texttt{recvmsg}-Funktionsaufruf des BIND Servers
 				abgefangen werden. Dafür wird die dynamische Bibliothek libnethook um eine Funktion
 				\texttt{recvmsg} erweitert. Durch das Laden der libnethook-Bibliothek vor dem Start des BIND
-				Servers, überlagert die libnethook-Funktion die Standard-\texttt{libc}-Funktion und wird
-				somit vom BIND aufgerufen. Um dies zu realisieren wurde zunächst die
+				Servers überlagert die libnethook-Funktion die Standard-\texttt{libc}-Funktion und wird
+				somit vom BIND aufgerufen. Um dies zu realisieren, wurde zunächst die
 				\texttt{nethook\_data}-Datenstruktur in Listing \ref{lst:nethookh} um das Feld
 				\texttt{recv\_size} erweitert. Die Datenstruktur enthält die Informationen, welche von salbd
-				weiter genutzt werden. Das neue Feld enthält dabei die Größe des DNS-Pakets in Byte. Die
-				neue Funktion \texttt{recvmsg} ist in Listing \ref{lst:nethookc} aufgeführt. In Zeile 8 wird
-				die Speicheradresse der originalen \texttt{recvmsg}-Funktion aus der \texttt{libc} ermittelt
-				und gespeichert. Danach wird in Zeile 15 diese Funktion aufgerufen und der Rückgabewert
-				gespeichert. Dieser Rückgabewert entspricht der Größe des DNS-Pakets, welcher anschließend
-				in Zeile 21 in das neue Feld \texttt{recv\_size} der \texttt{nethook\_data}-Datenstruktur
-				gespeichert wird. Zum Schluss wird der Rückgabewert der originalen
-				\texttt{recvmsg}-Funktion zurückgegeben.
+				weiter genutzt werden. In dem neuen Feld \texttt{recv\_size} wird die Größe des DNS-Pakets
+				in Byte gespeichert. Die neue Funktion \texttt{recvmsg} ist in Listing \ref{lst:nethookc}
+				aufgeführt. In Zeile 8 wird die Speicheradresse der originalen \texttt{recvmsg}-Funktion aus
+				der \texttt{libc} ermittelt. Danach wird in Zeile 15 diese Funktion
+				aufgerufen. Der Rückgabewert entspricht der Größe des
+				DNS-Pakets, welcher anschließend in Zeile 21 in das neue Feld \texttt{recv\_size} der
+				\texttt{nethook\_data}-Datenstruktur gespeichert wird. Zum Schluss wird der Rückgabewert der
+				originalen \texttt{recvmsg}-Funktion zurückgegeben.
 
 			\lstinputlisting[caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
-			\lstinputlisting[caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
+			\lstinputlisting[caption={Teile der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
 
 			% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}
 
 			\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
 
-				Wie in Abschnitt \ref{sec:entwurf} beschrieben, können die verworfenen Anfragen nur
+				Wie im Abschnitt \ref{sec:entwurf} beschrieben, können die verworfenen Anfragen nur
 				systemweit ermittelt werden. Dazu wird in Listing \ref{lst:metric-drops-udp} in Zeile 1 die
 				Datei \texttt{/proc/net/snmp} geöffnet. In der Schleife von Zeile 5 bis 17 wird in Zeile 7
 				die aktuelle Zeile gelesen. Handelt es sich nicht um die richtige Zeile, wird diese
-				übersprungen und mit der nächsten fortgefahren. Ist die richtige Zeile erreicht wird die
+				übersprungen und mit der nächsten fortgefahren. Ist die richtige Zeile erreicht, wird die
 				aktuelle Anzahl der verworfenen Anfragen in die Variablen \texttt{current} der Metrik
 				gespeichert. Anschließend wird in Zeile 13 dieser Wert um 1 erhöht, um ihn von 0, also dem
-				Zustand, dass noch kein Wert gelesen wurde, zu unterscheiden. Dies wird benötigt um zu
+				Zustand, dass noch kein Wert gelesen wurde, zu unterscheiden. Dies wird benötigt, um zu
 				verhindern, dass beim Start von salbd 0 Credits gemeldet werden, weil bereits DNS-Pakete
-				systemweit verworfen worden. Danach wird in Zeile 14 die Schleife verlassen.
+				systemweit verworfen wurden. Nun wird in Zeile 14 die Schleife verlassen.
 
 			\lstinputlisting[firstline=46,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
 
@@ -1563,22 +1563,22 @@
 
 			\subsection*{Bestimmung der Hard- und Soft-Credits} % {{{
 
-			Nach dem alle Werte für die Receive-Queue-Metrik aus Abschnitt \ref{sec:entwurf} ermittelt
-			wurden können nun die Hard- und Soft-Credits bestimmt werden. Dazu wird die in Abschnitt
-			\ref{sec:anforderungen} entwickelte Formel \ref{eq:recvmsg} benötigt, mit der der
+			Nachdem alle Werte für die Receive-Queue-Metrik aus Abschnitt \ref{sec:entwurf} ermittelt
+			wurden, können nun die Hard- und Soft-Credits bestimmt werden. Dazu wird die in Abschnitt
+			\ref{sec:anforderungen} entwickelte Formel \ref{eq:recvmsg} benötigt, mit welcher der
 			Speicherplatzbedarf eines DNS-Pakets in der Receive-Queue anhand seiner Größe ermittelt werden
 			kann. Diese Formel wird in Listing \ref{lst:hard-soft-credits} Zeile 1 als C-Makro
 			\texttt{UDP\_TRUESIZE} (siehe Listing \ref{lst:truesize}) genutzt um den Median der
-			Paketgrößen in der UDP-Receive-Queue zu berechnen. Anschließend wird in Zeile 2 überprüft ob
-			bereits 2 Messwerte für die Anzahl der verworfenen Pakete vorliegen. Ist dies der Fall wird in
-			Zeile 3 die Differenz gebildet und somit die Anzahl der verworfenen Anfragen seit der letzten
-			Credit-Meldung ermittelt. Ist diese größer 0 werden die Hard- und Soft-Credits in Zeile 4-5
-			auf 0 gesetzt. Wurden keine Anfragen verworfen, berechnen sich die Hard-Credits in Zeile 8 aus
-			der Differenz der maximalen Größe der Receive-Queue und des aktuell belegten Speicherplatzes
-			geteilt durch den Median der Paketgrößen in der Receive-Queue (siehe Formel \ref{eq:credits}).
-			Die Berechnung der Soft-Credits in Zeile 9 erfolgt ebenfalls nach der Formel \ref{eq:credits}
-			nur das statt dem aktuell belegten Speicherplatz der Receive-Queue der Median der letzten 16
-			Erhebungen verwendet wird.
+			Paketgrößen in der UDP-Receive-Queue zu berechnen. Anschließend wird in Zeile 2 überprüft, ob
+			bereits 2 Messwerte für die Anzahl der verworfenen Pakete vorliegen. Ist dies der Fall, wird
+			in Zeile 3 die Differenz gebildet und somit die Anzahl der verworfenen Anfragen seit der
+			letzten Credit-Meldung ermittelt. Falls diese größer 0 ist, werden die Hard- und Soft-Credits
+			in Zeile 4-5 auf 0 gesetzt. Wurden keine Anfragen verworfen, berechnen sich die Hard-Credits
+			in Zeile 8 folgendermaßen: Die Differenz der maximalen Größe der Receive-Queue und des aktuell
+			belegten Speicherplatzes wird geteilt durch den Median der Paketgrößen in der Receive-Queue
+			(siehe Formel \ref{eq:credits}).  Die Berechnung der Soft-Credits in Zeile 9 erfolgt ebenfalls
+			mit dieser Formel. Dabei wird statt dem aktuell belegten Speicherplatz der Receive-Queue der
+			Median der letzten 16 Erhebungen verwendet wird.
 
 			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel \ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
 			
@@ -1591,11 +1591,11 @@
 			Um die verschiedenen Meldestrategien, welche in salbnet implementiert und in Abschnitt
 			\ref{sec:meldestrategien} vorgestellt wurden, zu unterstützen, müssen noch zwei weitere
 			Kennzahlen berechnet werden. Dabei gibt die Kennzahl \texttt{maximum} in Listing
-			\ref{lst:auslastung} an, wie oft das größte bisher verarbeitet DNS-Paket in der Receive-Queue
-			gespeichert werden könnte, und \texttt{current}, wieviele Pakete aktuell in der Receive-Queue
-			gespeichert sind, ausgehend vom Median der Paketgrößen der letzten 16 verarbeiteten DNS-Pakete.
-			Mit Hilfe dieser Werte wird anschließend, ausgehend von der gewählten Meldestrategie,
-			entschieden ob Credits an den Lastverteiler gemeldet werden müssen.
+			\ref{lst:auslastung} an, wie oft das größte bisher verarbeitete DNS-Paket in der Receive-Queue
+			gespeichert werden könnte. Die Variable \texttt{current} schätzt ab, wieviele Pakete aktuell
+			in der Receive-Queue gespeichert sind, ausgehend vom Median der Paketgrößen der letzten 16
+			verarbeiteten DNS-Pakete.  Mit Hilfe dieser Werte wird anschließend, abhängig von der
+			gewählten Meldestrategie, entschieden, ob Credits an den Lastverteiler gemeldet werden müssen.
 
 			\lstinputlisting[firstline=15,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:auslastung]{listings/client_report.c}
 
