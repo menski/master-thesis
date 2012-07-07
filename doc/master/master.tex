@@ -902,12 +902,13 @@
 		
 		\subsection*{libnethook} % {{{
 
-			Mit der dynamische Bibliothek libnethook können Funktionsaufrufe, von Anwendungen überwacht
-			werden und so kann ermittelt werden wie oft eine Funktion aufgerufen bzw. was von ihr zurückgegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom Apache
+			Mit der dynamischen Bibliothek libnethook können Funktionsaufrufe von Anwendungen überwacht
+			werden. So kann ermittelt werden wie oft eine Funktion aufgerufen bzw. was von ihr
+			zurückgegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom Apache
 			Webserver (httpd) \cite{httpd} abgefangen und analysiert. In Abbildung \ref{fig:salbnet} ist
 			angedeutet, dass libnethook zwischen dem httpd und der libc agiert. Allgemein kann das auch
-			für alle anderen TCP-Anwendungen instrumentalisiert werden. Im TCP-Fall wird nur die Anzahl der
-			Funktionsaufrufe gezählt, um eine Neuberechnung der Credits auszulösen.
+			für alle anderen TCP-Anwendungen instrumentalisiert werden. Im TCP-Fall wird nur die Anzahl
+			der Funktionsaufrufe gezählt, um eine Neuberechnung der Credits auszulösen.
 
 		% subsection libnethook }}}
 
@@ -916,14 +917,14 @@
 			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
 			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler stellt salbd einmal ein Kernelmodul
 			bereit, das den salbnet Scheduler für LVS implementiert. Dieser wählt Round-Robin den
-			nächsten Backend-Server aus allen Servern aus, welche noch Credits größer 0 besitzen. Außerdem
-			wird salbd genutzt, um die Credits von den Backend-Servern zu empfangen und bei Übertragungen
+			nächsten Backend-Server aus allen Servern, welche noch Credits größer 0 besitzen, aus. Außerdem
+			wird salbd genutzt, um Credits von Backend-Servern zu empfangen und bei Übertragungen
 			ohne RDMA, auch um die Credits in den Kernelspace zum salbnet Scheduler zu übermitteln.  Im
 			Backend ist salbd zur Bestimmung der Credits anhand der aktuellen Last der Webserver
 			verantwortlich. Dazu werden verschiedene Metriken verwendet und anhand der ermittelten Werte
 			verschiedene Meldestrategien verfolgt. Dieser Ablauf ist schematisch in Abbildung
 			\ref{fig:salbd} dargestellt. Dabei überwacht salbd die ensprechende Anwendung (z.B.
-			httpd), ermittelt dadurch Metriken, welche genutzt werden, um Credits zu berechnen. Diese
+			httpd) und ermittelt dadurch Metriken, welche genutzt werden, um Credits zu berechnen. Diese
 			werden dann zum Lastverteiler übermittelt.
 
 		% subsection salbd }}}
@@ -938,19 +939,18 @@
 		\section{Metrik und Credits} % {{{
 		\label{sub:metrik}
 
-			In der Dissertation \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.
-			Dabei ist die Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet,
-			dass die Backend-Server ihre aktuelle Last ermitteln. Danach bestimmen die Backend-Server eine
-			Credit-Anzahl, diese soll der Anzahl von Anfragen entsprechen, welche zum aktuellen Zeitpunkt
-			zusätzlich vom Server abgearbeitet werden könnten. Diese Anzahl an Credits werden dem
-			Lastverteiler gemeldet. Der Lastverteiler entscheidet mit einem einfachen Round-Robin-Verfahren,
-			welcher Server die nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits
-			besitzen,	durchiteriert. Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins
-			verringert. Fallen die Credits eines Servers auf 0 und sendet der Server keine neuen Credits,
-			wird der Server aus der Liste der verfügbaren Server entfernt. Meldet ein entfernter Server,
-			erneut Credits, wird er wieder in die Verteilung aufgenommen. Die
-			beiden wichtigsten Komponenten dieses Algorithmus sind die Metrik zur Berechnung der Credits und
-			die Meldestrategie der Backend-Server.
+			In \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.  Dabei ist die
+			Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
+			Backend-Server ihre aktuelle Last ermitteln und daraus eine Credit-Anzahl bestimmen. Diese
+			soll der Anzahl von Anfragen entsprechen, welche zum aktuellen Zeitpunkt zusätzlich vom Server
+			abgearbeitet werden könnten. Diese Anzahl an Credits werden dem Lastverteiler gemeldet. Der
+			Lastverteiler entscheidet mit einem einfachen Round-Robin-Verfahren, welcher Server die
+			nächste Anfrage erhält.  Dazu werden alle Server, welche noch Credits besitzen, durchiteriert.
+			Wird eine Anfrage einem Server zugewiesen, werden dessen Credits um eins verringert. Fallen
+			die Credits eines Servers auf 0 und sendet er keine neuen Credits, wird er aus der Liste der
+			verfügbaren Server entfernt. Meldet ein entfernter Server, erneut Credits, wird er wieder in
+			die Verteilung aufgenommen. Die beiden wichtigsten Komponenten dieses Algorithmus sind die
+			Metrik zur Berechnung der Credits und die Meldestrategie der Backend-Server.
 
 			Die Metrik hat folgende Anforderungen zu erfüllen \cite{scsczile2008}:
 
@@ -968,15 +968,14 @@
 			entspricht einer Warteschlange für den Server. Solange die Backlog leer ist, kann der
 			Webserver alle Anfragen sofort beantworten. Wenn die Anfragen in der Backlog gespeichert
 			werden, ist der Server nicht mehr zu einer sofortigen Abarbeitung in der Lage. Die wartenden
-			Anfragen werden nun in der Backlog gespeichert. Das heißt, die Anzahl der noch freien
-			Plätze in der Backlog gibt die Anzahl der noch möglichen Verbindungen an, bevor die Backlog
-			voll ist. Ist die Backlog voll und es treffen weitere Anfragen ein, werden diese verworfen.
-			Somit kann die Anfrage nicht beantwortet werden.  Daher entspricht der aktuelle Füllstand der
-			Backlog genau den aktuell zur Verfügung stehenden Ressourcen des Servers. Dadurch, dass die
-			TCP-Backlog überwacht wird, ist diese Methode allgemein für alle Webserver nutzbar und somit
-			applikationsunabhängig. Außerdem benötigt die Metrik keine besonderen Ressourcen, das heißt, sie
-			ist weder Speicher- noch CPU-intensiv, und somit beeinflusst sie die Leistung des
-			Webservers nicht.
+			Anfragen werden nun in der Backlog gespeichert. Das heißt, die Anzahl der noch freien Plätze
+			in der Backlog gibt die Anzahl der noch möglichen Verbindungen an. Ist die Backlog voll und es
+			treffen weitere Anfragen ein, werden diese verworfen.  Somit kann die Anfrage nicht
+			beantwortet werden.  Daher entspricht der aktuelle Füllstand der Backlog genau den aktuell zur
+			Verfügung stehenden Ressourcen des Servers. Dadurch, dass die TCP-Backlog überwacht wird, ist
+			diese Methode allgemein für alle Webserver nutzbar und somit applikationsunabhängig. Außerdem
+			benötigt die Metrik keine besonderen Ressourcen, das heißt, sie ist weder Speicher- noch
+			CPU-intensiv, und somit beeinflusst sie die Leistung des Webservers nicht.
 
 			Die Betrachtung der Backlog zeigt auch zwei wichtige Metriken zur Bewertung einer Lastverteilung
 			für Webserver. Das Verwerfen einer Anfrage muss mit allen Möglichkeiten verhindert werden. Jede
@@ -1056,17 +1055,18 @@
 		\section{Benchmark} % {{{
 		\label{sec:Benchmark}
 
-			Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload \cite{habenschuss2011}
-			entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache Webservers einliest und diese
-			modifizieren kann. So können alle Anfragen vervielfacht, Spitzenlasten verstärkt 
-			oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden, welche die Charakteristik
-			des Log-Verlaufs nicht verändern. Die servload Anwendung ist der eigentliche Benchmark, der
-			das von servprep vorbereitete Log wieder einspielt. Dabei ist servprep in der Programmiersprache
-			Lua und servload in C geschrieben. In der weiteren Entwicklung des Benchmarks wurde servprep in
-			servload integriert. Dadurch konnte eine noch bessere Leistung erzielt und der
-			Ressourcenverbrauch minimiert werden. Im Rahmen einer Semesterarbeit \cite{menski2012} wurde
-			servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten und DNS-Anfragen über
-			UDP versenden kann. Somit ist es möglich, servload in dieser Arbeit als Benchmark einzusetzen.
+			Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload
+			\cite{habenschuss2011} entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache
+			Webservers einliest und diese modifizieren kann. So können alle Anfragen vervielfacht,
+			Spitzenlasten verstärkt oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden,
+			welche die Charakteristik des Log-Verlaufs nicht verändern. Die servload Anwendung ist der
+			eigentliche Benchmark, der das von servprep vorbereitete Log wieder einspielt. Dabei ist
+			servprep in der Programmiersprache Lua und servload in C geschrieben. In der weiteren
+			Entwicklung des Benchmarks wurde servprep in servload integriert. Dadurch konnte eine noch
+			bessere Leistung erzielt und der Ressourcenverbrauch minimiert werden. In \cite{menski2012}
+			wurde servload in sofern erweitert, dass es Logs vom BIND DNS-Server verarbeiten und
+			DNS-Anfragen über UDP versenden kann. Somit ist es möglich, servload in dieser Arbeit als
+			Benchmark einzusetzen.
 
 		% section Benchmark }}}
 
@@ -1473,16 +1473,16 @@
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
 
-		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sub:entwurf}
+		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sec:entwurf}
 		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
 		und $q_{drop}$ muss die Komponente von salbd erweitert werden, welche für das Sammeln der
-		Messwerte zuständig ist. Das geschieht in der Datei \texttt{linux/client\_metric.c} von salbd.
-		Um den Median der Paketgrößen zu berechnen muss, wie beschrieben, der Funktionsaufruf
+		Messwerte zuständig ist. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
+		salbd.  Um den Median der Paketgrößen zu berechnen muss, wie beschrieben, der Funktionsaufruf
 		\texttt{recvmsg} vom BIND Server abgefangen werden. Dazu wird in der Datei \texttt{nethook.c}
 		der libnethook-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
 		\texttt{libc} überlagert. Abschließend müssen aus den gesammelten Werten die Credits berechnet
-		werden. Diese Berechnung findet in der Datei \texttt{client\_report.c} in salbd statt. Im
+		werden. Diese Berechnung findet in der Datei \texttt{client/client\_report.c} in salbd statt. Im
 		Folgenden werden die genauen Änderungen am Quellcode beschrieben.
 
 			\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
@@ -1495,44 +1495,84 @@
 			salbnet nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
 			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 3 die entsprechende Datei im
 			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 9 gelesen. Dabei wird der gesuchte Wert
-			direkt in die \texttt{maximum}-Variable der Metrik geschrieben. Wenn keine Fehler aufgetreten
-			sind wird die Datei in Zeile 14 geschlossen und die Ermittlung der maximalen Kapazität der
+			direkt in die \texttt{maximum}-Variable der Metrik gespeichert. Wenn keine Fehler aufgetreten
+			sind, wird die Datei in Zeile 14 geschlossen und die Ermittlung der maximalen Kapazität der
 			UDP-Receive-Queue ist abgeschlossen.
 
-			\lstinputlisting[float,language=C,firstline=42,lastline=60,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
+			\lstinputlisting[firstline=32,lastline=43,caption={Bestimmung der maximalen Kapzität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
 
 			% subsection Maximale Kapazität der UDP-Receive-Queue }}}
 
 			\subsection*{Aktuell belegter Speicherplatz in der UDP-Receive-Queue} % {{{
 
-			\lstinputlisting[float,lastline=39,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
+				Da zur Ermittlung des aktuell belegten Speicherplatzes in der UDP-Receive-Queue, wie in
+				Abschnitt \ref{sec:anforderungen} beschrieben, kein \texttt{Netlink}-Socket genutzt werden
+				kann muss dieser aus der Datei \texttt{/proc/net/udp} gelesen werden. Dazu wird in Listing
+				\ref{lst:metric-udp-proc} die Datei in Zeile 2 geöffnet und in Zeile 7 wird die Kopfzeile
+				übersprungen. Danach wird in einer Schleife ab Zeile 12 der UDP-Socket des BIND Servers
+				gesucht. Dazu wird in Zeile 14 die aktuelle Zeile der Datei eingelesen. Danach wird in Zeile
+				19 die Adresse und der Port des Sockets, der eben gelesen Zeile, in einer
+				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird anschließend in der Zeile
+				25 mit der in salbd konfigurierten Adresse verglichen. Wurde der gesuchte Socket gefunden,
+				wird der belegte Speicherplatz in Zeile 26 in der Variablen \texttt{current} der Metrik
+				gespeicher und die Schleife in Zeile 27 verlassen.
+
+			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatz in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
 
 			% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
 			\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
-			\lstinputlisting[float,caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
+				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll wie in Abschnitt
+				\ref{sec:entwurf} beschrieben, der \texttt{recvmsg}-Funktionsaufruf des BIND Servers
+				abgefangen werden. Dafür wird die dynamische Bibliothek libnethook um eine Funktion
+				\texttt{recvmsg} erweitert. Durch das Laden der libnethook-Bibliothek vor dem Start des BIND
+				Servers, überlagert die libnethook-Funktion die Standard-\texttt{libc}-Funktion und wird
+				somit vom BIND aufgerufen. Um dies zu realisieren wurde zunächst die
+				\texttt{nethook\_data}-Datenstruktur in Listing \ref{lst:nethookh} um das Feld
+				\texttt{recv\_size} erweitert. Die Datenstruktur enthält die Informationen, welche von salbd
+				weiter genutzt werden. Das neue Feld enthält dabei die Größe des DNS-Pakets in Byte. Die
+				neue Funktion \texttt{recvmsg} ist in Listing \ref{lst:nethookc} aufgeführt. In Zeile 8 wird
+				die Speicheradresse der originalen \texttt{recvmsg}-Funktion aus der \texttt{libc} ermittelt
+				und gespeichert. Danach wird in Zeile 15 diese Funktion aufgerufen und der Rückgabewert
+				gespeichert. Dieser Rückgabewert entspricht der Größe des DNS-Pakets, welcher anschließend
+				in Zeile 21 in das neue Feld \texttt{recv\_size} der \texttt{nethook\_data}-Datenstruktur
+				gespeichert wird. Am Ende der Funktion wird der Rückgabewert der originalen
+				\texttt{recvmsg}-Funktion zurückgegeben.
 
-			\lstinputlisting[float,caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
+			\lstinputlisting[caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
+			\lstinputlisting[caption={Auszüge der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
 
 			% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}
 
 			\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
 
-			\lstinputlisting[float,firstline=63,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
+				Wie in Abschnitt \ref{sec:entwurf} beschrieben, können die verworfenen Anfragen nur
+				systemweit ermittelt werden. Dazu wird in Listing \ref{lst:metric-drops-udp} in Zeile 1 die
+				Datei \texttt{/proc/net/snmp} geöffnet. In der Schleife von Zeile 5 bis 17 wird in Zeile 7
+				die aktuelle Zeile gelesen. Handelt es sich nicht um die richtige Zeile, wird diese
+				übersprungen und mit der nächsten fortgefahren. Ist die richtige Zeile erreicht wird die
+				aktuelle Anzahl der verworfenen Anfragen in Variablen \texttt{current} der Metrik
+				gespeichert. Anschließend wird in Zeile 13 dieser Wert um 1 erhöht, um ihn von 0, also dem
+				Zustand, dass noch kein Wert gelesen wurde, zu unterscheiden. Dies wird benötigt um zu
+				verhindern, dass beim Start von salbd 0 Credits gemeldet werden, weil bereits DNS-Pakete
+				systemweit verworfen worden. Danach wird in Zeile 14 die Schleife verlassen.
+
+			\lstinputlisting[firstline=46,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
 
 
 			% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
 			\subsection*{Bestimmung der Hard- und Soft-Credits} % {{{
+			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel	\ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
 			
-			\lstinputlisting[float,lastline=38,caption={Bestimmung der Hard- und Soft-Credits (\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
+			\lstinputlisting[firstline=3,lastline=19,caption={Bestimmung der Hard- und Soft-Credits (\texttt{client\_report.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_report.c}
 			
 			% subsection Bestimmung der Hard- und Soft-Credits }}}
 
 			\subsection*{Bestimmung der Auslastung der Receive-Queue} % {{{
 
-			\lstinputlisting[float,firstline=40,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
+			\lstinputlisting[firstline=22,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_report.c}
 
 			% subsection Bestimmung der Auslastung der Receive-Queue }}}
 
@@ -1762,7 +1802,7 @@
 	\chapter{sk\_buff} % {{{
 	\label{cha:skbuff}
 
-	\lstinputlisting[language=C,firstline=193,lastline=304,caption={\texttt{sk\_buff}-Datenstruktur in der Datei
+	\lstinputlisting[firstline=193,lastline=304,caption={\texttt{sk\_buff}-Datenstruktur in der Datei
 	\texttt{skbuff.h} vom Linux-Kernel 2.6.18},label=lst:skbuff]{listings/skbuff.h}
 
 	% chapter skbuff }}}
