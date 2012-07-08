@@ -823,7 +823,7 @@
 
 			Die Verteilung von DNS-Anfragen unterscheidet sich in mehreren Punkten von HTTP-Anfragen. So
 			ist das genutzte Transport-Protokoll UDP, statt TCP, und die Nachrichten dürfen nicht größer als
-			512 Byte sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
+			\unit[512]{Byte} sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
 			zustandsbehafteten HTTP-Anwendungen, wo ein Client während einer Session immer mit demselben Server
 			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
 			als bei HTTP-Anfragen. Firmen und Organisationen haben selten eine so hohe Anzahl an
@@ -1381,16 +1381,17 @@
 
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
 		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
-		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. Holt man jedoch
-		ein Paket aus der Receive-Queue ab, wird die Größe des Pakets zurückgeliefert. In Listing
+		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. Holt man
+		jedoch ein Paket aus der Receive-Queue ab, wird die Größe des Pakets zurückgeliefert. In Listing
 		\ref{lst:strace} wurde das Programm \texttt{strace} genutzt, um die Systemcalls des BIND
-		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND Servers
-		(named) ermittelt. Dann wurde in Zeile 3 strace für diese PID gestartet und die Ausgaben aller
-		Kindprozesse in einzelnen Dateien gespeichert. Danach ist in der Ausgabe-Datei des Kindprozesses,
-		welcher die Anfrage verarbeitet hat, in Zeile 12 zu erkennen, dass ein Paket vom BIND mit Hilfe
-		der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der Rückgabewert der Funktion
-		gibt die Größe des Paketes in Byte an. In diesem Beispiel war das DNS-Paket 45 Byte groß. Somit
-		ist es möglich, den Funktions-Aufruf des BIND abzufangen und die Paketgröße zu ermitteln.
+		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND
+		Servers (named) ermittelt. Dann wurde in Zeile 3 strace für diese PID gestartet und die Ausgaben
+		aller Kindprozesse in einzelnen Dateien gespeichert. Danach ist in der Ausgabe-Datei des
+		Kindprozesses, welcher die Anfrage verarbeitet hat, in Zeile 12 zu erkennen, dass ein Paket vom
+		BIND mit Hilfe der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der
+		Rückgabewert der Funktion gibt die Größe des Paketes in Byte an. In diesem Beispiel war das
+		DNS-Paket \unit[45]{Byte} groß. Somit ist es möglich, den Funktions-Aufruf des BIND abzufangen
+		und die Paketgröße zu ermitteln.
 
 		\lstinputlisting[float,lastline=12,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von \texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
 
@@ -1426,16 +1427,17 @@
 		der Funktion \texttt{recvmsg} ermittelt. Diese Versuche wurden mehrmals durchgeführt, dadurch
 		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkt Zusammenhang
 		zwischen der Größe des DNS-Pakets und dem benötigten Speicher in der Receive-Queue gibt. Der
-		Header eines DNS-Pakets ist 12 Byte groß und die maximale Größe eines DNS-Pakets beträgt 512 Byte
-		\cite{rfc1035}, deshalb wurde das Experiment mit Paketen der Größe 12-576 Byte durchgeführt. Das
-		Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass 376 Byte die minimale
-		Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete eine Größe von 64
-		Byte wächst der Speicherbedarf um 128 Byte. Diese 128 Byte stehen ausschließlich für den Inhalt
+		Header eines DNS-Pakets ist \unit[12]{Byte} groß und die maximale Größe eines DNS-Pakets beträgt
+		\unit[512]{Byte}
+		\cite{rfc1035}, deshalb wurde das Experiment mit Paketen der Größe \unit[12-576]{Byte} durchgeführt. Das
+		Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass \unit[376]{Byte} die minimale
+		Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete eine Größe von
+		\unit[64]{Byte} wächst der Speicherbedarf um \unit[128]{Byte}. Diese \unit[128]{Byte} stehen ausschließlich für den Inhalt
 		des DNS-Pakets zur Verfügung, da alle zusätzlichen Daten der \texttt{sk\_buff}-Datenstruktur
-		bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets ebenfalls um 128 Byte und
-		überschreitet 192 Byte, wächst der Speicherbedarf wiederum um 128 Byte an. Zusammenfassend
-		kann man sagen, dass ab einer Paketgröße von 64 Byte alle 128 Byte eine Erhöhung des
-		Speicherbedarfs um ebenfalls 128 Byte eintritt. Daher ist es möglich, die Formel \ref{eq:recvmsg}
+		bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets ebenfalls um \unit[128]{Byte} und
+		überschreitet \unit[192]{Byte}, wächst der Speicherbedarf wiederum um \unit[128]{Byte} an. Zusammenfassend
+		kann man sagen, dass ab einer Paketgröße von \unit[64]{Byte} alle \unit[128]{Byte} eine Erhöhung des
+		Speicherbedarfs um ebenfalls \unit[128]{Byte} eintritt. Daher ist es möglich, die Formel \ref{eq:recvmsg}
 		herzuleiten, mit der man anhand der Größe des DNS-Pakets (ermittelt durch \texttt{recvmsg}) den
 		Speicherbedarf in der Receive-Queue berechnet. Es ist zu beachten, dass diese Formel nicht
 		allgemeingültig ist und speziell für die Kernel-Version 2.6.18 ermittelt wurde. Für andere
@@ -1611,170 +1613,246 @@
 	% chapter Implementierung }}}
 
 	\chapter{Messungen} % {{{
-	\label{cha:messungen}
+	\label{cha:Messungen}
 
-		In diesem Kapitel werden die durchgeführten Funktionsmessungen dargestellt. Es soll gezeigt
-		werden, dass die Implementation funktionstüchtig und zum Verteilen von DNS-Anfragen geeignet
-		ist. Außerdem wurde ein Vergleich zum Round-Robin-Verfahren des LVS durchgeführt. Dieser soll
-		zeigen, dass das salbnet Verfahren eine bessere Verteilung der Last auf den Backend-Servern
-		erzeugt. In Abschnitt \ref{sec:messumgebung} wird der Aufbau der Messumgebung erläutert. Danach
-		wird in Abschnitt \ref{sec:messplan} der Ablauf der Messung beschrieben und in Abschnitt
-		\ref{sec:auswertung} folgt eine Auswertung.
+		Die in Kaptiel \ref{cha:implementierung} beschriebene Implementierung wurde mehreren Messungen
+		unterzogen. Dieses Kaptiel orientiert sich bei der Vorstellung des Messkonzepts und der Analyse
+		der Ergebnisse an \cite{jain1991}. Das Ziel der Messung ist es die Funktionstüchtigkeit der
+		entwickelten UDP-Erweiterung für salbnet zu beweisen und salbnet für den DNS-Anwendungsfall mit
+		einem Standardalgorithmus zu vergleichen.
 
-		\section{Messumgebung} % {{{
-		\label{sec:messumgebung}
+		\section{System} % {{{
+		\label{sec:system}
 
-		Die Messumgebung soll ein realistisches Lastszenario wiederspiegeln. Dazu wurden aus dem
-		IB-Cluster des Instituts für Informatik 4 Rechner ausgewählt (ib1, ib4, ib6, ib8). Die
-		relevanten technischen Merkmale dieser Server sind in der Tabelle \ref{tab:netzwerkknoten}
-		aufgeführt. Bei den	Maschinen ib1 und ib4 handelt es sich um baugleiche Server. Die Maschine ib6
-		ist die älteste und auch schwächste Maschine, da sie nur einen Single-Core Prozessor besitzt.
-		Der Aufbau soll ein DNS-Server-Cluster aus 3 Nameservern und einem Lastverteiler simulieren.
-		Dabei ist die Maschine ib1 der Lastverteiler und die 3 heterogenen Maschinen ib4, ib6 und ib8
-		stellen jeweils einen BIND Nameserver bereit.	Auf allen ib-Maschinen ist ein CentOS 5.7 mit dem
-		Kernel 2.6.18-274.12.1.el5 installiert.  Auf den Maschinen ib4, ib6 und ib8 ist BIND in der
-		Version 9.3.6-20.P1 installiert. Auf den BIND Servern wurde die
-		\texttt{haiti.cs.uni-potsdam.de}-Domain mit dem Stand vom 26. Oktober 2011 eingerichtet. Die
-		Anzahl der einzelnen Resource Record Typen ist in Tabelle \ref{tab:rr-domain} aufgeführt. Die
-		Konfiguration des BIND Servers ist in Anhang \ref{lst:bind-conf} zu finden. Um eine höhere
-		Auslastung der Nameserver zu erhalten wurde die UDP-Receive-Queue auf den Maschinen ib1, ib4,
-		ib6 und ib8 auf \unit[24]{MB} erhöht. Dadurch wird verhindert, das DNS-Anfragen verworfen
-		werden, weil die Receive-Queue voll ist, obwohl der Nameserver diese noch beantworten könnte.
-		
-		Zum Absenden der DNS-Anfragen wird die Maschine node015 aus dem Leibniz-Cluster des Institut für
-		Informatik genutzt. Sie besitzt einen Quad-Core Prozessor und 12 GB RAM (siehe Tabelle
-		\ref{tab:netzwerkknoten}). Auf ihr wird der servload Benchmark ausgeführt, da dieser eine
-		ausreichend hohe Last erzeugen muss um die 3 Nameserver zu belasten ist diese leistungsstarke
-		Maschine notwendig.
+		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
+		Lastverteiler aus gesteuert werden, oder wie im salbnet Fall mit Hilfe zusätzlicher
+		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem besteht aus einem
+		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser Lastverteiler
+		ist wiederum über ein Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
+		Abbildung \ref{fig:messsystem} grafisch dargestellt. Der Client ist ein Rechner im
+		leibniz-Cluster auf dem der servload Benchmark \cite{menski2012} ausgeführt wird. In dem Ziel
+		Netzwerk des ib-Clusters kommt auf dem Lastverteiler LVS zum Einsatz. Die 3 heterogenen
+		Backend-Server stellen alle einen BIND DNS-Server bereit. Die genauen technischen Daten und
+		Versionen der verwendeten Rechner und Software sind in Anhang \ref{cha:messumgebung} aufgeführt.
+		Das System bieten ausschließlich den DNS-Dienst durch die Backend-Server an. Dabei werden nur
+		DNS-Anfragen über UDP unterstützt. Die möglichen Resultate einer DNS-Anfrage an das System sind
+		eine Antwort oder keine Antwort. Um verschiedene Messungen zu vergleichen werden die folgenden
+		Metriken genutzt:
 
-		\begin{table}
-			\centering
-			\begin{tabular}{|c|c|c|c|c|l|}\hline
-				Node & CPU &  Taktung & Kerne & RAM & Funktion \\\hline\hline
-				node015 & Intel Xeon E5520 & \unit[2,27]{GHz} & 1 $\times$ 4 & \unit[12]{GB} & servload\\
-				ib1 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & LVS, salbd (Server)\\
-				ib4 & AMD Opteron 244 & \unit[1,8]{GHz} & 2 $\times$ 1 & \unit[4]{GB} & BIND, salbd (Client)\\
-				ib6 & Intel Pentium 4 & \unit[2,8]{GHz} & 1 $\times$ 1 & \unit[4]{GB} & BIND, salbd (Client)\\
-				ib8 & Intel Xeon 3040 & \unit[1,86]{GHz} & 1 $\times$ 2 & \unit[4]{GB} & BIND, salbd (Client)\\\hline
-			\end{tabular}
-			\caption{Technische Daten der verwendeten Netzwerkknoten}
-			\label{tab:netzwerkknoten}
-		\end{table}
-
-		\begin{table}
-			\centering
-			\begin{tabular}{|c|c|}\hline
-				Resource Record & Anzahl \\\hline\hline
-				A & 107 \\
-				NS & 4 \\
-				MX & 2 \\
-				CNAME & 2 \\
-				PTR & 106 \\
-				SOA & 1 \\\hline
-			\end{tabular}
-			\caption{Anzahl der Resource Record Typen in der \texttt{haiti.cs.uni-potsdam.de}-Domain}
-			\label{tab:rr-domain}
-		\end{table}
-			
-		% section Messumgebung }}}
-
-		\section{Messplan} % {{{
-		\label{sec:messplan}
-
-		Zur Durchführung der  Messung wurde ein anonymisiertes Log des authorativen Nameservers der
-		\texttt{haiti.cs.uni-potsdam.de}-Domain verwendet. Das Log enthält den Zeitraum von 10:41 am 27.
-		September 2011 bis 6:25 am 2. Oktober 2011. Über den Zeitraum von 6944 Minuten enthält das Log
-		1003149 Anfragen, welche hauptsächlich Anfragen nach \texttt{A} und \texttt{AAAA} Resource
-		Records sind (siehe Tabelle \ref{tab:log}). Es enthält 1026 Sessions, wobei eine Session als
-		alle Anfragen eines einzelnen Users definiert ist. Dadurch ergeben sich die Verhältnisse von
-		\unit[9,33]{\nicefrac{Anfragen}{Sekunde}} und \unit[977,63]{\nicefrac{Anfragen}{Session}}. Diese
-		Last würde keinen der 3 Nameserver auslasten. Um eine höhere Last erzeugen zu können wurde ein
-		Zeitabschnitt um das Maximum des Logs ausgewählt. Dieser wurde dann durch die
-		\texttt{multiply}-Methode des servload Benchmarks verstärkt um eine ausreichend hohe Last zu
-		erzeugen. Als Zeitraum wurden 5 Minuten von 5:55 bis 6:00 am 29. September 2011 gewählt, in
-		diesem liegt das Maximum mit \unit[204]{\nicefrac{Anfragen}{Sekunde}}. In diesem Intervall
-		werden 22.594 Anfragen von 33 Sessions gestellt. Der sehr kurze Zeitraum von 5 Minuten war
-		notwendig, um durch eine hohe Verstärkung das Nameserver-Cluster auszulasten. Wäre ein
-		längerer Zeitraum gewählt worden, hätte der Arbeitspeicher des node015 Rechners nicht
-		ausgereicht um das komplette verstärkte Log vorzuhalten.
-		
-		Mit dem ausgewählten Intervall wurden jeweils 3 Messungen mit unterschiedlichen
-		Multiplikationsfaktoren durchgeführt. Es wurden die Faktoren 400, 800 und 1600 gewählt um hohe
-		Lastsitutationen zu erzeugen. Die daraus resultierende Anzahl an Anfragen, Sessions und
-		\nicefrac{Anfragen}{Sekunde} sind in der Tabelle \ref{tab:multiply} zu sehen. Eine höhere
-		Verstärkung war wiederum nicht möglich ohne an die Grenzen des Arbeitsspeicher zu stoßen.
-
-		Verglichen wurden der gewichtete Round-Robin-Algorithmus des LVS mit dem dynamic pressure
-		relieve salbd Algorithmus. Die Gewichte für den Round-Robin Algorithmus wurden mit Hilfe des
-		Benchmarks UnixBench \cite{unixbench} bestimmt. Dieser
-		Benchmark führt verschieden Tests aus und ermitteln eine Gesamtbewertung des Systems. Die
-		Messergebnisse für die Machinen ib4, ib6 und ib8 sind im Anhang \ref{lst:unixbench} zu sehen. Es
-		wurden die Werte 788, 623 und 1180 für die ib4, ib6 und ib8 bestimmt. Diese Gewichte haben sich
-		bereits in anderen Messungen als sinnvoll für den Round-Robin-Algorithmus erwiesen, deshalb
-		wurden bei diesen Messungen wiederum auf sie zurückgegriffen. Bei dem salbd Algorithmus müssen
-		keine Gewichte angegeben werden. Allerdings muss eine Meldestrategie gewählt werden. Messungen
-		in einem TCP-Szenario haben den Algorithmus dynamic pressure relieve als eine der besten
-		Meldestrategien ermittelt. Deshalb wurde auch in diesem DNS-Szenario dieser ausgewählt. Die
-		Credits werden von den Backend-Servern über TCP zum Lastverteiler übermittelt. Die salbd
-		Konfiguration für den Lastverteiler (ib1) ist in Anhang \ref{lst:salbd-server} und die
-		Konfigurationen für salbd auf den Backend-Servern (ib4, ib6 und ib8) ist in Anhang
-		\ref{lst:salbd-client} und \ref{lst:salbd-bind} angeführt.  Jede Messung wurde 51 mal
-		wiederholt, da die Messwerte stark schwanken. Somit wurden 306 Messungen durchgeführt
-
-		\begin{table}
-			\centering
-			\begin{tabular}{|c|cc|}\hline
-				Anfragen & 1003149 & \\
-				Sessions & 1026 & \\
-				\nicefrac{Anfragen}{Sekunde} & 9,33 &\\
-				\nicefrac{Anfragen}{Session} & 977,73 &\\
-				A & 327861 & \unit[32,68]{\%}\\
-				AAAA & 609821 & \unit[60,79]{\%}\\
-				NS & 3575 & \unit[0,36]{\%}\\
-				MX & 669 & \unit[0,07]{\%}\\
-				PTR & 60553 & \unit[6,04]{\%} \\ \hline
-			\end{tabular}
-			\caption{Analyse des BIND Logs der \texttt{haiti.cs.uni-potsdam.de}-Domain}
-			\label{tab:log}
-		\end{table}
+		\begin{itemize}
+			\item Verbindungszeit
+			\item Antwortzeit
+			\item Anzahl der nicht beantwortet Anfragen (Timeout: Eine Sekunde)
+			\item CPU-Auslastung der Backend-Server
+		\end{itemize}
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{plots/requests}
-			\caption{Anfragen pro Sekunden für das Log vom 29. September 2011 von 5:55 bis 6:00}
-			\label{fig:requests}
+			\includegraphics[width=12cm]{images/test-system}
+			\caption{Aufbau des Messsystems}
+			\label{fig:messsystem}
 		\end{figure}
 
-		\begin{table}
-			\centering
-			\begin{tabular}{|lrrrr|}\hline
-				Faktor & Anfragen & Sessions & $\varnothing$ \nicefrac{Anfragen}{Sekunde} &
-				maximale \nicefrac{Anfragen}{Sekunde} \\\hline\hline
-				1 & 22.594 & 33 & 75,31 & 204 \\
-				400 & 9.037.600 & 13.200 & 30.125,33 & 81.600 \\
-				800 & 18.075.200 & 26.400 & 60.250,67 & 163.200 \\
-				1600 & 36.150.400 & 52.800 & 120.501,33 & 326.400 \\\hline
-			\end{tabular}
-			\caption{Kennzahlen des modifizierten Log Intervalls}
-			\label{tab:multiply}
-		\end{table}
+		% section System }}}
+
+		\section{Experiment} % {{{
+		\label{sec:experiment}
+
+			Um die Experimente zu entwickeln müssen alle Parameter ermittelt werden, welche die Leistung
+			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheident:
+
+			\begin{itemize}
+				\item Systemparameter (statisch)
+					\begin{itemize}
+						\item Geschwindigkeit des Netzwerks
+						\item Leistung der CPU
+						\item Größe des Arbeitsspeichers
+						\item Performanz des Lastverteilers
+						\item Performanz des DNS-Servers
+						\item Netzwerk-Stack des Betriebssystem
+						\item Andere Last auf dem Netzwerk
+						\item Andere Last auf den Servern
+					\end{itemize}
+				\item Lastparameter (variabel)
+					\begin{itemize}
+						\item Größe der DNS-Zone
+						\item Art des DNS-Servers (iterativ oder rekursiv)
+						\item Lastverteilungsalgorithmus
+						\item Anzahl der DNS-Anfragen
+						\item Anzahl der DNS-Anfragen pro Sekunde
+					\end{itemize}
+			\end{itemize}
+
+			Von den Lastparameter sind die Größe der DNS-Zone und die Art des DNS-Servers statisch. Als
+			DNS-Zone wird die \texttt{haiti.cs.uni-potsdam.de}-Zone genutzt mit dem Stand vom 26.
+			Oktober 2011. Die BIND Server werden alle als iterative Nameserver betrieben, dass heißt
+			Anfragen außerhalb der \texttt{haiti.cs.uni-potsdam.de} werden mit einem Verweis auf die
+			Root-Server beantwortet.
+
+			Die Faktoren, welche während den Messungen variiert werden sind der
+			Lastverteilungsalgorithmus, die Anzahl der DNS-Anfragen und die Anzahl der DNS-Anfragen pro
+			Sekunde. Als Lastverteilungsalgorithmus wird der Standard-Weighted-Round-Robin-Algorithmus
+			(wrr) des LVS genutzt und salbnet mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
+			für den Weighted-Round-Robin-Algorithmus wurden die Werte 788, 623 und 1180 für die Nodes ib4,
+			ib6 und ib8 verwendet. Diese Werte wurden mit dem UnixBench-Benchmark \cite{unixbench}
+			ermittelt. Die vollständigen Ergebnisse sind im Anhang \ref{cha:unixbench} aufgelistet. Für
+			die DNS-Anfragen wurde ein anonymisiertes Log des Nameservers der
+			\texttt{haiti.cs.uni-potsdam.de}-Domain genutzt. Das Log enthält den Zeitraum vom 27.
+			September 2011 10:41 bis zum 2. Oktober 2011 6:25. Es wurden 1026 Sessions, dabei ist eine
+			Session alle Anfragen eines Users (IP-Adresse), und 1.003.149 DNS-Anfragen\footnote{Weitere
+			Statistiken zur \texttt{haiti.cs.uni-potsdam.de}-Zone und dem DNS-Log sind in Anhang
+			\ref{cha:haiti} zu finden.} registriert. Im Durchschnitt werden 2,41 Anfragen pro Sekunde
+			gestellt. Das heißt, würde das Log unverändert genutzt werden, wäre keine Überlastsituation
+			auf einem DNS-Cluster mit 3 Backend-Servern zu erwarten. Daher wurde ein 5 Minuten langer
+			Ausschnitt aus dem Log genutzt.  Der Verlauf der Anfragen pro Sekunde ist in Abbildung
+			\ref{fig:requests} zu sehen. Um 3 verschiedene Lastsituationen zu erzeugen, wurde das Log
+			dann vor dem Testen mit Hilfe von servload \cite{menski2012} verstärkt. Dazu wurde jede
+			Anfrage um einen bestimmten Faktor vervielfacht. Es wurden die Faktoren 400, 800 und 1600
+			gewählt. Die Entsprechenden Kennzahlen dieser Faktoren sind in Tabelle \ref{tab:multiply}
+			aufgeführt. Der Messplan mit den Anzahl der Durchläufe ist in Tabelle \ref{tab:messplan} zu
+			sehen.
 
 
-		% section Messplan }}}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{plots/requests}
+				\caption{Anfragen pro Sekunden für das Log vom 29. September 2011 von 5:55 bis 6:00}
+				\label{fig:requests}
+			\end{figure}
 
-		\section{Auswertung} % {{{
-		\label{sec:auswertung}
+			\begin{table}
+				\centering
+				\begin{tabular}{|lrrrr|}\hline
+					Faktor & Anfragen & Sessions & $\varnothing$ \nicefrac{Anfragen}{Sekunde} &
+					max. \nicefrac{Anfragen}{Sekunde} \\\hline\hline
+					1 & 22.594 & 33 & 75,31 & 204 \\
+					400 & 9.037.600 & 13.200 & 30.125,33 & 81.600 \\
+					800 & 18.075.200 & 26.400 & 60.250,67 & 163.200 \\
+					1600 & 36.150.400 & 52.800 & 120.501,33 & 326.400 \\\hline
+				\end{tabular}
+				\caption{Kennzahlen des modifizierten Log Intervalls}
+				\label{tab:multiply}
+			\end{table}
 
-		Um die Messungen auszuwerten wurden während der Messungen minütlich die Werte der aktuellen CPU
-		und Memory-Auslastung sowie der Load-Wert der Maschinene ib1, ib4, ib6 und ib8 abgefragt. Dies
-		wurde mit Hilfe von \texttt{net-snmp}\ durchgeführt. Außerdem wurden die Ausgaben vom servload
-		Benchmark gespeichert.
-			
-		% section Auswertung }}}
+			\begin{table}
+				\centering
+				\begin{tabular}{|r|c|c|c||c|}\hline
+					& 400 & 800 & 1600 & Summe \\\hline
+					wrr & 51 & 51 & 51 & 153 \\
+					salbnet & 51 & 51 & 51 & 153 \\
+												 & & & & 306 \\\hline
+				\end{tabular}
+				\caption{Anzahl der Messungen je Kombination aus Lastverteilungsalgorithmus und Faktor}
+				\label{tab:messplan}
+			\end{table}
+
+		% section Experiment }}}
+
+		\section{Ergebnisse} % {{{
+		\label{sec:Ergebnisse}
+
+			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks genutzt. Außerdem
+			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
+			minütlich mit Hilfe eines Skriptes über \texttt{net-snmp} abgefragt. Erst einmal ist
+			festzuhalten, dass die Erweiterung von salbnet für UDP-Anfragen funktioniert. Während der
+			Tests kam es zu keine Ausfällen oder auffälligem Verhalten. Danach wurden die beiden
+			Lastverteilungsverfahren wrr und salbnet unter den Metriken aus Abschnitt \ref{sec:system}
+			verglichen. Die Bewertung folgt dabei nach den folgenden Kriterien:
+
+			\begin{itemize}
+				\item Vermeiden von verlorenen Anfragen
+				\item Minimale Antwortzeiten
+				\item Minimale Verbindungszeiten
+				\item Konstante CPU-Auslastung
+				\item Gleichmäßige CPU-Auslastung aller Backend-Server
+			\end{itemize}
+
+			Die CPU-Auslastungen für die Nodes im ib-Cluster sind für den wrr-Algorithmus in Abbildung
+			\ref{fig:cpu-wrr} und für salbnet in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
+			erkennen, dass die CPU-Auslastung bei salbnet wesentlich konstanter ist als bei wrr.
+			Allerdings ist sie bei der ib6 für alle Faktoren mit salbnet immer an 100\%. Dies könnte auf
+			eine ungleichmäßige Verteilung hindeuten. Hingegen liegen die Werte der ib4 und ib8 sehr nah
+			beieinander. Die Anzahl der verlorenen Anfragen (siehe Tabelle \ref{tab:timeout} und Abbildung
+			\ref{fig:ergebnis}) liegt bei salbnet immer unter der von wrr. Bei dem Faktor 400 sind es ca.
+			\nicefrac{1}{4}, bei 800 ca. \nicefrac{1}{3} und bei 1600 ca. \nicefrac{1}{2} der verlorenen
+			Anfragen von wrr. Noch deutlicher werden die Unterschiede bei der Antwortzeit (siehe Tabelle
+			\ref{tab:response} und Abbildung \ref{fig:ergebnis}) und der Verbindungszeit  (siehe Tabelle
+			\ref{tab:connect} und Abbildung \ref{fig:ergebnis}). Bei der Antwortzeit handelt es sich um
+			eine Speedup von ca. 7 und bei der Verbindungszeit von 2-4.
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=13cm]{plots/servload}
+				\caption{Vergleich von wrr und salbnet für die Metriken: Verlorene Anfragen, Antwortzeit und	Verbindungszeit}
+				\label{fig:ergebnis}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=13cm]{plots/cpu-wrr}
+				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit wrr als
+				Lastverteilungsalgorithmus}
+				\label{fig:cpu-wrr}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=13cm]{plots/cpu-salbnet}
+				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit salbnet als
+				Lastverteilungsalgorithmus}
+				\label{fig:cpu-salbnet}
+			\end{figure}
+
+			\begin{table}
+				\centering
+				\begin{tabular}{|r|c|c|}\hline
+					Faktor & wrr & salbnet \\\hline\hline
+					400 & 1273,39 (182.727,4/427,5) & 343,16 (10.444,9/102,2)\\
+					800 & 2038,53 (395551,1/628,9) & 759,86 (30.414,0/174,4)\\
+					1600 & 2910,16 (386854,5/622,0) & 1612,78 (55.845,1/236,3)\\\hline
+				\end{tabular}
+				\caption{Anzahl der Verloren Anfragen (Varianz/Standardabweichung)}
+				\label{tab:timeout}
+			\end{table}
+
+			\begin{table}
+				\centering
+				\begin{tabular}{|r|c|c|}\hline
+					Faktor & wrr & salbnet \\\hline\hline
+					400 & 4,05 (0,95/0,98) & 0,64 (0,00/0,01)\\
+					800 & 4,33 (2,50/1,58) & 0,61 (0,00/0,01)\\
+					1600 & 4,24 (2,17/1,47) & 0,60 (0,00/0,02)\\\hline
+				\end{tabular}
+				\caption{Median Antwortzeit in Millisekunden (Varianz/Standardabweichung)}
+				\label{tab:response}
+			\end{table}
+
+			\begin{table}
+				\centering
+				\begin{tabular}{|r|c|c|}\hline
+					Faktor & wrr & salbnet \\\hline\hline
+					400 & 0,31 (0,00/0,05) & 0,15 (0,00/0,00)\\
+					800 & 0,57 (0,05/0,22) & 0,14 (0,00/0,01)\\
+					1600 & 0,61 (0,10/0,31) & 0,13 (0,00/0,00)\\\hline
+				\end{tabular}
+				\caption{Median Verbindungszeit in Millisekunden (Varianz/Standardabweichung)}
+				\label{tab:connect}
+			\end{table}
+
+		% section Ergebnisse }}}
 
 		\section{Fazit} % {{{
-		\label{sec:messungen-fazit}
-		
+		\label{sec:Fazit}
+
+		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von salbnet für UDP-Pakete
+		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in Tests ihrer
+		Leistungsfähigkeit unter Beweis gestellt. In allen verglichenen Metriken war salbnet dem
+		wrr-Algorithmus überlegen. Nur die CPU-Auslastung der ib6 war zu hoch im Vergleich zu den
+		anderen Backend-Servern. Dies kann an einer zu optimistischen oder zu späten Credit-Meldungen
+		liegen. Zusammenfassend kann aber gesagt werden, dass das Konzept und die Implementierung
+		höchstwahrscheinlich noch Verbesserungspotenzial bieten, die aktuelle Version jedoch bereits den
+		Vorteil von selbst-adaptiver Lastverteilung auch für UDP-Verkehr verdeutlicht.
+
 		% section Fazit }}}
 
 	% chapter Messungen }}}
@@ -1811,18 +1889,195 @@
 	\chapter{Messumgebung} % {{{
 	\label{cha:messumgebung}
 
-	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1	(LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
+	Dieser Anhang stellt Informationen bezüglich der für die Messungen verwendeten System (siehe
+	Abschnitt \ref{sec:Systeme}),
+	der genutzten Softwareversionen (siehe Abschnitt \ref{sec:software}) und Konfigurationen
+	(siehe Abschnitt \ref{sec:konfigurationen}).
 
-	\lstinputlisting[language=sh,caption={salbd Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
+		\section{Systeme} % {{{
+		\label{sec:Systeme}
 
-	\lstinputlisting[language=sh,caption={salbd BIND Konfiguration für ib4, ib6 und	ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
+			In diesem Abschnitt werden die technischen Daten der Systeme vorgestellt, welche in der
+			Messumgebung verwendetet wurden.
 
-	\lstinputlisting[language=sh,caption={BIND Konfiguration für ib4, ib6 und ib8},label=lst:bind-conf]{listings/named.conf}
+		\begin{description}
+			\item[Rolle:] Client
+					\begin{description}
+						\item[Cluster:] leibniz
+						\item[Hostname:] node015
+						\item[CPU:] Intel Xeon E5520 @ \unit[2,27]{GHz} (Quad-Core)
+						\item[RAM:] \unit[12]{GB}
+					\end{description}
+			\item[Rolle:] Lastverteiler
+					\begin{description}
+						\item[Cluster:] ib
+						\item[Hostname:] ib1
+						\item[CPU:] 2 $\times$ AMD Opteron 244 @ \unit[1,8]{GHz} (Single-Core)
+						\item[RAM:] \unit[4]{GB}
+					\end{description}
+			\item[Rolle:] Backend-Server 1
+					\begin{description}
+						\item[Cluster:] ib
+						\item[Hostname:] ib4
+						\item[CPU:] 2 $\times$ AMD Opteron 244 @ \unit[1,8]{GHz} (Single-Core)
+						\item[RAM:] \unit[4]{GB}
+					\end{description}
+			\item[Rolle:] Backend-Server 2
+					\begin{description}
+						\item[Cluster:] ib
+						\item[Hostname:] ib6
+						\item[CPU:] Intel Pentium @ \unit[2,8]{GHz} (Single-Core)
+						\item[RAM:] \unit[4]{GB}
+					\end{description}
+			\item[Rolle:] Backend-Server 3
+					\begin{description}
+						\item[Cluster:] ib
+						\item[Hostname:] ib8
+						\item[CPU:] Intel Xeon 3040 @ \unit[1,86]{GHz} (Dual-Core)
+						\item[RAM:] \unit[4]{GB}
+					\end{description}
+		\end{description}
 
-	\lstinputlisting[language=,breaklines=true,numbers=none,caption={UnixBench Resultate für die Maschinen ib4, ib6 und
-	ib8},label=lst:unixbench]{listings/result_unixbench.dat}
+		% section Systeme }}}
+
+		\section{Software} % {{{
+		\label{sec:software}
+
+		Die zur Messung genutzte Software wird in diesem Abschnitt mit ihren entsprechenden Versionen
+		und gegebenenfalls der Subversion-Revision aufgelistet.
+
+		\begin{description}
+			\item[Betriebssystem:] Debian
+				\begin{description}
+					\item[Version:] 5.0.9 (Lenny)
+					\item[Kernel:] 2.6.26-2-amd64
+					\item[Nodes:] node015
+					\item[rmem\_default:] \unit[124928]{Byte}
+					\item[rmem\_max:] \unit[16777216]{Byte}
+				\end{description}
+			\item[Betriebssystem:] CentOS
+				\begin{description}
+					\item[Version:] 5.7 (Final)
+					\item[Kernel:] 2.6.18-274.12.1.el5
+					\item[Nodes:] ib1, ib4, ib6, ib8
+					\item[rmem\_default:] \unit[25165824]{Byte}
+					\item[rmem\_max:] \unit[25165824]{Byte}
+				\end{description}
+			\item[DNS-Server:] BIND
+				\begin{description}
+					\item[Version:] 9.3.6
+					\item[Release:] 20.P1.el5\_8.1
+				\end{description}
+			\item[Benchmark:] servload
+				\begin{description}
+					\item[Version:] 0.5.1-dns
+					\item[Revision:] 2026
+				\end{description}
+			\item[salbnet:] salbd
+				\begin{description}
+					\item[Version:] 0.4.5
+					\item[Revision:] 2028
+				\end{description}
+			\item[salbnet:] libnethook
+				\begin{description}
+					\item[Version:] 0.2
+					\item[Revision:] 2027
+				\end{description}
+			\item[salbnet:] libnetmsg
+				\begin{description}
+					\item[Version:] 0.4.4
+					\item[Revision:] 1980
+				\end{description}
+		\end{description}
+
+		% section Software }}}
+
+		\section{Konfigurationen} % {{{
+		\label{sec:konfigurationen}
+
+			Die verwendeten Konfigurationen salbd und BIND sind in diesem Abschnitt angehangen.
+
+			\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1 (LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
+
+		\lstinputlisting[language=sh,caption={salbd Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
+
+		\lstinputlisting[language=sh,caption={salbd BIND Konfiguration für ib4, ib6 und ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
+
+		\lstinputlisting[language=sh,caption={BIND Konfiguration für ib4, ib6 und ib8},label=lst:bind-conf]{listings/named.conf}
+
+		% section Konfigurationen }}}
 
 	% chapter Messumgebung }}}
+
+	\chapter{UnixBench} % {{{
+	\label{cha:unixbench}
+
+			In diesem Anhang wird das Ergebnis des UnixBench-Benchmark für die Nodes ib4, ib6 und
+			ib8 aufgelistet.
+
+	\lstinputlisting[lastline=77,language=,breaklines=true,numbers=none,caption={UnixBench Resultat für die Node ib4}]{listings/result_unixbench.dat}
+	\lstinputlisting[firstline=83,lastline=124,language=,breaklines=true,numbers=none,caption={UnixBench Resultat für die Node ib6}]{listings/result_unixbench.dat}
+	\lstinputlisting[firstline=130,language=,breaklines=true,numbers=none,caption={UnixBench Resultat für die Node ib8}]{listings/result_unixbench.dat}
+
+	% chapter UnixBench }}}
+
+	\chapter{Haiti-Zone} % {{{
+	\label{cha:haiti}
+
+		Dieser Anhang stellt Statistiken zur \texttt{haiti.cs.uni-potsdam.de}-Zone und dem verwendeten
+		Log dar.
+
+		\begin{table}[h]
+			\centering
+			\begin{tabular}{|c|c|}\hline
+				Resource Record & Anzahl \\\hline\hline
+				A & 107 \\
+				NS & 4 \\
+				MX & 2 \\
+				CNAME & 2 \\
+				PTR & 106 \\
+				SOA & 1 \\\hline
+			\end{tabular}
+			\caption{Anzahl der DNS-Typen in der \texttt{haiti.cs.uni-potsdam.de}-Zone mit dem Stand vom 26. Oktober 2011}
+			\label{tab:rr-domain}
+		\end{table}
+
+		\begin{table}[h]
+			\centering
+			\begin{tabular}{|c|rr|}\hline
+				Start & 27. September 2011 & 10:41 \\
+				Ende & 2. Oktober 2011 & 6:25 \\
+				Anfragen & 1003149 & \\
+				Sessions & 1026 & \\
+				Anfragen je Sekunde & 2,41 &\\
+				Anfragen je Session & 977,73 &\\ \hline
+			\end{tabular}
+			\caption{Analyse des BIND Logs des \texttt{haiti.cs.uni-potsdam.de}-Nameserves}
+			\label{tab:log}
+		\end{table}
+
+
+		\begin{table}
+			\centering
+			\begin{tabular}{|c|rr|}\hline
+				AAAA & 609821 & \unit[60,791]{\%}\\
+				A & 327861 & \unit[32,683]{\%}\\
+				PTR & 60553 & \unit[6,036]{\%} \\
+				NS & 3575 & \unit[0,356]{\%}\\
+				MX & 669 & \unit[0,067]{\%}\\
+				SOA& 355 & \unit[0,035]{\%} \\
+				TXT& 237 & \unit[0,024]{\%} \\
+				ANY& 36 & \unit[0,004]{\%} \\
+				SRV& 26 & \unit[0,003]{\%} \\
+				A6& 14 & \unit[0,001]{\%} \\
+				HINFO& 1 & \unit[0,000]{\%} \\
+				AXFR& 1 & \unit[0,000]{\%} \\\hline
+			\end{tabular}
+			\caption{Anzahl der DNS-Typen im BIND Log des \texttt{haiti.cs.uni-potsdam.de}-Nameserves}
+			\label{tab:log}
+		\end{table}
+
+	% chapter Haiti-Zone }}}
 
 	\chapter{sk\_buff} % {{{
 	\label{cha:skbuff}
