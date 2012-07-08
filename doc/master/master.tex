@@ -297,7 +297,7 @@
 
 			Um die Entstehung des \dns{} zu verstehen, ist es entscheidend zu wissen, wie das Internet
 			entstanden und aufgebaut ist.
-			
+
 			Das sogenannte ARPANET ist ein Wide Area Network (WAN) gewesen, welches in den späten
 			sechziger Jahren von der Advanced Research Projects Agency (ARPA) des
 			Verteidigungsministeriums der USA aufgebaut und finanziert wurde. Es hat mehrere große
@@ -494,7 +494,7 @@
 			oft davon ausgehen, dass diese Nameserver immer die aktuelle Adresse von \texttt{google.com} und
 			\texttt{wikipedia.org} etc. im Cache gespeichert haben. Dieses Speichern von Informationen
 			ist nicht nur vorteilhaft für die Nutzer, sondern verringert auch die Last auf anderen
-			DNS-Servern im Internet. Ohne Nameserver mit Cache wäre die Last auf dem DNS-Netzwerk wohl um
+			DNS-Servern im Internet. Ohne Nameserver mit Cache ist die Last auf dem DNS-Netzwerk wohl um
 			einiges höher. Allerdings sind die Informationen eines DNS-Servers nur begrenzt gültig.
 			Jede Antwort enthält eine maximale Lebensdauer der Information, danach ist sie nicht mehr
 			gültig und sollte nicht weiterverwendet werden. Das heißt auch, dass sie aus dem Cache entfernt
@@ -704,7 +704,7 @@
 		preiswerter als ein einzelnes System ist, welches die gleiche Last verarbeiten kann.  Hinzu
 		kommt die Möglichkeit, gezielt Ressourcen zu entfernen, um Strom zu sparen. So könnten Server
 		nur dann angeschaltet werden, wenn davon auszugehen ist, dass eine hohe Last bevorsteht. Ein
-		Beispiel hierfür wäre eine Verkaufsplattform, die zusätzliche Ressourcen benötigt, wenn zum
+		Beispiel hierfür ist eine Verkaufsplattform, die zusätzliche Ressourcen benötigt, wenn zum
 		Beispiel vor Feiertagen eine hohe Anzahl Bestellungen eingeht.
 
 		Im Folgenden werden verschiedene Ansätze zur Verteilung von Last auf mehrere Systeme erläutert.
@@ -888,9 +888,9 @@
 		\label{sec:grundlagen-fazit}
 
 			In diesem Kaptiel wurde die Enstehung und Bedeutung des \dns{} beschrieben. Es zeigt sich,
-			dass die heutige Art der Nutzung des Internets ohne DNS nicht möglich wäre. Durch DNS wird
-			eine schnelle und einfache Ermittlung von IP-Adressen realisiert. Infolgedessen muss das
-			System jederzeit verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die
+			dass die heutige Art der Nutzung des Internets ohne ein System, wie DNS, nicht möglich ist.
+			Durch DNS wird eine schnelle und einfache Ermittlung von IP-Adressen realisiert. Infolgedessen
+			muss das System jederzeit verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die
 			Informationen im DNS in einer verteilten Baumstruktur gespeichert. Diese ermöglicht das
 			einfache Delegieren von Verantwortungen. Allerdings führt diese spezielle Struktur dazu, dass
 			auf dem Wurzelknoten (Root-Domain) und seinen Kindknoten (TLDs) die größte Last liegt. Diese
@@ -1262,7 +1262,7 @@
 
 		Wenn sich ein Server in einer Überlastsitutation befindet, erkennt man das oft daran, dass
 		bestimmte Ressourcen aufgebraucht sind. So kann eine \unit[100]{\%}ige CPU- oder RAM-Auslastung aussagen,
-		dass der Server an seine Grenzen geraten ist. Daher wäre eine mögliche Metrik die Sammlung
+		dass der Server an seine Grenzen geraten ist. Daher ist eine mögliche Metrik die Sammlung
 		entsprechender Last-Daten und eine anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
 		
@@ -1274,9 +1274,9 @@
 		eingehenden und ausgehenden Nachrichten eine mögliche Metrik für die Lastsitutation des Servers
 		darstellen.  Ein Server, der alle eingehenden Nachrichten sofort beantworten kann, und somit die
 		gleiche Anzahl an ausgehenden Nachrichten erzeugt, befindet sich in keiner Überlastsituation.
-		Hat der Server jedoch Probleme, eingehenden Anfragen direkt zu beantworten, befindet er sich
+		Hat der Server jedoch Probleme, eingehende Anfragen direkt zu beantworten, befindet er sich
 		unter einer gewissen Last, bis hin zur Überlast, bei der Anfragen verworfen werden müssen. Um
-		die Lastsitutation zu untersuchen wäre es möglich, die Anzahl der eingehenden und abgearbeiteten
+		die Lastsitutation zu untersuchen ist es möglich, die Anzahl der eingehenden und abgearbeiteten
 		(ausgehenden) Anfragen zu protokollieren. Wenn die Differenz nahe 0 ist, geht man von keiner
 		hohen Last aus.  Wächst die Differenz jedoch allmählich, befindet sich der Server unter
 		steigender Last.
@@ -1285,7 +1285,7 @@
 
 		\subsection*{Receive-Queue-Metrik} % {{{
 
-		Ein Ansatz ähnlich des TCP-Backlog-Ansatzes \cite{zinke2007,scsczile2008} wäre das Überwachen
+		Ein Ansatz ähnlich des TCP-Backlog-Ansatzes \cite{zinke2007,scsczile2008} ist das Überwachen
 		der Receive-Queue des UDP-Sockets des DNS-Servers. Anders als bei dem TCP-Fall werden in
 		der Receive-Queue keine Verbindungen verwaltet, sondern Pakete unterschiedlicher Größe
 		gespeichert. Das heißt, die Receive-Queue hat eine maximale Größe und ist bis zu einem
