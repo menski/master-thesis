@@ -967,7 +967,7 @@
 
 	Eine zusätzlich Art der Verteilung von DNS-Anfragen sind Anycast-Adressen. Wie in
 	\ref{cha:grundlagen} beschrieben, dienen sie dazu, dass ein Client eine Antwort von dem Nameserver
-	erhält, welche ihm am nächsten ist. Dies soll möglichst geringe Antwortzeiten generieren. In \cite{sapate2005}
+	erhält, welcher ihm am nächsten ist. Dies soll möglichst geringe Antwortzeiten generieren. In \cite{sapate2005}
 	wird das Verhalten von Anycast-DNS-Servern Ende 2004 untersucht. Dazu werden die
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
 	Anycast-Adresse für ihre verteilten Cluster, UltraDNS hingegen nutzt zwei Anycast-Adressen für
@@ -1005,6 +1005,8 @@
 	Lastverteilung in einem Cluster aus DNS-Servern entscheidend für die Stabilität und Zuverlässigkeit
 	des DNS. Daher hat die hier entwickelte selbst-adaptive Lastverteilung für DNS-Anfragen, bzw.
 	UDP-Anfragen im Allgemeinen, einen klaren Anwendungsfall in der Realität des DNS.
+
+	% TODO: bessere hardware ausnutzung -> weniger hardware wird benötigt / spart kosten, straom -> green it
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1246,7 +1248,6 @@
 	präsentiert. Die Implementierung des gewählten Entwurfs wird dann in Kapitel
 	\ref{cha:implementierung} beschrieben.
 
-
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
@@ -1447,7 +1448,14 @@
 
 		\section{Fazit} % {{{
 		\label{sec:konzept-fazit}
-		
+
+		In diesem Kaptiel sollte eine Metrik zur Bestimmung der Lastsitutation eines DNS-Servers
+		entworfen werden. Dazu wurden drei Ansätze evaluiert. Basierend auf den in \ref{sec:metrik}
+		definierten Kriterien wurde danach eine Metrik ausgewählt. Danach wurde alle Messwerte
+		identifiziert, welche für die gewählte Receive-Queue-Metrik benötigt werden. Mit diesen wurde
+		die Formel \ref{eq:credits} entwickelt, welche zur Credit-Berechnung genutzt wird. Im Folgenden
+		Kapitel wird nun die Implementation der Metrik beschrieben.
+
 		% section Fazit }}}
 
 	% chapter Konzept }}}
@@ -1765,7 +1773,22 @@
 
 		\section{Fazit} % {{{
 		\label{sec:implementierung-fazit}
-		
+
+		Dieses Kapitel hat die Implementierung der in \ref{cha:konzept} entworfenen Receive-Queue-Metrik
+		beschrieben. Dazu wurden in Abschnitt \ref{sec:anforderungen} die technischen Möglichkeiten
+		besprochen, mit deren Hilfe die benötigen Messwerte der Metrik bestimmt werden können. Dabei
+		wurden auch Möglichkeiten genannt, welche durch die Bindung von salbnet an den Linux-Kernel
+		2.6.18, nicht verwendbar sind. Diese sollten aber Beachtet werden, falls das salbnet
+		Kernel-Modul auf einen neueren Kernel portiert werden sollte. Denn sie bieten Vorteile gegenüber
+		den letztendlich verwendeten Methoden. Das identifizierte Vorgehen wurde sehr nahe an den
+		vorgestellten Methoden in die bestehenden Code-Basis von salbnet implementiert. Dabei wurde
+		bestehenden Datenstrukturen genutzt und es wurden nur leichte Änderungen an der Programmlogik
+		von salbnet vorgenommen. Dies war möglich, da bei der Konzeption und der Entwicklung von salbnet
+		bereits der UDP-Anwendungsfall mit eingeplant war. Daher gab es an vielen Stellen im Code
+		bereits die richtigen Schnittstellen und Fallunterscheidungen. Rückblickend war die Erweiterung
+		von salbnet ohne große Probleme möglich und die entwickelten Konzepte konnte fast direkt
+		umgesetzt werden.
+
 		% section Fazit }}}
 
 	% chapter Implementierung }}}
@@ -1816,6 +1839,8 @@
 
 		\section{Experiment} % {{{
 		\label{sec:experiment}
+
+		% TODO: heterogen realistisch
 
 			Um die Experimente festzulegen, müssen alle Parameter ermittelt werden, welche die Leistung
 			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheidend:
@@ -2029,7 +2054,9 @@
 
 		\section{Zusammenfassung} % {{{
 		\label{sec:zusammenfassung}
-			
+
+
+
 		% section Zusammenfassung }}}
 
 		\section{Ausblick} % {{{
