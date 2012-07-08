@@ -107,7 +107,7 @@
 	Diese Masterarbeit befasst sich mit der Lastverteilung von DNS-Anfragen. Im Mittelpunkt steht
 	dabei die Erweiterung der selbst-adaptiven Lastverteilungslösung salbnet. Dazu wird für das System
 	eine neue Metrik für UDP-Pakete konzipiert. Infolgedessen wird die Umsetzbarkeit des entwickelten
-	Konzepts überprüft. Auf Basis dieser Ergebnisse wird für salbnet eine UDP-Erweiterung
+	Konzepts überprüft. Auf der Basis dieser Ergebnisse wird für salbnet eine UDP-Erweiterung
 	implementiert. Grundlage der Erweiterung ist eine Auswertung der UDP-Receive-Queue. Bei
 	abschließenden Messungen konnte gezeigt werden, dass die Erweiterung funktionstüchtig ist und
 	salbnet im DNS-Anwendungsfall einem Standardalgorithmus überlegen ist.
@@ -120,9 +120,9 @@
 
 % Authorship {{{
 \newcommand{\makeauthorship}{
-  \chapter*{Selbständigkeitserklärung}
+  \chapter*{Selbstständigkeitserklärung}
   \thispagestyle{empty}
-  Hiermit erkläre ich, dass ich die vorliegende Arbeit selbständig angefertigt, nicht anderweitig zu Prüfungszwecken vorgelegt und keine anderen als die angegebenen Hilfsmittel verwendet habe. Sämtliche wissentlich
+  Hiermit erkläre ich, dass ich die vorliegende Arbeit selbstständig angefertigt, nicht anderweitig zu Prüfungszwecken vorgelegt und keine anderen als die angegebenen Hilfsmittel verwendet habe. Sämtliche wissentlich
  verwendeten Textausschnitte, Zitate oder Inhalte anderer Verfasser wurden ausdrücklich als solche gekennzeichnet.\\[2ex]
   \iflanguage{ngerman}{\TitleOrt, den \TitleDatum\\[6ex]}{\TitleOrt, \TitleDatum\\[6ex]}
   {\flushleft
@@ -674,7 +674,7 @@
 		\begin{figure}
 			\centering
 			\includegraphics[width=5cm]{images/internet-server}
-			\caption{Lastverteilung mit mehreren Servers}
+			\caption{Lastverteilung mit mehreren Servern}
 			\label{fig:lastverteilung}
 		\end{figure}
 
@@ -896,13 +896,13 @@
 			auf dem Wurzelknoten (Root-Domain) und seinen Kindknoten (TLDs) die größte Last liegt. Diese
 			Last nimmt mit steigender Tiefe immer stärker ab. Folglich sind für die verschiedenen Ebenen
 			des DNS jeweils andere Verfahren zur Lastverteilung geeignet. Es wurden die Konzepte der
-			Server-Lastverteilung und DNS-basierte Lastverteilung vorgestellt.
+			Server-Lastverteilung und DNS-basierten Lastverteilung vorgestellt.
 
 			Um das verwendete System salbnet in dieser Topologie einzuordnen, muss beachtet werden, dass
 			salbnet eine Server-Lastverteilung realisiert. Somit sind private Netzwerke und kleine
 			Firmennetzwerke kein Anwendungsbereich für salbnet. Bei Root-Servern, TLDs und großen SLDs ist
 			es realistischer, dass DNS-Cluster genutzt werden, um die hohe Anzahl an DNS-Anfragen
-			abzuarbeiten. Dementsprechend ordnet sich salbnet bei diesen großen DNS-Systemen ein, bei denen
+			abzuarbeiten. Dementsprechend ordnet sich salbnet bei solchen großen DNS-Systemen ein, bei denen
 			der Einsatz eines DNS-Clusters unumgänglich ist und eine hohe Last entsteht.
 		
 			% Einordnung der Arbeit
@@ -914,11 +914,11 @@
 	\chapter{Verwandte Arbeiten} % {{{
 	\label{cha:arbeiten}
 
-	Diese Kaptiel stellt verschieden Arbeiten vor, welche sich hauptsächlich mit der Last von
+	Dieses Kapitel stellt verschiedene Arbeiten vor, welche sich hauptsächlich mit der Last von
 	DNS-Root-Servern beschäftigen. Dabei soll gezeigt werden, welche Anzahl an Anfragen ein
 	Root-Server erhält und von welcher Art diese sind. Zusätzlich soll auf Fehlverhalten innerhalb des
-	DNS eingegangen werden und anhand von Anycast-Anfragen überprüft werden ob es auch externe Effekt
-	gibt, welche das DNS beeinflussen.
+	DNS eingegangen werden und anhand von Anycast-Anfragen überprüft werden, ob es auch externe
+	Effekte gibt, welche das DNS beeinflussen.
 
 	Die Anfragen an ein DNS-Cluster des F-Root-Servers wurden Anfang 2001 in \cite{brclne2001}
 	analysiert. Der Cluster bestand aus zwei DEC Alpha Systemen und einem Cisco-Router, welcher CEF
@@ -928,83 +928,83 @@
 	beantwortet werden konnten, weil zum Beispiel die DNS-Anfragen falsch gestellt wurden. Sehr
 	interessant sind die Ergebnisse bezüglich Nameserver bzw. Clients, welche nicht korrekt auf
 	Antworten oder Fehler reagieren. So wurde ein Client im Log entdeckt, welcher 2.112.962 mal in
-	einer Stunde die selbe Anfrage stellte.  Insgesamt konnte festgestellt werden das in einem Log
+	einer Stunde dieselbe Anfrage stellte.  Insgesamt konnte festgestellt werden, dass in einem Log
 	von 2 Stunden Dauer 29 Millionen Anfragen eingingen und davon \unit[85]{\%} wiederholte
 	Anfragen waren (selber Client und selbe Anfrage). Außerdem wurden in einem Log von der Länge
-	einer Stunde 143.783 verschiedene ungültige TLDs angefragt. Der Grund für viele falsche Anfragen oder
-	wiederholte Anfragen, scheinen fehlerhafte Implementationen des DNS-Standards \cite{rfc1034,
+	einer Stunde 143.783 verschiedene ungültige TLDs angefragt. Die Gründe für viele falsche Anfragen oder
+	wiederholte Anfragen scheinen fehlerhafte Implementationen des DNS-Standards \cite{rfc1034,
 	rfc1035} oder falsch konfigurierte Softwaresysteme zu sein. Diese fehlerhaften DNS-Anfragen
 	machen ungefähr einen Anteil von \unit[14]{\%} aus. Außerdem werden Root-Server
-	anscheint oft für Denail of Service Angriffe genutzt. Dabei ist nicht der Root-Server das
-	Ziel, sondern er wird als Reflektor genutzt. Dazu werden eine große Menge an Anfragen mit
-	veränderter Absenderadresse an ihn geschickt. Diese werden dann alle vom Root-Server beantwortet
-	und an die falsche Absenderadresse, das Angriffsziel, geschickt. Dieses Zielsystem wird dadurch
+	anscheinend oft für Denail of Service Angriffe genutzt. Dabei ist nicht der Root-Server das
+	Ziel, sondern er wird als Reflektor verwendet und dabei werden eine große Menge an Anfragen mit
+	veränderter Absenderadresse an ihn geschickt. Diese werden dann vom Root-Server beantwortet
+	und an die falsche Absenderadresse, das Angriffsziel, gesendet. Dieses Zielsystem wird dadurch
 	mit einer	großen Menge an DNS-Antworten beschossen, obwohl er diese nie angefragt hat.
 
-	Ein andere Art des Zusammenspiels von Schadsoftware und DNS wurde in \cite{isetal2005} untersucht.
-	Dabei wurde das Verhalten eines Virus namens \glqq{}Antinny\grqq{} in Japan beobachtet. Dieser Virus
-	greift, vermutlich abhängig vom Wochentag, einen Webserver gezielt an. Um diesen Webserver mit
-	Paketen zu beschießen und einen Denial of Service zu erreichen, benötigt der Virus die IP-Adresse
-	des Ziels. Dazu stellt der Virus eine gewöhnliche DNS-Anfrage. Um die Anzahl dieser Anfragen zu
-	messen, wurde der Nameserver des japanischen Internet Service Providers (ISP) Open Computer
-	Networks (OCN) überwacht. Während einer Angriffsphase wurden durchschnittlich 500 DNS-Anfragen pro
-	Sekunde nach dem Zielsystem verzeichnet. Eine Entscheidung des Administrators des Webservers,
-	welcher angegriffen wurde, zeigt die starken Abhängigkeiten innerhalb des DNS. Die Veränderung
-	eines Eintrags im DNS kann schwerwiegende Folgen für andere Nameserver haben. So führt die
-	Entfernung des DNS-Eintrags von dem angegriffenen Webserver dazu, dass der Virus den Domain-Namen
-	nicht auflösen konnte. Die negative Antwort eines Nameservers hat ebenfalls eine Gültigkeitsdauer,
-	und erst nach dieser sollte ein System erneut ein DNS-Anfrage für diesen Domain-Namen senden.
-	Allerdings kam es im Fall des Virus dazu, dass ein großteil der infizierten Rechner nun wiederholt
-	die Nameserver nach der IP-Adresse des Angriffsziels fragten. Dies kann entweder durch den Virus
-	beeinflusst wurden sein oder die Nutzer der infizierten Systeme hat selber die Konfiguration so
-	angepasst, dass die Gültigkeitsdauer ignoriert wurde, was aus verschiedenen Gründen
-	geschehen sein kann. Schlussendlich führt dies dazu, dass alleine bei dem Nameserver des Open Computer
-	Networks bis zu 4500 Anfragen pro Sekunde nach dem Zielsystem eingingen. Dies stellt eine
-	beachtliche zusätzliche Last für den Nameserver da. Diese hohe Last konnte erst wieder durch einen
-	neuen DNS-Eintrag für das Zielsystem beendet werden. Dabei wurde jedoch nicht die richtige
-	IP-Adresse zurückgeliefert, sondern eine Schein-Adresse. Somit konnte alle Anfragen an die
-	Schein-Adresse von Routern herausgefiltert und verworfen werden.
+	Eine andere Art des Zusammenspiels von Schadsoftware und DNS wurde in \cite{isetal2005}
+	untersucht.  Man beobachtete dazu das Verhalten eines Virus namens \glqq{}Antinny\grqq{} in Japan.
+	Dieser Virus greift, vermutlich abhängig vom Wochentag, einen Webserver gezielt an. Um diesen
+	Webserver mit Paketen zu beschießen und einen Denial of Service zu erreichen, benötigt der Virus
+	die IP-Adresse des Ziels. Dazu stellt der Virus eine gewöhnliche DNS-Anfrage. Um die Anzahl dieser
+	Anfragen zu messen, wurde der Nameserver des japanischen Internet Service Providers (ISP) Open
+	Computer Networks (OCN) überwacht. Während einer Angriffsphase verzeichnete man durchschnittlich
+	500 DNS-Anfragen pro Sekunde nach dem Zielsystem. Eine Entscheidung des Administrators des
+	Webservers, welcher angegriffen wurde, zeigt die starken Abhängigkeiten innerhalb des DNS. Die
+	Veränderung eines Eintrags im DNS kann schwerwiegende Folgen für andere Nameserver haben. So
+	führte die Entfernung des DNS-Eintrags von dem angegriffenen Webserver dazu, dass der Virus den
+	Domain-Namen nicht auflösen konnte. Die negative Antwort eines Nameservers hat ebenfalls eine
+	Gültigkeitsdauer, und erst nach dieser sollte ein System erneut eine DNS-Anfrage für diesen
+	Domain-Namen senden.  Allerdings kam es im Fall des Virus dazu, dass ein Großteil der infizierten
+	Rechner nun wiederholt die Nameserver nach der IP-Adresse des Angriffsziels fragten. Dies wurde
+	entweder durch den Virus beeinflusst, oder die Nutzer der infizierten Systeme hatten
+	selbst die Konfiguration so angepasst, dass die Gültigkeitsdauer ignoriert wurde. Die Gründe dafür
+	können verschiedener Art gewesen sein. Letztendlich führte dies dazu, dass alleine bei dem
+	Nameserver des Open Computer Networks bis zu 4500 Anfragen pro Sekunde nach dem Zielsystem
+	eingingen. Dies stellt eine beachtliche zusätzliche Last für den Nameserver da. Diese hohe Last
+	konnte erst wieder durch einen neuen DNS-Eintrag für das Zielsystem beendet werden. Dabei wurde
+	jedoch nicht die richtige IP-Adresse zurückgeliefert, sondern eine Scheinadresse. Somit konnten
+	alle Anfragen an die Scheinadresse von Routern herausgefiltert und verworfen werden.
 
 	Eine zusätzlich Art der Verteilung von DNS-Anfragen sind Anycast-Adressen. Wie in
 	\ref{cha:grundlagen} beschrieben, dienen sie dazu, dass ein Client eine Antwort von dem Nameserver
-	erhält, welche ihm am nähesten ist. Dies soll möglichst geringe Antwortzeiten generieren. In \cite{sapate2005}
+	erhält, welche ihm am nächsten ist. Dies soll möglichst geringe Antwortzeiten generieren. In \cite{sapate2005}
 	wird das Verhalten von Anycast-DNS-Servern Ende 2004 untersucht. Dazu werden die
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
-	Anycast-Adresse für ihre verteilten Cluster, hingegen nutzt UltraDNS zwei Anycast-Adressen für
-	alle ihre Server. Die Messungen zeigen, dass bei den Root-Server nur \unit[15]{\%}-\unit[27]{\%}
-	der Anfragen an den	geografisch nähsten Cluster gesendet wurden. Im Vergleich dazu wurden
-	\unit[45]{\%} bis \unit[53]{\%} der	Anfragen an UltraDNS, an den geografisch nähsten Server gesendet.
-	Allerdings, zeigte sich, dass die	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend
-	ist zu sagen, dass Anycast sinnvoll ist um DNS-Anfragen zu verteilen, allerdings Anycast stark von dem
+	Anycast-Adresse für ihre verteilten Cluster, UltraDNS hingegen nutzt zwei Anycast-Adressen für
+	alle ihre Server. Die Messungen zeigen, dass bei den Root-Servern nur \unit[15]{\%}-\unit[27]{\%}
+	der Anfragen an den	geografisch nächsten Cluster gesendet wurden. Im Vergleich dazu geschah dies bei
+	UltraDNS sogar von \unit[45]{\%} bis \unit[53]{\%} der Anfragen. Allerdings zeigte sich, dass die
+	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend
+	ist zu sagen, dass Anycast sinnvoll ist um DNS-Anfragen zu verteilen, aber Anycast stark von dem
 	Netzwerk und den BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
 	beeinflussen.
 
-	In \cite{lietal2007} wurde eine ähnlich Analyse mit Daten von Anfang 2006 der Anycast-Root-Server
-	C, F und K untersucht.  Hierbei wurde ein Zeitraum von 47,2 Stunden, annähernd 2 Tage, betrachtet.
-	Es konnte gezeigt werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen
-	Clients erhielt.  Allerdings gab es auch Beispiele wie den F-Root-Server in Los Angeles, USA,
-	welcher \unit[88]{\%} seiner Anfragen aus Asien erhielt. Oder einen K-Root-Server nähe Delhi, Indien,
-	welcher über \unit[75]{\%} seiner Anfragen aus Nordamerika, Südamerika und Europa erhielt.
-	Hingegen waren die Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus Japan
-	und \unit[75]{\%} waren von Clients mit einer Entfernung unter \unit[1000]{km}. Zusätzlich
-	konnte gezeigt werden, dass in dem betrachtet Zeitraum, die meisten Clients immer den
-	selben DNS-Server befragen, so wechselten z.B. beim C-Root-Server nur \unit[1,7]{\%} der
+	In \cite{lietal2007} wurde eine ähnlich Analyse der Anycast-Root-Server C, F und K untersucht mit Daten
+	von Anfang 2006.  Die Beobachtung fand über einen Zeitraum von 47,2 Stunden, annähernd 2 Tage,
+	statt. Es konnte gezeigt werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen
+	Clients erhielt.  Allerdings gab es auch das Beispiel des F-Root-Server in Los Angeles, USA,
+	welcher \unit[88]{\%} seiner Anfragen aus Asien erhielt. Ein zweites Beispiel ist der K-Root-Server
+	nahe Delhi, Indien, dessen Anfragen zu über \unit[75]{\%} aus Nordamerika, Südamerika und Europa
+	stammen. Hingegen waren die Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus Japan
+	und davon kamen \unit[75]{\%} der Clients aus einer Entfernung unter \unit[1000]{km}. Zusätzlich
+	konnte gezeigt werden, dass in dem betrachteten Zeitraum die meisten Clients immer denselben
+	DNS-Server befragten. So wechselten z.B. beim C-Root-Server nur \unit[1,7]{\%} der
 	Clients den Nameserver. Bei dem F und K-Root-Server waren es \unit[1,4]{\%} bzw.
 	\unit[4,7]{\%}.
 
 	In Anbetracht der vorgestellten Ergebnisse ergibt sich, dass Lastverteilung, z.B. durch ein
-	Cluster mit einem Lastverteiler, eine wichtige Komponente des DNS ist. Dies gilt vor allem für Server die
-	sehr weit oben in der DNS-Hierarchie positioniert sind. Diese System müssen jeder Zeit mit einem
+	Cluster mit einem Lastverteiler, eine wichtige Komponente des DNS ist. Dies gilt vor allem für
+	Server, die sehr weit oben in der DNS-Hierarchie positioniert sind. Diese System müssen jeder Zeit mit einem
 	sprunghaften Anstieg an Anfragen rechnen. Dies kann durch fehlerhafte Systeme hervorgerufen werden,
-	durch fahrlässige Veränderungen von Domain-Einträge oder durch Schadsoftware und Angriffe. Die
-	Verwendung von Anycast, als weitere Lastverteilungsebene scheint sich besonderst für
+	durch fahrlässige Veränderungen von Domain-Einträgen oder durch Schadsoftware und Angriffe. Die
+	Verwendung von Anycast, als weitere Lastverteilungsebene, scheint sich besonders für
 	DNS-Root-Server zu eigenen. Die präsentierten Ergebnisse zeigten alle einen positiven Einfluss von
 	Anycast-Servern. Allerdings wird durch dieses Verfahren das DNS System auch anfällig für externe
 	Störungen. Dabei ist vor allem das BGB-Protokoll als Problem zu nennen, falsche oder ungünstige
-	Routen haben einen starken Einfluss auf die Antwortzeiten von Anycast-DNS. Trotz alledem ist die lokale
-	Lastverteilung in einem Cluster aus DNS-Server entscheidend für die Stabilität und Zuverlässigkeit
+	Routen haben einen starken Einfluss auf die Antwortzeiten von Anycast-DNS. Dennoch ist die lokale
+	Lastverteilung in einem Cluster aus DNS-Servern entscheidend für die Stabilität und Zuverlässigkeit
 	des DNS. Daher hat die hier entwickelte selbst-adaptive Lastverteilung für DNS-Anfragen, bzw.
-	UDP-Anfragen im Allgemeinen, eine klaren Anwendungsfall in der Realität des DNS.
+	UDP-Anfragen im Allgemeinen, einen klaren Anwendungsfall in der Realität des DNS.
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1785,7 +1785,7 @@
 		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
 		Lastverteiler aus gesteuert werden, oder, wie im salbnet-Fall, mit Hilfe zusätzlicher
 		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem soll ein DNS-Cluster,
-		wie es bei Root-Servern, TLDs oder große SLDs vorkommt, simulieren.Es besteht aus einem
+		wie es bei Root-Servern, TLDs oder große SLDs vorkommt, simulieren.  Es besteht aus einem
 		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser ist wiederum
 		über ein anderes Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
 		Abbildung \ref{fig:messsystem} grafisch dargestellt. Der Client ist ein Rechner im
@@ -1799,10 +1799,10 @@
 		Metriken genutzt:
 
 		\begin{itemize}
-			\item Verbindungszeit
-			\item Antwortzeit
+			\item Verbindungszeit in Millisekunden
+			\item Antwortzeit in Millisekunden
 			\item Anzahl der nicht beantworteten Anfragen (Timeout: eine Sekunde)
-			\item CPU-Auslastung der Backend-Server
+			\item CPU-Auslastung der Backend-Server in Prozent
 		\end{itemize}
 
 		\begin{figure}
@@ -1912,6 +1912,9 @@
 		\label{sec:Ergebnisse}
 
 		% TODO: Kursiv
+		% TODO: Länger der Messung erklären
+		% TODO: min max in grafik
+		% TODO: die anderen sind bei 50% und er bei 100% salbnet macht ja vorne einfach nen roundrobin
 
 			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks verwendet. Außerdem
 			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
