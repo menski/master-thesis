@@ -920,6 +920,20 @@
 	% TODO: Measuring Availability in the Domain Name System
 	% TODO: Two Days in the Life of the DNS Anycast Root Servers
 	% TODO: On the Use of Anycast in DNS
+	- Verhalten von Anycast im DNS
+	- 15% von 55% beantwortet vom topologisch nächsten
+	- 10% Verzögerung von 100ms
+
+	In \cite{sapate2005} wird das Verhalten von Anycast-DNS-Servern Ende des Jahres 2004 untersucht. Dazu werden die
+	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
+	Anycast-Adresse für ihre verteilten Cluster, hingegen nutzt UltraDNS zwei Anycast-Adressen für
+	alle ihre Server. Die Messungen zeigen, dass bei den Root-Server nur 15\%-27\% der Anfragen an den
+	geografisch nähsten Cluster geschickt gesendet werden. Im Vergleich dazu werden 45\% bis 53\% der
+	Anfragen an UltraDNS, an den geografisch nähsten Server gesendet. Allerdings, zeigte sich die
+	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend ist zu sagen, dass
+	Anycast sinnvoll ist um DNS-Anfragen zu verteilen, allerdings Anycast stark von dem Netzwerk und
+	den BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
+	beeinflussen. 
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1394,7 +1408,7 @@
 		\texttt{/proc}-Dateisystem ausgelesen, welche die Standard- und maximale Größe der
 		UDP-Receive-Queue eines UDP-Sockets bestimmen. Um diese Werte zu verändern, kann das Programm
 		\texttt{sysctl} genutzt werden, welches Variablen im \texttt{/proc/sys}-Verzeichnis bearbeiten
-		kann, oder es kann direkt in die entsprechenden Dateien ein neuer Wert geschrieben werden. Die
+		kann, oder direkt in die entsprechenden Dateien ein neuer Wert geschrieben werden. Die
 		Verwendung von \texttt{sysctl} ist in Listing \ref{lst:test-queue} zu sehen.
 
 		% subsection Maximale Kapazität der UDP-Receive-Queue }}}
@@ -1409,8 +1423,8 @@
 		der Socket direkt  mit einer entfernten Adresse verbunden ist, wird dies im Feld
 		\texttt{rem\_address} angezeigt.  Der Status des Sockets ist in \texttt{st} vermerkt und
 		\texttt{tx\_queue} bzw.  \texttt{rx\_queue} geben den Speicherverbrauch der UDP-Send-Queue bzw.
-		UDP-Receive-Queue an. Es folgen noch weitere Werte, die in diesem Zusammenhang jedoch unwichtig
-		sind. Somit kann durch diese Datei der belegte Speicherplatz der UDP-Receive-Queue für einen
+		UDP-Receive-Queue an. Es folgen noch weitere Werte, die in diesem Zusammenhang nicht relevant
+		sind. Folglich kann durch diese Datei der belegte Speicherplatz der UDP-Receive-Queue für einen
 		bestimmten UDP-Socket ermittelt werden.
 
 		Der Nachteil vom \texttt{/proc}-Dateisystem ist, dass beim wiederholten Abfragen eines Wertes
@@ -1420,15 +1434,15 @@
 		sie ist es möglich, zwischen dem Kernel- und Userspace über einen Socket zu kommunizieren.  Dies
 		hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial ein Socket erstellt
 		werden muss, welcher danach weiterverwendet werden kann. Es können aber auch Werte gezielt
-		abgefragt werden, ohne sie aus einer Textrepräsentation extrahieren zu müssen. In der
+		abgefragt werden, ohne diese aus einer Textrepräsentation extrahieren zu müssen. In der
 		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt, um
-		Informationen bezüglich der TCP-Backlog zu sammeln. Daher war es naheliegend, ein ähnliches
-		Vorgehen auch für die UDP-Receive-Queue zu evaluieren. Allerdings wurde das Kernelmodul des
-		salbnet Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne Anpassungen mit
-		neueren Versionen genutzt werden. Eine Erweiterung der \texttt{Netlink}-Sockets um ein UDP-Modul
-		\cite{udpnetlink} wurde jedoch erst im Linux-Kernel 3.3 aufgenommen. Somit ist die Verwendung
-		eines \texttt{Netlink}-Sockets, zur Abfrage des aktuell belegten Speicherplatzes in der
-		UDP-Receive-Queue, in salbnet nicht möglich.
+		Informationen bezüglich der TCP-Backlog zu sammeln. Aus diesem Grund war es naheliegend, ein
+		ähnliches Vorgehen auch für die UDP-Receive-Queue zu evaluieren. Allerdings wurde das
+		Kernelmodul des salbnet Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne
+		Anpassungen mit neueren Versionen genutzt werden. Eine Erweiterung der \texttt{Netlink}-Sockets
+		um ein UDP-Modul \cite{udpnetlink} wurde jedoch erst im Linux-Kernel 3.3 aufgenommen. Somit ist
+		die Verwendung eines \texttt{Netlink}-Sockets, zur Abfrage des aktuell belegten Speicherplatzes
+		in der UDP-Receive-Queue, in salbnet nicht möglich.
 
 		\lstinputlisting[float,caption={/proc/net/udp	Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
 
@@ -1436,16 +1450,18 @@
 
 		\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
+		% TODO: Holt ist doof
+
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
 		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
 		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. Holt man
 		jedoch ein Paket aus der Receive-Queue ab, wird die Größe des Pakets zurückgeliefert. In Listing
 		\ref{lst:strace} wurde das Programm \texttt{strace} genutzt, um die Systemcalls des BIND
 		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND
-		Servers (named) ermittelt. Dann wurde in Zeile 3 strace für diese PID gestartet und die Ausgaben
-		aller Kindprozesse in einzelnen Dateien gespeichert. Danach ist in der Ausgabe-Datei des
-		Kindprozesses, welcher die Anfrage verarbeitet hat, in Zeile 12 zu erkennen, dass ein Paket vom
-		BIND mit Hilfe der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der
+		Servers (named) ermittelt. Anschließend wurde in Zeile 3 \texttt{strace} für diese PID gestartet
+		und die Ausgaben aller Kindprozesse in einzelnen Dateien gespeichert. In der Ausgabe-Datei des
+		Kindprozesses, welcher die Anfrage verarbeitet hat, ist in Zeile 12 zu erkennen, dass ein Paket
+		vom BIND mit Hilfe der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der
 		Rückgabewert der Funktion gibt die Größe des Paketes in Byte an. In diesem Beispiel war das
 		DNS-Paket \unit[45]{Byte} groß. Somit ist es möglich, den Funktions-Aufruf des BIND abzufangen
 		und die Paketgröße zu ermitteln.
@@ -1481,14 +1497,14 @@
 		des DNS-Pakets und dem Speicherplatz in der Receive-Queue experimentell ermittelt. Hierzu
 		wurden DNS-Pakete mit steigender Größe an einen BIND DNS-Server gesendet. Nach jedem Paket wurde
 		der belegte Speicherplatz der Receive-Queue und anschließend die Größe des Pakets mit
-		der Funktion \texttt{recvmsg} ermittelt. Diese Versuche wurden mehrmals durchgeführt, dadurch
-		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkt Zusammenhang
+		der Funktion \texttt{recvmsg} ermittelt. Diese Versuche wurden mehrmals durchgeführt. Dadurch
+		konnte bestätigt werden, dass das Verhalten deterministisch ist und es einen direkten Zusammenhang
 		zwischen der Größe des DNS-Pakets und dem benötigten Speicher in der Receive-Queue gibt. Der
 		Header eines DNS-Pakets ist \unit[12]{Byte} groß und die maximale Größe eines DNS-Pakets beträgt
 		\unit[512]{Byte}
 		\cite{rfc1035}, deshalb wurde das Experiment mit Paketen der Größe \unit[12-576]{Byte} durchgeführt. Das
 		Ergebnis ist in Tabelle \ref{tab:recvmsg} aufgeführt. Es zeigt sich, dass \unit[376]{Byte} die minimale
-		Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Pakete eine Größe von
+		Größe eines DNS-Pakets in der Receive-Queue ist. Überschreitet das DNS-Paket eine Größe von
 		\unit[64]{Byte} wächst der Speicherbedarf um \unit[128]{Byte}. Diese \unit[128]{Byte} stehen ausschließlich für den Inhalt
 		des DNS-Pakets zur Verfügung, da alle zusätzlichen Daten der \texttt{sk\_buff}-Datenstruktur
 		bereits enthalten sind. Erhöht sich die Größe des DNS-Pakets ebenfalls um \unit[128]{Byte} und
@@ -1535,8 +1551,8 @@
 		Dieser Abschnitt stellt die konkrete Implementation, der im Abschnitt \ref{sec:entwurf}
 		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie im Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
-		und $q_{drop}$ muss die Komponente von salbd erweitert werden, welche für das Sammeln der
-		Messwerte zuständig ist. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
+		und $q_{drop}$ muss die Komponente von salbd, welche für das Sammeln der Messwerte zuständig
+		ist, erweitert werden. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
 		salbd.  Um den Median der Paketgrößen zu berechnen, muss, wie beschrieben, der Funktionsaufruf
 		\texttt{recvmsg} vom BIND Server abgefangen werden. Dazu wird in der Datei \texttt{nethook.c}
 		der libnethook-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
@@ -1567,7 +1583,7 @@
 				kann, muss dieser aus der Datei \texttt{/proc/net/udp} gelesen werden. Dazu wird in Listing
 				\ref{lst:metric-udp-proc} die Datei in Zeile 1 geöffnet und in Zeile 6 die Kopfzeile
 				übersprungen. Danach wird in einer Schleife ab Zeile 11 der UDP-Socket des BIND Servers
-				gesucht. Dabei wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Danach wird in
+				gesucht. Dabei wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Daraufhin wird in
 				Zeile 18 die Adresse und der Port des Sockets, der eben gelesenen Zeile, in einer
 				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird in der Zeile 24 mit der in
 				salbd konfigurierten Adresse verglichen. Wenn der gesuchte Socket gefunden wurde, wird der
@@ -1637,7 +1653,7 @@
 			belegten Speicherplatzes wird geteilt durch den Median der Paketgrößen in der Receive-Queue
 			(siehe Formel \ref{eq:credits}).  Die Berechnung der Soft-Credits in Zeile 9 erfolgt ebenfalls
 			mit dieser Formel. Dabei wird statt dem aktuell belegten Speicherplatz der Receive-Queue der
-			Median der letzten 16 Erhebungen verwendet wird.
+			Median der letzten 16 Erhebungen verwendet.
 
 			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel \ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
 			
@@ -1670,7 +1686,7 @@
 	% chapter Implementierung }}}
 
 	\chapter{Messungen} % {{{
-	\label{cha:Messungen}
+	\label{cha:messungen}
 
 		Die in Kaptiel \ref{cha:implementierung} beschriebene Implementierung wurde mehreren Messungen
 		unterzogen. Dieses Kaptiel orientiert sich bei der Vorstellung des Messkonzepts und der Analyse
