@@ -1214,11 +1214,25 @@
 		\section{Fazit} % {{{
 		\label{sec:salbnet-fazit}
 
-			In diesem Kapitel wurden die theoretischen Grundlagen und die bereits vorhandenen Metriken und
-			Meldestrategien von salbnet erläutert. Basierend auf diesen Informationen wird im folgenden
-			Kapitel ein Konzept dafür erarbeitet, wie sich salbnet auf DNS-Anfragen anpassen lässt. Außerdem wurde
-			ein Benchmark vorgestellt, welcher dazu geeignet ist, die Erweiterung von salbnet auf seine
-			Funktion zu testen und mit bestehenden Algorithmen zu vergleichen.
+			In diesem Kapitel wurden die theoretischen Grundlagen und der Aufbau von salbnet erläutert.
+			Der selbst-adaptive Lastverteiler salbnet besteht aus den Komponenten libnetmsg, libnethook
+			und salbd. Hierbei ist salbd die Hauptkomponente und stellt ein Kernelmodul für den LVS bereit
+			sowie eine Client-Komponente, welche die Credits auf den Backend-Servern berechnet. Zusätzlich
+			wurden die bereits implementierten Metriken und	Meldestrategien von salbnet erläutert. Dabei
+			handelt es sich um die TCP-Backlog-Metrik für TCP-Anfragen. Von den vorhandenen
+			Meldestrategien sind vor allem der Dynamic Pressure Relieve Algorithmus zu erwähnen, dieser
+			konnte bereits in Simulationen und Tests überzeugen.
+
+			Zusätzlich zum salbnet wurde der Benchmark servload entwickelt, welcher in
+			\cite{menski2012} erweitert wurde, um DNS-Anfragen zu unterstützen. Dieser
+			Benchmark bietet sich vor allem deshalb an, weil es mit ihm möglich ist aus realen
+			BIND-Logs eine hohe Last zu generieren, in dem diese durch verschieden Algorithmen
+			verstärkt werden. Weiterhin sind auch die ausführlichen Statistiken, welche vom
+			servload-Benchmarks generiert werden, ein	wichtiger Grund für die Wahl.
+
+			Basierend auf diesen Informationen wird im folgenden Kapitel ein Konzept dafür erarbeitet, wie
+			sich salbnet auf DNS-Anfragen anpassen lässt.  Dessen Umsetzung im Folgenden mit dem
+			servload-Benchmark getestet wird.
 
 		% section Fazit }}}
 
