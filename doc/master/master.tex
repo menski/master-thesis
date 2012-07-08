@@ -41,6 +41,8 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
+\def \dns {Domain Name System (DNS)}
+
 % Titlepage {{{
 \usepackage[absolute]{textpos}
 
@@ -113,7 +115,6 @@
 	\vfill\mbox{}\clearpage
 }
 
-\def \dns {Domain Name System (DNS)}
 
 % Titlepage }}}
 
@@ -916,17 +917,17 @@
 	In \cite{brclne2001} wurde Anfang 2001 die Anfragen an ein DNS-Cluster des Root-Servers F
 	gemessen. Der Cluster bestand aus zwei DEC Alpha Systemen und eine Cisco-Router, welcher CEF
 	(Cisco Express Forwarding) zur Lastverteilung nutzte. Die Messungen zeigten, dass es zu
-	Lastspitzen mit bis zu 5000 Anfragen pro Sekunde kam und der Root-Server ca. 93\% der Anfragen
-	sofort beantworten konnte. Die restlichen 7\% waren Anfragen konnte nicht beantwortet werden, weil
+	Lastspitzen mit bis zu 5000 Anfragen pro Sekunde kam und der Root-Server ca. \unit[93]{\%} der Anfragen
+	sofort beantworten konnte. Die restlichen \unit[7]{\%} waren Anfragen konnte nicht beantwortet werden, weil
 	zum Beispiel die DNS-Anfragen falsch gestellt wurden. Sehr interessant sind die Ergebnisse
 	bezüglich Nameserver bzw. Clients, welche nicht korrekt auf Antworten oder Fehler reagieren. So
 	wurde ein Client im Log entdeckt, welcher 2.112.962 in einer Stunde die selbe Anfrage stellte.
 	Insgesamt konnte festgestellt werden das in einem Log von 2 Stunden Dauer 29 Millionen Anfragen
-	eingingen und davon 85\% wiederholte Anfragen waren (selber Client und selbe Anfrage). Außerdem
+	eingingen und davon \unit[85]{\%} wiederholte Anfragen waren (selber Client und selbe Anfrage). Außerdem
 	wurden in einen ein Stunden Log 143.783 verschiedene ungültige TLDs angefragt. Der Grund für viele
 	falsche Anfragen oder wiederholte Anfragen, scheint fehlerhafte Implementationen des DNS-Standards
-	\ref{rfc1034, rfc1035} zu sein oder falsch konfigurierte Softwaresysteme. Diese fehlerhaften
-	DNS-Anfragen machen insgesamt ungefähr einen Anteil von 14\% aus. Außerdem werden Root-Server
+	\cite{rfc1034, rfc1035} zu sein oder falsch konfigurierte Softwaresysteme. Diese fehlerhaften
+	DNS-Anfragen machen insgesamt ungefähr einen Anteil von \unit[14]{\%} aus. Außerdem werden Root-Server
 	anscheint oft oft Denail of Service Angriffe genutzt. Dabei ist nicht der Root-Server das Ziel,
 	sondern er wird als Reflektor genutzt. Dazu werden eine große Menge an Anfragen mit veränderter
 	Absendeadresse geschickt. Diese werden dann alle vom Root-Server beantwortet und an das
@@ -951,21 +952,29 @@
 	an diese IP-Adresse wurden dann vom Router verworfen.
 
 	% TODO: DNS Cluster
-	% TODO: DNS Root/gTLD Performance Measurement
 	% TODO: Measurement of DNS Traffic Caused by DDoS Attacks
 	% TODO: Measuring Availability in the Domain Name System
 	% TODO: Two Days in the Life of the DNS Anycast Root Servers
 
-	In \cite{sapate2005} wird das Verhalten von Anycast-DNS-Servern Ende des Jahres 2004 untersucht. Dazu werden die
+	In \cite{sapate2005} wird das Verhalten von Anycast-DNS-Servern Ende 2004 untersucht. Dazu werden die
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
 	Anycast-Adresse für ihre verteilten Cluster, hingegen nutzt UltraDNS zwei Anycast-Adressen für
-	alle ihre Server. Die Messungen zeigen, dass bei den Root-Server nur 15\%-27\% der Anfragen an den
-	geografisch nähsten Cluster geschickt gesendet werden. Im Vergleich dazu werden 45\% bis 53\% der
+	alle ihre Server. Die Messungen zeigen, dass bei den Root-Server nur \unit[15]{\%}-\unit[27]{\%} der Anfragen an den
+	geografisch nähsten Cluster geschickt gesendet werden. Im Vergleich dazu werden \unit[45]{\%} bis \unit[53]{\%} der
 	Anfragen an UltraDNS, an den geografisch nähsten Server gesendet. Allerdings, zeigte sich die
 	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend ist zu sagen, dass
 	Anycast sinnvoll ist um DNS-Anfragen zu verteilen, allerdings Anycast stark von dem Netzwerk und
 	den BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
 	beeinflussen.
+
+	In \cite{lietal2007} wurden Daten von Anfang 2006 der Anycast Root-Server C, F und K untersucht.
+	Hierbei wurde ein Zeitraum von 47,2 Stunden, annähernd 2 Tage, betrachtet. Es konnte gezeigt
+	werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen Clients erhielt.
+	Allerdings gab es auch wie einen F-Root-Server in Los Angeles, USA, welcher \unit[88]{\%} seiner Anfragen
+	aus Asien erhielt. Oder ein K-Root-Server nähe Delhi, Indien, welcher über \unit[75]{\%} seiner Anfragen
+	aus Nordamerika, Südamerika und Europa erhielt. Hingegen waren die Anfragen vom K-Root-Server in
+	Tokyo, Japan, zu \unit[99,7]{\%} aus Japan und \unit[75]{\%} waren von Clients mit einer Entfernung unter
+	\unit[1000]{km}.
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1208,7 +1217,7 @@
 		\subsection*{Last-Metrik} % {{{
 
 		Wenn sich ein Server in einer Überlastsitutation befindet, erkennt man das oft daran, dass
-		bestimmte Ressourcen aufgebraucht sind. So kann eine 100\%ige CPU- oder RAM-Auslastung aussagen,
+		bestimmte Ressourcen aufgebraucht sind. So kann eine \unit[100]{\%}ige CPU- oder RAM-Auslastung aussagen,
 		dass der Server an seine Grenzen geraten ist. Daher wäre eine mögliche Metrik die Sammlung
 		entsprechender Last-Daten und eine anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
@@ -1723,17 +1732,16 @@
 		Die in Kaptiel \ref{cha:implementierung} beschriebene Implementierung wurde mehreren Messungen
 		unterzogen. Dieses Kaptiel orientiert sich bei der Vorstellung des Messkonzepts und der Analyse
 		der Ergebnisse an \cite{jain1991}. Das Ziel der Messung ist es, die Funktionstüchtigkeit der
-		entwickelten UDP-Erweiterung für salbnet zu beweisen, und salbnet für den DNS-Anwendungsfall mit
-		einem Standardalgorithmus zu vergleichen.
-
-		% TODO: DNS-Cluster erwähnen
+		entwickelten UDP-Erweiterung für salbnet zu beweisen, und salbnet, für den Anwendungsfall der
+		Server-Lastverteilung für DNS-Cluster, mit einem Standardalgorithmus zu vergleichen.
 
 		\section{System} % {{{
 		\label{sec:system}
 
 		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
 		Lastverteiler aus gesteuert werden, oder, wie im salbnet-Fall, mit Hilfe zusätzlicher
-		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem besteht aus einem
+		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem soll ein DNS-Cluster,
+		wie es bei Root-Servern, TLDs oder große SLDs vorkommt, simulieren.Es besteht aus einem
 		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser ist wiederum
 		über ein anderes Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
 		Abbildung \ref{fig:messsystem} grafisch dargestellt. Der Client ist ein Rechner im
@@ -1765,7 +1773,7 @@
 		\section{Experiment} % {{{
 		\label{sec:experiment}
 
-			Um die Experimente zu entwickeln, müssen alle Parameter ermittelt werden, welche die Leistung
+			Um die Experimente festzulegen, müssen alle Parameter ermittelt werden, welche die Leistung
 			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheidend:
 
 			\begin{itemize}
@@ -1794,7 +1802,8 @@
 			DNS-Zone wird die \texttt{haiti.cs.uni-potsdam.de}-Zone mit dem Stand vom 26.  Oktober 2011
 			genutzt. Die BIND Server werden alle als iterative Nameserver betrieben, dass heißt, Anfragen
 			außerhalb der \texttt{haiti.cs.uni-potsdam.de} werden mit einem Verweis auf die Root-Server
-			beantwortet.
+			beantwortet. Dies ist realistisch, da Nameserver der Root-Zone oder TLDs auch iterative
+			Nameserver nutzen, und salbnet vor allem für dieses Einsatzgebiete konzipiert ist.
 
 			Die Faktoren, welche während den Messungen variiert werden, sind der
 			Lastverteilungsalgorithmus, die Anzahl der DNS-Anfragen und die Anzahl der DNS-Anfragen pro
@@ -1879,24 +1888,17 @@
 			Die CPU-Auslastungen für die Nodes im ib-Cluster sind für den wrr-Algorithmus in Abbildung
 			\ref{fig:cpu-wrr}, und für salbnet in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
 			erkennen, dass die CPU-Auslastung bei salbnet wesentlich konstanter ist als bei wrr.
-			Allerdings liegt sie bei der ib6 für alle Faktoren mit salbnet immer nahe 100\%. Dies könnte
+			Allerdings liegt sie bei der ib6 für alle Faktoren mit salbnet immer nahe \unit[100]{\%}. Dies könnte
 			auf eine ungleichmäßige Verteilung hindeuten. Hingegen liegen die Werte der ib4 und ib8 sehr
 			dicht beieinander. Die Anzahl der verlorenen Anfragen (siehe Tabelle \ref{tab:timeout} und
 			Abbildung \ref{fig:ergebnis}) ist bei salbnet immer geringer als bei wrr.  Die verlorenen
-			Anfragen von salbnet entsprechen für den Faktor 400 ca. 25\%, für 800 ca. 33\% und für 1600
-			ca. 50\% der verlorenen Anfragen von wrr. Noch deutlicher werden die Unterschiede bei dem
+			Anfragen von salbnet entsprechen für den Faktor 400 ca. \unit[25]{\%}, für 800 ca. \unit[33]{\%} und für 1600
+			ca. \unit[50]{\%} der verlorenen Anfragen von wrr. Noch deutlicher werden die Unterschiede bei dem
 			Vergleich der
 			Antwortzeiten (siehe Tabelle \ref{tab:response} und Abbildung \ref{fig:ergebnis}) und der
 			Verbindungszeiten  (siehe Tabelle \ref{tab:connect} und Abbildung \ref{fig:ergebnis}).
-			So entspricht die Antwortzeit von salbnet nur ca. 15\% der von wrr und die Verbindungszeit im
-			Durchschnitt nur ca. 30\%.
-
-			\begin{figure}
-				\centering
-				\includegraphics[width=13cm]{plots/servload}
-				\caption{Vergleich von wrr und salbnet für die Metriken: Verlorene Anfragen, Antwortzeit und	Verbindungszeit}
-				\label{fig:ergebnis}
-			\end{figure}
+			So entspricht die Antwortzeit von salbnet nur ca. \unit[15]{\%} der von wrr und die Verbindungszeit im
+			Durchschnitt nur ca. \unit[30]{\%}.
 
 			\begin{figure}
 				\centering
@@ -1912,6 +1914,13 @@
 				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit salbnet als
 				Lastverteilungsalgorithmus}
 				\label{fig:cpu-salbnet}
+			\end{figure}
+
+			\begin{figure}
+				\centering
+				\includegraphics[width=13cm]{plots/servload}
+				\caption{Vergleich von wrr und salbnet für die Metriken: Verlorene Anfragen, Antwortzeit und	Verbindungszeit}
+				\label{fig:ergebnis}
 			\end{figure}
 
 			\begin{table}
