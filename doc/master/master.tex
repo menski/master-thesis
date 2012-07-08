@@ -1218,19 +1218,19 @@
 
 			In diesem Kapitel wurden die theoretischen Grundlagen und der Aufbau von salbnet erläutert.
 			Der selbst-adaptive Lastverteiler salbnet besteht aus den Komponenten libnetmsg, libnethook
-			und salbd. Hierbei ist salbd die Hauptkomponente und stellt ein Kernelmodul für den LVS bereit
-			sowie eine Client-Komponente, welche die Credits auf den Backend-Servern berechnet. Zusätzlich
-			wurden die bereits implementierten Metriken und	Meldestrategien von salbnet erläutert. Dabei
-			handelt es sich um die TCP-Backlog-Metrik für TCP-Anfragen. Von den vorhandenen
-			Meldestrategien sind vor allem der Dynamic Pressure Relieve Algorithmus zu erwähnen, dieser
-			konnte bereits in Simulationen und Tests überzeugen.
+			und salbd. Hierbei ist salbd die Hauptkomponente und stellt ein Kernelmodul für den LVS
+			bereit, sowie eine Client-Komponente, welche die Credits auf den Backend-Servern berechnet.
+			Zusätzlich wurden die bereits implementierten Metriken und Meldestrategien von salbnet
+			erläutert. Dabei handelt es sich um die TCP-Backlog-Metrik für TCP-Anfragen. Von den
+			vorhandenen Meldestrategien ist vor allem der Dynamic Pressure Relieve Algorithmus zu
+			erwähnen. Dieser konnte bereits in Simulationen und Tests überzeugen.
 
 			Zusätzlich zum salbnet wurde der Benchmark servload entwickelt, welcher in
 			\cite{menski2012} erweitert wurde, um DNS-Anfragen zu unterstützen. Dieser
-			Benchmark bietet sich vor allem deshalb an, weil es mit ihm möglich ist aus realen
-			BIND-Logs eine hohe Last zu generieren, in dem diese durch verschieden Algorithmen
+			Benchmark bietet sich vor allem deshalb an, weil es mit ihm möglich ist, aus realen
+			BIND-Logs eine hohe Last zu generieren, indem diese durch verschiedene Algorithmen
 			verstärkt werden. Weiterhin sind auch die ausführlichen Statistiken, welche vom
-			servload-Benchmarks generiert werden, ein	wichtiger Grund für die Wahl.
+			servload-Benchmarks generiert werden, ein wichtiger Grund für die Wahl.
 
 			Basierend auf diesen Informationen wird im folgenden Kapitel ein Konzept dafür erarbeitet, wie
 			sich salbnet auf DNS-Anfragen anpassen lässt.  Dessen Umsetzung im Folgenden mit dem
@@ -1450,10 +1450,10 @@
 		\label{sec:konzept-fazit}
 
 		In diesem Kaptiel sollte eine Metrik zur Bestimmung der Lastsitutation eines DNS-Servers
-		entworfen werden. Dazu wurden drei Ansätze evaluiert. Basierend auf den in \ref{sec:metrik}
-		definierten Kriterien wurde danach eine Metrik ausgewählt. Danach wurde alle Messwerte
+		entworfen werden. Dazu wurden drei Ansätze evaluiert. Basierend auf den in Abschnitt \ref{sec:metrik}
+		definierten Kriterien wurde eine Metrik ausgewählt. Danach wurden alle Messwerte
 		identifiziert, welche für die gewählte Receive-Queue-Metrik benötigt werden. Mit diesen wurde
-		die Formel \ref{eq:credits} entwickelt, welche zur Credit-Berechnung genutzt wird. Im Folgenden
+		die Formel \ref{eq:credits} entwickelt, welche zur Credit-Berechnung genutzt wird. Im folgenden
 		Kapitel wird nun die Implementation der Metrik beschrieben.
 
 		% section Fazit }}}
@@ -1774,19 +1774,19 @@
 		\section{Fazit} % {{{
 		\label{sec:implementierung-fazit}
 
-		Dieses Kapitel hat die Implementierung der in \ref{cha:konzept} entworfenen Receive-Queue-Metrik
+		Dieses Kapitel hat die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Receive-Queue-Metrik
 		beschrieben. Dazu wurden in Abschnitt \ref{sec:anforderungen} die technischen Möglichkeiten
-		besprochen, mit deren Hilfe die benötigen Messwerte der Metrik bestimmt werden können. Dabei
+		besprochen, mit deren Hilfe die benötigten Messwerte der Metrik bestimmt werden können. Dabei
 		wurden auch Möglichkeiten genannt, welche durch die Bindung von salbnet an den Linux-Kernel
-		2.6.18, nicht verwendbar sind. Diese sollten aber Beachtet werden, falls das salbnet
-		Kernel-Modul auf einen neueren Kernel portiert werden sollte. Denn sie bieten Vorteile gegenüber
+		2.6.18 nicht verwendbar sind. Diese sollten aber beachtet werden, falls das salbnet
+		Kernel-Modul auf einen neueren Kernel portiert wird. Denn sie bieten Vorteile gegenüber
 		den letztendlich verwendeten Methoden. Das identifizierte Vorgehen wurde sehr nahe an den
-		vorgestellten Methoden in die bestehenden Code-Basis von salbnet implementiert. Dabei wurde
-		bestehenden Datenstrukturen genutzt und es wurden nur leichte Änderungen an der Programmlogik
+		vorgestellten Methoden in die bestehende Code-Basis von salbnet implementiert. Dabei wurden
+		bestehenden Datenstrukturen genutzt, und es wurden nur leichte Änderungen an der Programmlogik
 		von salbnet vorgenommen. Dies war möglich, da bei der Konzeption und der Entwicklung von salbnet
-		bereits der UDP-Anwendungsfall mit eingeplant war. Daher gab es an vielen Stellen im Code
+		bereits der UDP-Anwendungsfall mit eingeplant war. Darum gab es an vielen Stellen im Code
 		bereits die richtigen Schnittstellen und Fallunterscheidungen. Rückblickend war die Erweiterung
-		von salbnet ohne große Probleme möglich und die entwickelten Konzepte konnte fast direkt
+		von salbnet ohne große Probleme möglich, und die entwickelten Konzepte konnten fast direkt
 		umgesetzt werden.
 
 		% section Fazit }}}
@@ -2052,25 +2052,72 @@
 	\chapter{Zusammenfassung und Ausblick} % {{{
 	\label{cha:zusammenfassung}
 
+	Dieses letzte Kapitel gibt in Abschnitt \ref{sec:zusammenfassung} eine abschließende
+	Zusammenfassung der erreichten Ziele und bewertet sie. In Abschnitt \ref{sec:ausblick} wird ein
+	Ausblick auf mögliche Verbesserungen und Weiterentwicklungen gegeben.
+
 		\section{Zusammenfassung} % {{{
 		\label{sec:zusammenfassung}
 
+		Das Ziel der Arbeit war es, das bestehende selbst-adaptive Lastverteilungssystem salbnet so zu
+		erweitern, dass es auch mit UDP-Verkehr funktioniert. Dazu wurde als Anwendungsfall der Betrieb
+		eines DNS-Clusters gewählt, weil DNS-Verkehr hauptsächlich aus UDP-Anfragen besteht. Weiterhin hat
+		das DNS durch seinen Aufbau als baumartige Struktur kritische Bereiche, in denen eine
+		Lastverteilung dringend nötig ist. So werden vor allem bei DNS-Root-Servern und Nameservern von
+		TLDs DNS-Cluster genutzt, um hohe Anfrageaufkommen abzufangen, und erfolgreich zu beantworten. Der
+		Einsatz von salbnet im DNS ist klar in den oberen Ebenen des DNS-Baumes angeordnet, da bei
+		kleineren Domains andere einfachere Lastverteilungsmechanismen verwendet werden.
 
+		Um salbnet auch für UDP-Anfragen nutzen zu können, musste eine repräsentative Metrik für die
+		Auslastung des Nameservers gefunden werden. Vor allem musste mit dieser Metrik eine
+		Credit-Berechnung möglich sein. Dies war mit Abstand das größte Problem, da nicht jede
+		Lastmetrik dazu geeignet ist, die noch möglichen Verbindungen zu bestimmen. So kann an vielen
+		Faktoren erkannt werden, wann ein Server in einer Überlastsituation ist. Jedoch ist die
+		Abschätzung der noch möglichen Anfragen, bevor es zu einer Überlastsituation kommt, nicht
+		trivial. Dabei hat sich ein ähnlicher Ansatz herausgebildet, wie beim bereits implementierten
+		TCP-Anwendungsfall. Durch das Überwachen des aktuell freien Speicherplatzes in der Receive-Queue
+		des UDP-Sockets, kann mit Hilfe einer Abschätzung über die durchschnittliche Paketgröße die
+		Credit-Berechnung erfolgreich durchgeführt werden.
+
+		Dieses Vorgehen zur Berechnung der Credits wurde anschließend in salbnet implementiert. Dabei
+		kam es zu keinen größeren Problemen und das vorher entwickelte Konzept konnte direkt umgesetzt
+		werden. Da bei der Konzipierung von salbnet bereits der UDP-Fall bedacht wurde, mussten keine
+		größeren Änderungen an der Struktur vorgenommen werden. Größtenteils waren bereits alle
+		Erweiterungspunkte gut eingepflegt und mussten nur ausprogrammiert werden.
+		
+		Nach der erfolgreichen Implementation wurden mehrere Messungen durchgeführt. Sie hatten zum
+		Ziel, die Funktionstüchtigkeit der Erweiterung von salbnet zu beweisen. Ein Vergleich mit
+		einem Standardalgorithmus sollte eine Einschätzung der Leistungsfähigkeit der neuen UDP-Metrik
+		geben.  Die Ergebnisse bestätigten sowohl die volle Funktionsfähigkeit der Erweiterung, als auch
+		die Konkurrenzfähigkeit gegenüber Standardalgorithmen der Lastverteilung. Das Ergebnis fiel klar
+		zu Gunsten von salbnet aus, und bestätigte die Behauptung, dass sich die selbst-adaptive
+		gegen die statische Lastverteilung behauptet.
 
 		% section Zusammenfassung }}}
 
 		\section{Ausblick} % {{{
 		\label{sec:ausblick}
 
-		Metrik funktioniert, aber:
-		\begin{itemize}
-			\item Ist sie zu optimistisch?
-			\item vielleicht eher abschätzung über Größe des bis jetzt größten Pakets
-			\item Kann man diese Kernel spezifische Magic allgemeiner machen
-			\item Ist es den aufwand Wert den exakten Verlauf zwischen 2 Meldungen zu betrachten und ein
-				Tendenz mit in die Berechnung der Credits mit einfließen zu lassen
-		\end{itemize}
-		
+		Abschließend kann festgehalten werden, dass die entwickelte und implementierte Metrik
+		funktioniert. Allerdings wurde bei den Tests eine sehr hohe CPU-Auslastung für den schwächsten
+		Server festgestellt. Dies zeigt, dass die Metrik weiter verfeinert werden sollte. Dabei ist die
+		Frage, ob die Abschätzung des verfügbaren Speicherplatzes in der Receive-Queue zu optimistisch war.
+		So könnte man zum Beispiel nicht vom Median der letzten DNS-Pakete ausgehen, sondern den Maximalwert nutzen.
+		Dies würde eine pessimistischere Abschätzung erzeugen, dafür aber vielleicht eher
+		Überlastsitutationen verhindern.
+
+		Ein anderer Diskussionspunkt ist die Phase zwischen zwei Credit-Meldungen. Bis jetzt wird diese
+		Phase ignoriert und nur die Anzahl an verworfenen Verbindungen als Abschätzung dafür genutzt, ob
+		zwischenzeitlich eine Überlastsitutation existierte. Es wäre jedoch auch möglich, stetig
+		Messwerte zu sammeln, und daraus eine Tendenz zu ermitteln. Diese würde eine bessere Vorhersage
+		ermöglichen, allerdings auch einen höheren Aufwand bedeuten.
+
+		Weiterhin bleibt das Problem des realen Speicherplatzes eines DNS-Pakets in der Receive-Queue.
+		Die hier verwendete experimentell ermittelte Abschätzung ist stark abhängig von der
+		Kernel-Version und sollte unabhängig von dieser umgesetzt werden. Sollte salbnet für neuere
+		Kernel-Versionen portiert werden, könnte allgemein die UDP-Erweiterung durch aktuellere Techniken
+		verbessert werden. Einige davon wurden bereits in Abschnitt \ref{sec:anforderungen} erwähnt.
+
 		% section Ausblick }}}
 
 	% chapter Zusammenfassung }}}
