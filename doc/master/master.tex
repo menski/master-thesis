@@ -2060,17 +2060,17 @@
 		\label{sec:zusammenfassung}
 
 		Das Ziel der Arbeit war es, das bestehende selbst-adaptive Lastverteilungssystem salbnet so zu
-		erweitern, dass es auch mit UDP-Verkehr funktioniert. Dazu wurde als Anwendungsfall der Betrieb
+		erweitern, dass auch UDP-Anwendungen unterstützt werden. Dazu wurde als Anwendungsfall der Betrieb
 		eines DNS-Clusters gewählt, weil DNS-Verkehr hauptsächlich aus UDP-Anfragen besteht. Weiterhin hat
-		das DNS durch seinen Aufbau als baumartige Struktur kritische Bereiche, in denen eine
-		Lastverteilung dringend nötig ist. So werden vor allem bei DNS-Root-Servern und Nameservern von
+		das DNS durch seinen Aufbau als baumartige Struktur kritische Bereiche, die eine Lastverteilung
+		zwingend notwendig machen. So werden vor allem bei DNS-Root-Servern und Nameservern von
 		TLDs DNS-Cluster genutzt, um hohe Anfrageaufkommen abzufangen, und erfolgreich zu beantworten. Der
 		Einsatz von salbnet im DNS ist klar in den oberen Ebenen des DNS-Baumes angeordnet, da bei
 		kleineren Domains andere einfachere Lastverteilungsmechanismen verwendet werden.
 
 		Um salbnet auch für UDP-Anfragen nutzen zu können, musste eine repräsentative Metrik für die
-		Auslastung des Nameservers gefunden werden. Vor allem musste mit dieser Metrik eine
-		Credit-Berechnung möglich sein. Dies war mit Abstand das größte Problem, da nicht jede
+		Auslastung des Nameservers gefunden werden. Dabei war vor allem wichtig, dass aus dieser Metrik
+		eine Credit-Berechnung erfolgen kann. Dies stellte das hauptsächliche Problem dar, zumal nicht jede
 		Lastmetrik dazu geeignet ist, die noch möglichen Verbindungen zu bestimmen. So kann an vielen
 		Faktoren erkannt werden, wann ein Server in einer Überlastsituation ist. Jedoch ist die
 		Abschätzung der noch möglichen Anfragen, bevor es zu einer Überlastsituation kommt, nicht
