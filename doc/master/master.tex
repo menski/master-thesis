@@ -886,22 +886,22 @@
 		\section{Fazit} % {{{
 		\label{sec:grundlagen-fazit}
 
-			In diesem Kaptiel wurde die Enstehung und Bedeutung des \dns{} erklärt. Es zeigt sich, dass
-			ohne DNS die heutige Art der Nutzung des Internets nicht möglich wäre. Durch DNS wird eine
-			schnelle und einfache Ermittlung von IP-Adresse realisiert. Daher muss das System jederzeit
-			verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die Informationen im DNS in
-			einer verteilten Baumstruktur gespeichert. Diese ermöglicht das einfache delegieren von
-			Verantwortungen. Allerdings führt diese spezielle Struktur dazu, dass auf dem Wurzelknoten
-			(Root-Domain) und seinen Kindknoten (TLDs) die größte Last liegt. Diese Last nimmt mit
-			steigenden Tiefe immer stärker ab. Folglich sind für die verschiedenen Ebenen des DNS
-			jeweils andere Verfahren zur Lastverteilung geeignet. Es wurden die Konzepte der
+			In diesem Kaptiel wurde die Enstehung und Bedeutung des \dns{} beschrieben. Es zeigt sich,
+			dass die heutige Art der Nutzung des Internets ohne DNS nicht möglich wäre. Durch DNS wird
+			eine schnelle und einfache Ermittlung von IP-Adressen realisiert. Infolgedessen muss das
+			System jederzeit verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die
+			Informationen im DNS in einer verteilten Baumstruktur gespeichert. Diese ermöglicht das
+			einfache Delegieren von Verantwortungen. Allerdings führt diese spezielle Struktur dazu, dass
+			auf dem Wurzelknoten (Root-Domain) und seinen Kindknoten (TLDs) die größte Last liegt. Diese
+			Last nimmt mit steigender Tiefe immer stärker ab. Folglich sind für die verschiedenen Ebenen
+			des DNS jeweils andere Verfahren zur Lastverteilung geeignet. Es wurden die Konzepte der
 			Server-Lastverteilung und DNS-basierte Lastverteilung vorgestellt.
 
 			Um das verwendete System salbnet in dieser Topologie einzuordnen, muss beachtet werden, dass
-			salbnet eine Server-Lastverteilung realisiert. Somit sind private Netzwerk und kleine
-			Firmennetzwerke kein Anwendungsbereich für salbnet. Bei Root-Server, TLDs und großen SLDs ist
+			salbnet eine Server-Lastverteilung realisiert. Somit sind private Netzwerke und kleine
+			Firmennetzwerke kein Anwendungsbereich für salbnet. Bei Root-Servern, TLDs und großen SLDs ist
 			es realistischer, dass DNS-Cluster genutzt werden, um die hohe Anzahl an DNS-Anfragen
-			abzuarbeiten. Dementsprechend ordnet sich salbnet bei diesen großen DNS-System ein, bei denen
+			abzuarbeiten. Dementsprechend ordnet sich salbnet bei diesen großen DNS-Systemen ein, bei denen
 			der Einsatz eines DNS-Clusters unumgänglich ist und eine hohe Last entsteht.
 		
 			% Einordnung der Arbeit
@@ -913,16 +913,48 @@
 	\chapter{Verwandte Arbeiten} % {{{
 	\label{cha:arbeiten}
 
-	% TODO: DNS Measurements at a Root Server
+	In \cite{brclne2001} wurde Anfang 2001 die Anfragen an ein DNS-Cluster des Root-Servers F
+	gemessen. Der Cluster bestand aus zwei DEC Alpha Systemen und eine Cisco-Router, welcher CEF
+	(Cisco Express Forwarding) zur Lastverteilung nutzte. Die Messungen zeigten, dass es zu
+	Lastspitzen mit bis zu 5000 Anfragen pro Sekunde kam und der Root-Server ca. 93\% der Anfragen
+	sofort beantworten konnte. Die restlichen 7\% waren Anfragen konnte nicht beantwortet werden, weil
+	zum Beispiel die DNS-Anfragen falsch gestellt wurden. Sehr interessant sind die Ergebnisse
+	bezüglich Nameserver bzw. Clients, welche nicht korrekt auf Antworten oder Fehler reagieren. So
+	wurde ein Client im Log entdeckt, welcher 2.112.962 in einer Stunde die selbe Anfrage stellte.
+	Insgesamt konnte festgestellt werden das in einem Log von 2 Stunden Dauer 29 Millionen Anfragen
+	eingingen und davon 85\% wiederholte Anfragen waren (selber Client und selbe Anfrage). Außerdem
+	wurden in einen ein Stunden Log 143.783 verschiedene ungültige TLDs angefragt. Der Grund für viele
+	falsche Anfragen oder wiederholte Anfragen, scheint fehlerhafte Implementationen des DNS-Standards
+	\ref{rfc1034, rfc1035} zu sein oder falsch konfigurierte Softwaresysteme. Diese fehlerhaften
+	DNS-Anfragen machen insgesamt ungefähr einen Anteil von 14\% aus. Außerdem werden Root-Server
+	anscheint oft oft Denail of Service Angriffe genutzt. Dabei ist nicht der Root-Server das Ziel,
+	sondern er wird als Reflektor genutzt. Dazu werden eine große Menge an Anfragen mit veränderter
+	Absendeadresse geschickt. Diese werden dann alle vom Root-Server beantwortet und an das
+	Angriffsziel geschickt. Dieses wird dann mit DNS-Antworten beschossen, welche er nie angefordert
+	hat.
+
+	In \cite{isetal2005} werden die DNS-Anfragen eines Virus in Japan gemessen. Dabei wurden die
+	Anfragen des Virus japanischen ISP Open Computer Networks (OCN) analysiert. Der Virus greift einen
+	Webserver an und erfragt dazu über das DNS die IP-Adresse des Ziels. Dies führte zu ca. 500
+	Anfragen pro Sekunde nach dieser Adresse. Eine Entscheidung des Administrators des Angriffsziels
+	zeigt die starken Abhängigkeiten innerhalb des DNS. Die Veränderung eines Eintrags auf einem
+	Nameserver kann auch andere Nameserver im System betreffen. So entfernte der Zuständige des
+	Angriffsziels den entsprechenden Eintrag des Webservers aus dem DNS. Dies führte dazu das die
+	Anfragen des Virus nach der IP-Adresse nicht mehr beantwortet werden konnte und dieser
+	anschließend immer wieder DNS-Anfragen sendete. Dabei wurde die Gültigkeitsdauer der Antwort, dass
+	der Server nicht exisitert, von vielen Clients ignoriert, ob dies vom Virus ausging oder die
+	Nutzer dies selber aus anderen Gründen an ihren Systemen deaktivierten ist unklar. Jedenfalls
+	stiegen die DNS-Anfragen beim Nameserver des ISPs auf bis zu über 4500 pro Sekunde an.
+	Ausschließlich nach der Adresse des Zielsystems. Erst durch das wiedereinfügen des DNS-Eintrags
+	wurde die Last auf dem ISP-Nameserver geringer. Der Angriff wurden schlussendlich dadurch gelöst,
+	dass statt der Adresse des Webservers eine Schein-IP-Adresse zurückgeliefert wurde. Alle Anfragen
+	an diese IP-Adresse wurden dann vom Router verworfen.
+
 	% TODO: DNS Cluster
 	% TODO: DNS Root/gTLD Performance Measurement
 	% TODO: Measurement of DNS Traffic Caused by DDoS Attacks
 	% TODO: Measuring Availability in the Domain Name System
 	% TODO: Two Days in the Life of the DNS Anycast Root Servers
-	% TODO: On the Use of Anycast in DNS
-	- Verhalten von Anycast im DNS
-	- 15% von 55% beantwortet vom topologisch nächsten
-	- 10% Verzögerung von 100ms
 
 	In \cite{sapate2005} wird das Verhalten von Anycast-DNS-Servern Ende des Jahres 2004 untersucht. Dazu werden die
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
@@ -1694,13 +1726,15 @@
 		entwickelten UDP-Erweiterung für salbnet zu beweisen, und salbnet für den DNS-Anwendungsfall mit
 		einem Standardalgorithmus zu vergleichen.
 
+		% TODO: DNS-Cluster erwähnen
+
 		\section{System} % {{{
 		\label{sec:system}
 
 		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
 		Lastverteiler aus gesteuert werden, oder, wie im salbnet-Fall, mit Hilfe zusätzlicher
 		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem besteht aus einem
-		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist, dieser ist wiederum
+		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser ist wiederum
 		über ein anderes Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
 		Abbildung \ref{fig:messsystem} grafisch dargestellt. Der Client ist ein Rechner im
 		leibniz-Cluster, auf dem der servload Benchmark \cite{menski2012} ausgeführt wird. In dem
@@ -1824,11 +1858,11 @@
 		\section{Ergebnisse} % {{{
 		\label{sec:Ergebnisse}
 
-		% Kursiv
+		% TODO: Kursiv
 
 			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks verwendet. Außerdem
 			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
-			minütlich mit Hilfe eines Skriptes über \texttt{net-snmp} abgefragt. Erst einmal ist
+			minütlich mit Hilfe eines Skriptes über \texttt{net-snmp} abgefragt. Grundlegend ist
 			festzuhalten, dass die Erweiterung von salbnet für UDP-Anfragen funktioniert. Während der
 			Tests kam es zu keinen Ausfällen oder auffälligem Verhalten. Danach wurden die beiden
 			Lastverteilungsverfahren wrr und salbnet unter den Metriken aus Abschnitt \ref{sec:system}
@@ -1856,8 +1890,6 @@
 			Verbindungszeiten  (siehe Tabelle \ref{tab:connect} und Abbildung \ref{fig:ergebnis}).
 			So entspricht die Antwortzeit von salbnet nur ca. 15\% der von wrr und die Verbindungszeit im
 			Durchschnitt nur ca. 30\%.
-
-			% Varianz und Standardabweichung
 
 			\begin{figure}
 				\centering
@@ -1924,13 +1956,13 @@
 		\label{sec:Fazit}
 
 		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von salbnet für UDP-Pakete
-		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in den Tests ihre
-		Leistungsfähigkeit unter Beweis gestellt. In allen verglichenen Metriken ist salbnet dem
-		wrr-Algorithmus überlegen. Nur die CPU-Auslastung der ib6 war im Vergleich zu den
-		anderen Backend-Servern zu hoch. Dies kann an zu optimistischen oder zu späten Credit-Meldungen
-		liegen. Zusammenfassend kann aber gesagt werden, dass das Konzept und die Implementierung
-		höchstwahrscheinlich noch Verbesserungspotenzial bieten, die aktuelle Version jedoch bereits den
-		Vorteil von selbst-adaptiver Lastverteilung auch für UDP-Verkehr verdeutlicht.
+		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in den Tests eine hohe
+		Leistungsfähigkeit bewiesen. In allen verglichenen Metriken ist salbnet dem wrr-Algorithmus
+		überlegen. Nur die CPU-Auslastung der ib6 war im Vergleich zu den anderen Backend-Servern zu
+		hoch. Dies kann an zu optimistischen oder zu späten Credit-Meldungen liegen. Zusammenfassend
+		kann gesagt werden, dass das Konzept und die Implementierung höchstwahrscheinlich noch
+		Verbesserungspotenzial bieten, die aktuelle Version jedoch bereits den Vorteil von
+		selbst-adaptiver Lastverteilung auch für UDP-Verkehr verdeutlicht.
 
 		% section Fazit }}}
 
