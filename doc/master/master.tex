@@ -253,19 +253,19 @@
 		Lastverteiler, eine TCP/IP-Verbindung über Ethernet genutzt. Dadurch soll verdeutlicht werden,
 		dass dieses selbst-adaptive System auch über blockierende Kommunikation effizient ist.
 
-		Die Arbeit ist in 8 Kapitel aufgeteilt. Im Kapitel \ref{cha:grundlagen} werden die Grundlagen
+		Die Arbeit ist in 8 Kapitel aufgeteilt. In Kapitel \ref{cha:grundlagen} werden die Grundlagen
 		dieser Arbeit erklärt. Es handelt sich dabei um das \dns{} und Lastverteilungsansätze.  Darüber
 		hinaus wird eine Einordnung dieser Arbeit in die vorgestellten Konzepte vorgenommen.
-		Anschließend werden im Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche sich mit
+		Anschließend werden in Kapitel \ref{cha:arbeiten} einige Arbeiten aufgeführt, welche sich mit
 		DNS-Clustern und Lastsituationen in eben diesen befassen. Das zu erweiternde System zur
-		selbst-adaptiven Lastverteilung salbnet \cite{zinke2012,salbnet} wird im Kapitel
+		selbst-adaptiven Lastverteilung salbnet \cite{zinke2012,salbnet} wird in Kapitel
 		\ref{cha:salbnet} beschrieben.  Im \ref{cha:konzept}. Kapitel werden das Konzept der
 		erarbeiteten Erweiterung und die dazugehörigen Vorüberlegungen aufgezeigt.  Im darauf folgenden
 		Kapitel \ref{cha:implementierung} wird die konkrete Umsetzung des vorher dargestellten Konzepts
 		beschrieben.  Es wird hierbei auf Besonderheiten und Probleme bei der Implementation
 		eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer
 		Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit
-		folgen im Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, Einschätzung und Bewertung der
+		folgen in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, Einschätzung und Bewertung der
 		erreichten Ziele und ein Ausblick auf mögliche Erweiterungen des Konzepts.
 
 	% chapter Einleitung }}}
@@ -274,12 +274,12 @@
 	\label{cha:grundlagen}
 
 		Dieses Kapitel soll eine Einführung in die Verfahren und Techniken geben, die dieser Arbeit
-		zu Grunde liegen.  Dazu wird zu Beginn des Kapitels im Abschnitt \ref{sec:dns} auf die Entstehung,
+		zu Grunde liegen.  Dazu wird zu Beginn des Kapitels in Abschnitt \ref{sec:dns} auf die Entstehung,
 		Bedeutung und Funktionsweise des \dns{} eingegangen. Außerdem werden Softwaresysteme
 		vorgestellt, welche zum Betreiben eines DNS-Servers geeignet sind. Daran anschließend soll im
 		Abschnitt \ref{sec:lastverteilung} ein Überblick über bestehende Konzepte und Praktiken der
 		allgemeinen Lastverteilung gegeben werden, wobei auf Besonderheiten der Lastverteilung für das
-		DNS eingegangen wird. Zum Abschluss des Kapitels wird diese Arbeit im Abschnitt
+		DNS eingegangen wird. Zum Abschluss des Kapitels wird diese Arbeit in Abschnitt
 		\ref{sec:grundlagen-fazit} in die vorgestellten Konzepte eingeordnet.
 
 		\section{\dns{}} % {{{
@@ -289,7 +289,7 @@
 		Abschnitt \ref{sub:entstehung} auf die Entstehung des DNS eingegangen und die Notwendigkeit
 		eines solchen Systems dargestellt.  Anschließend folgt in Abschnitt \ref{sub:aufbau} eine
 		Erläuterung des heutigen Aufbaus des DNS und seine Nutzung zur Informationsverteilung.
-		Zum Schluss wird im Abschnitt \ref{sub:software} auf die bekanntesten und verbreitetsten
+		Zum Schluss wird in Abschnitt \ref{sub:software} auf die bekanntesten und verbreitetsten
 		Softwaresysteme eingegangen, welche aktuell zur Bereitstellung eines DNS-Servers genutzt werden.
 
 			\subsection{Entstehung und Bedeutung} % {{{
@@ -361,7 +361,7 @@
 			\subsection{Aufbau} % {{{
 			\label{sub:aufbau}
 
-			Das \dns{} ersetzte 1987 das zentrale Verzeichnis \texttt{HOSTS.TXT}. Wie bereits im Kapitel
+			Das \dns{} ersetzte 1987 das zentrale Verzeichnis \texttt{HOSTS.TXT}. Wie bereits in Kapitel
 			\ref{cha:einleitung} beschrieben, basiert es auf einem dezentralen Ansatz, bei dem die
 			Informationen in einer baumartigen Struktur gespeichert werden. So ein Baum ist auszugsweise
 			in Abbildung \ref{fig:dns-tree} zu sehen. Diese Struktur des Baums, also die Knoten, sind auch
@@ -952,9 +952,6 @@
 	an diese IP-Adresse wurden dann vom Router verworfen.
 
 	% TODO: DNS Cluster
-	% TODO: Measurement of DNS Traffic Caused by DDoS Attacks
-	% TODO: Measuring Availability in the Domain Name System
-	% TODO: Two Days in the Life of the DNS Anycast Root Servers
 
 	In \cite{sapate2005} wird das Verhalten von Anycast-DNS-Servern Ende 2004 untersucht. Dazu werden die
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
@@ -970,11 +967,14 @@
 	In \cite{lietal2007} wurden Daten von Anfang 2006 der Anycast Root-Server C, F und K untersucht.
 	Hierbei wurde ein Zeitraum von 47,2 Stunden, annähernd 2 Tage, betrachtet. Es konnte gezeigt
 	werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen Clients erhielt.
-	Allerdings gab es auch wie einen F-Root-Server in Los Angeles, USA, welcher \unit[88]{\%} seiner Anfragen
-	aus Asien erhielt. Oder ein K-Root-Server nähe Delhi, Indien, welcher über \unit[75]{\%} seiner Anfragen
-	aus Nordamerika, Südamerika und Europa erhielt. Hingegen waren die Anfragen vom K-Root-Server in
-	Tokyo, Japan, zu \unit[99,7]{\%} aus Japan und \unit[75]{\%} waren von Clients mit einer Entfernung unter
-	\unit[1000]{km}.
+	Allerdings gab es auch wie einen F-Root-Server in Los Angeles, USA, welcher \unit[88]{\%} seiner
+	Anfragen aus Asien erhielt. Oder ein K-Root-Server nähe Delhi, Indien, welcher über
+	\unit[75]{\%} seiner Anfragen aus Nordamerika, Südamerika und Europa erhielt. Hingegen waren die
+	Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus Japan und \unit[75]{\%}
+	waren von Clients mit einer Entfernung unter \unit[1000]{km}. Zusätzlich konnte gezeigt
+	werden, dass in dem betrachtet Zeitraum, die meisten Clients immer den selben DNS-Server
+	befragen, so wechselten z.B. beim C-Root-Server nur \unit[1,7]{\%} der Clients den
+	Nameserver. Bei dem F und K-Root-Server waren es \unit[1,4]{\%} bzw. \unit[4,7]{\%}.
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1199,14 +1199,14 @@
 
 	In diesem Kapitel sollen mögliche Konzepte zur Erweiterung von salbnet für DNS-Anfragen
 	vorgestellt werden. Anschließend wird eines der Konzepte ausgewählt und ein Entwurf zur Implementierung
-	präsentiert. Die Implementierung des gewählten Entwurfs wird dann im Kapitel
+	präsentiert. Die Implementierung des gewählten Entwurfs wird dann in Kapitel
 	\ref{cha:implementierung} beschrieben.
 
 
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
-		Wie im Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
+		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
 		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
 		des TCP-Sockets des Webservers erstellt. Diese gibt die konkrete Anzahl der Anfragen an, welche
 		noch in der Backlog Platz finden würden. Das heißt, es sollten nicht mehr als diese Anzahl von
@@ -1257,9 +1257,9 @@
 		\section{Auswahl} % {{{
 		\label{sec:auswahl}
 
-		Nachdem im Abschnitt \ref{sec:ansaetze} mehrere Ansätze vorgestellt wurden, sollen diese nun
+		Nachdem in Abschnitt \ref{sec:ansaetze} mehrere Ansätze vorgestellt wurden, sollen diese nun
 		bewertet werden. Danach wird ein Ansatz ausgewählt, welcher dann weiter verfeinert wird. Die
-		Bewertung der Ansätze erfolgt nach den im Kapitel \ref{cha:salbnet} aufgeführten Anforderungen
+		Bewertung der Ansätze erfolgt nach den in Kapitel \ref{cha:salbnet} aufgeführten Anforderungen
 		an eine Metrik, welche waren:
 
 		\begin{itemize}
@@ -1363,7 +1363,7 @@
 			\label{eq:additional}
 		\end{equation}
 
-		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie im Kapitel
+		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
 		\ref{cha:salbnet} beschrieben, existieren verschiedene Meldestrategien in salbnet. Bei den
 		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve (siehe Abschnitt
 		\ref{sub:meldestrategien}) werden die Credits in dynamisch berechneten Intervallen gemeldet. Das
@@ -1411,13 +1411,13 @@
 	\chapter{Implementierung} % {{{
 	\label{cha:implementierung}
 
-	Dieses Kapitel beschreibt die Implementierung der im Kapitel \ref{cha:konzept} entworfenen Metrik.
+	Dieses Kapitel beschreibt die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Metrik.
 	Dazu wird in Abschnitt \ref{sec:anforderungen} die Frage geklärt, wie die in Abschnitt
 	\ref{sec:entwurf} definierte Receive-Queue-Metrik berechnet wird. Das heißt, es wird gezeigt, welche
 	Möglichkeiten existieren, die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
 	Messwerte bewertet und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
 	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
-	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. Im Kapitel
+	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. In Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
 	einem Standard-Algorithmus vergleichen.
 
@@ -1589,8 +1589,8 @@
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
 
-		Dieser Abschnitt stellt die konkrete Implementation, der im Abschnitt \ref{sec:entwurf}
-		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie im Abschnitt
+		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sec:entwurf}
+		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
 		und $q_{drop}$ muss die Komponente von salbd, welche für das Sammeln der Messwerte zuständig
 		ist, erweitert werden. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
@@ -1604,7 +1604,7 @@
 			\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
 
 			Bei der Erstellung eines UDP-Sockets erhält die Recevie-Queue des Sockets eine Standardgröße.
-			Diese Größe ist, wie bereits im Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
+			Diese Größe ist, wie bereits in Abschnitt \ref{sec:anforderungen} gezeigt, in der Datei
 			\texttt{rmem\_default} im Verzeichniss \texttt{/proc/sys/net/core/} zu finden. In Listing
 			\ref{lst:metric-max-udp} wird in Zeile 1 überprüft, ob die maximale Kapazität der
 			UDP-Recevie-Queue bereits ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
@@ -1637,7 +1637,7 @@
 
 			\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
-				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll, wie im Abschnitt
+				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll, wie in Abschnitt
 				\ref{sec:entwurf} beschrieben, der \texttt{recvmsg}-Funktionsaufruf des BIND Servers
 				abgefangen werden. Dafür wird die dynamische Bibliothek libnethook um eine Funktion
 				\texttt{recvmsg} erweitert. Durch das Laden der libnethook-Bibliothek vor dem Start des BIND
@@ -1661,7 +1661,7 @@
 
 			\subsection*{Verworfene Anfragen seit der letzten Credit-Meldung} % {{{
 
-				Wie im Abschnitt \ref{sec:entwurf} beschrieben, können die verworfenen Anfragen nur
+				Wie in Abschnitt \ref{sec:entwurf} beschrieben, können die verworfenen Anfragen nur
 				systemweit ermittelt werden. Dazu wird in Listing \ref{lst:metric-drops-udp} in Zeile 1 die
 				Datei \texttt{/proc/net/snmp} geöffnet. In der Schleife von Zeile 5 bis 17 wird in Zeile 7
 				die aktuelle Zeile gelesen. Handelt es sich nicht um die richtige Zeile, wird diese
