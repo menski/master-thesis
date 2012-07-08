@@ -921,7 +921,7 @@
 	Effekte gibt, welche das DNS beeinflussen.
 
 	Die Anfragen an ein DNS-Cluster des F-Root-Servers wurden Anfang 2001 in \cite{brclne2001}
-	analysiert. Der Cluster bestand aus zwei DEC Alpha Systemen und einem Cisco-Router, welcher CEF
+	analysiert. Das Cluster bestand aus zwei DEC Alpha Systemen und einem Cisco-Router, welcher CEF
 	(Cisco Express Forwarding) zur Lastverteilung nutzte. Die Untersuchung zeigt, dass es zu
 	Lastspitzen mit bis zu 5000 Anfragen pro Sekunde kam und der Root-Server ca. \unit[93]{\%} der
 	Anfragen sofort beantworten konnte. Die restlichen \unit[7]{\%} waren Anfragen, welche nicht
@@ -939,7 +939,7 @@
 	Ziel, sondern er wird als Reflektor verwendet und dabei werden eine große Menge an Anfragen mit
 	veränderter Absenderadresse an ihn geschickt. Diese werden dann vom Root-Server beantwortet
 	und an die falsche Absenderadresse, das Angriffsziel, gesendet. Dieses Zielsystem wird dadurch
-	mit einer	großen Menge an DNS-Antworten beschossen, obwohl er diese nie angefragt hat.
+	mit einer großen Menge an DNS-Antworten beschossen, obwohl es diese nie angefragt hat.
 
 	Eine andere Art des Zusammenspiels von Schadsoftware und DNS wurde in \cite{isetal2005}
 	untersucht.  Man beobachtete dazu das Verhalten eines Virus namens \glqq{}Antinny\grqq{} in Japan.
@@ -958,7 +958,7 @@
 	Rechner nun wiederholt die Nameserver nach der IP-Adresse des Angriffsziels fragten. Dies wurde
 	entweder durch den Virus beeinflusst, oder die Nutzer der infizierten Systeme hatten
 	selbst die Konfiguration so angepasst, dass die Gültigkeitsdauer ignoriert wurde. Die Gründe dafür
-	können verschiedener Art gewesen sein. Letztendlich führte dies dazu, dass alleine bei dem
+	können verschiedener Art gewesen sein. Letztendlich führte dies dazu, dass allein bei dem
 	Nameserver des Open Computer Networks bis zu 4500 Anfragen pro Sekunde nach dem Zielsystem
 	eingingen. Dies stellt eine beachtliche zusätzliche Last für den Nameserver da. Diese hohe Last
 	konnte erst wieder durch einen neuen DNS-Eintrag für das Zielsystem beendet werden. Dabei wurde
@@ -975,26 +975,26 @@
 	der Anfragen an den	geografisch nächsten Cluster gesendet wurden. Im Vergleich dazu geschah dies bei
 	UltraDNS sogar von \unit[45]{\%} bis \unit[53]{\%} der Anfragen. Allerdings zeigte sich, dass die
 	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend
-	ist zu sagen, dass Anycast sinnvoll ist um DNS-Anfragen zu verteilen, aber Anycast stark von dem
-	Netzwerk und den BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
+	ist zu sagen, dass Anycast eine sinnvolle Methode ist um DNS-Anfragen zu verteilen, aber stark von
+	den Netzwerken und BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
 	beeinflussen.
 
 	In \cite{lietal2007} wurde eine ähnlich Analyse der Anycast-Root-Server C, F und K untersucht mit Daten
-	von Anfang 2006.  Die Beobachtung fand über einen Zeitraum von 47,2 Stunden, annähernd 2 Tage,
+	von Anfang 2006. Die Beobachtung fand über einen Zeitraum von 47,2 Stunden, annähernd 2 Tage,
 	statt. Es konnte gezeigt werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen
 	Clients erhielt.  Allerdings gab es auch das Beispiel des F-Root-Server in Los Angeles, USA,
 	welcher \unit[88]{\%} seiner Anfragen aus Asien erhielt. Ein zweites Beispiel ist der K-Root-Server
 	nahe Delhi, Indien, dessen Anfragen zu über \unit[75]{\%} aus Nordamerika, Südamerika und Europa
-	stammen. Hingegen waren die Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus Japan
-	und davon kamen \unit[75]{\%} der Clients aus einer Entfernung unter \unit[1000]{km}. Zusätzlich
+	stammen. Hingegen waren die Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus
+	Japan, wovon \unit[75]{\%} der Clients aus einer Entfernung unter \unit[1000]{km} kamen. Zusätzlich
 	konnte gezeigt werden, dass in dem betrachteten Zeitraum die meisten Clients immer denselben
 	DNS-Server befragten. So wechselten z.B. beim C-Root-Server nur \unit[1,7]{\%} der
 	Clients den Nameserver. Bei dem F und K-Root-Server waren es \unit[1,4]{\%} bzw.
 	\unit[4,7]{\%}.
 
 	In Anbetracht der vorgestellten Ergebnisse ergibt sich, dass Lastverteilung, z.B. durch ein
-	Cluster mit einem Lastverteiler, eine wichtige Komponente des DNS ist. Dies gilt vor allem für
-	Server, die sehr weit oben in der DNS-Hierarchie positioniert sind. Diese System müssen jeder Zeit mit einem
+	Cluster mit einem Lastverteiler, eine wichtige Komponente des DNS ist. Das gilt vor allem für
+	Server, die sehr weit oben in der DNS-Hierarchie positioniert sind. Diese Systeme müssen jeder Zeit mit einem
 	sprunghaften Anstieg an Anfragen rechnen. Dies kann durch fehlerhafte Systeme hervorgerufen werden,
 	durch fahrlässige Veränderungen von Domain-Einträgen oder durch Schadsoftware und Angriffe. Die
 	Verwendung von Anycast, als weitere Lastverteilungsebene, scheint sich besonders für
@@ -1003,7 +1003,7 @@
 	Störungen. Dabei ist vor allem das BGB-Protokoll als Problem zu nennen, falsche oder ungünstige
 	Routen haben einen starken Einfluss auf die Antwortzeiten von Anycast-DNS. Dennoch ist die lokale
 	Lastverteilung in einem Cluster aus DNS-Servern entscheidend für die Stabilität und Zuverlässigkeit
-	des DNS. Daher hat die hier entwickelte selbst-adaptive Lastverteilung für DNS-Anfragen, bzw.
+	des DNS. Aus diesem Grund hat die hier entwickelte selbst-adaptive Lastverteilung für DNS-Anfragen, bzw.
 	UDP-Anfragen im Allgemeinen, einen klaren Anwendungsfall in der Realität des DNS.
 
 	% TODO: bessere hardware ausnutzung -> weniger hardware wird benötigt / spart kosten, straom -> green it
