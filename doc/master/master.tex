@@ -933,7 +933,7 @@
 	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend ist zu sagen, dass
 	Anycast sinnvoll ist um DNS-Anfragen zu verteilen, allerdings Anycast stark von dem Netzwerk und
 	den BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
-	beeinflussen. 
+	beeinflussen.
 
 	% chapter Verwandte Arbeiten }}}
 
@@ -1690,32 +1690,32 @@
 
 		Die in Kaptiel \ref{cha:implementierung} beschriebene Implementierung wurde mehreren Messungen
 		unterzogen. Dieses Kaptiel orientiert sich bei der Vorstellung des Messkonzepts und der Analyse
-		der Ergebnisse an \cite{jain1991}. Das Ziel der Messung ist es die Funktionstüchtigkeit der
-		entwickelten UDP-Erweiterung für salbnet zu beweisen und salbnet für den DNS-Anwendungsfall mit
+		der Ergebnisse an \cite{jain1991}. Das Ziel der Messung ist es, die Funktionstüchtigkeit der
+		entwickelten UDP-Erweiterung für salbnet zu beweisen, und salbnet für den DNS-Anwendungsfall mit
 		einem Standardalgorithmus zu vergleichen.
 
 		\section{System} % {{{
 		\label{sec:system}
 
 		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
-		Lastverteiler aus gesteuert werden, oder wie im salbnet Fall mit Hilfe zusätzlicher
+		Lastverteiler aus gesteuert werden, oder, wie im salbnet-Fall, mit Hilfe zusätzlicher
 		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem besteht aus einem
-		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser Lastverteiler
-		ist wiederum über ein Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
+		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist, dieser ist wiederum
+		über ein anderes Netzwerk mit 3 heterogenen Backend-Servern verbunden. Der Aufbau ist in
 		Abbildung \ref{fig:messsystem} grafisch dargestellt. Der Client ist ein Rechner im
-		leibniz-Cluster auf dem der servload Benchmark \cite{menski2012} ausgeführt wird. In dem Ziel
-		Netzwerk des ib-Clusters kommt auf dem Lastverteiler LVS zum Einsatz. Die 3 heterogenen
-		Backend-Server stellen alle einen BIND DNS-Server bereit. Die genauen technischen Daten und
-		Versionen der verwendeten Rechner und Software sind in Anhang \ref{cha:messumgebung} aufgeführt.
-		Das System bieten ausschließlich den DNS-Dienst durch die Backend-Server an. Dabei werden nur
+		leibniz-Cluster, auf dem der servload Benchmark \cite{menski2012} ausgeführt wird. In dem
+		Zielnetzwerk des ib-Clusters kommt auf dem Lastverteiler LVS zum Einsatz. Alle 3 heterogenen
+		Backend-Server stellen einen BIND DNS-Server bereit. Die genauen technischen Daten der Server
+		und die Versionen der verwendeten Software sind in Anhang \ref{cha:messumgebung} aufgeführt.
+		Das System bietet ausschließlich den DNS-Dienst durch die Backend-Server an. Dabei werden nur
 		DNS-Anfragen über UDP unterstützt. Die möglichen Resultate einer DNS-Anfrage an das System sind
-		eine Antwort oder keine Antwort. Um verschiedene Messungen zu vergleichen werden die folgenden
+		eine Antwort oder keine Antwort. Um verschiedene Messungen zu vergleichen, werden die folgenden
 		Metriken genutzt:
 
 		\begin{itemize}
 			\item Verbindungszeit
 			\item Antwortzeit
-			\item Anzahl der nicht beantwortet Anfragen (Timeout: Eine Sekunde)
+			\item Anzahl der nicht beantworteten Anfragen (Timeout: eine Sekunde)
 			\item CPU-Auslastung der Backend-Server
 		\end{itemize}
 
@@ -1731,8 +1731,8 @@
 		\section{Experiment} % {{{
 		\label{sec:experiment}
 
-			Um die Experimente zu entwickeln müssen alle Parameter ermittelt werden, welche die Leistung
-			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheident:
+			Um die Experimente zu entwickeln, müssen alle Parameter ermittelt werden, welche die Leistung
+			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheidend:
 
 			\begin{itemize}
 				\item Systemparameter (statisch)
@@ -1742,7 +1742,7 @@
 						\item Größe des Arbeitsspeichers
 						\item Performanz des Lastverteilers
 						\item Performanz des DNS-Servers
-						\item Netzwerk-Stack des Betriebssystem
+						\item Netzwerk-Stack des Betriebssystems
 						\item Andere Last auf dem Netzwerk
 						\item Andere Last auf den Servern
 					\end{itemize}
@@ -1757,39 +1757,39 @@
 			\end{itemize}
 
 			Von den Lastparameter sind die Größe der DNS-Zone und die Art des DNS-Servers statisch. Als
-			DNS-Zone wird die \texttt{haiti.cs.uni-potsdam.de}-Zone genutzt mit dem Stand vom 26.
-			Oktober 2011. Die BIND Server werden alle als iterative Nameserver betrieben, dass heißt
-			Anfragen außerhalb der \texttt{haiti.cs.uni-potsdam.de} werden mit einem Verweis auf die
-			Root-Server beantwortet.
+			DNS-Zone wird die \texttt{haiti.cs.uni-potsdam.de}-Zone mit dem Stand vom 26.  Oktober 2011
+			genutzt. Die BIND Server werden alle als iterative Nameserver betrieben, dass heißt, Anfragen
+			außerhalb der \texttt{haiti.cs.uni-potsdam.de} werden mit einem Verweis auf die Root-Server
+			beantwortet.
 
-			Die Faktoren, welche während den Messungen variiert werden sind der
+			Die Faktoren, welche während den Messungen variiert werden, sind der
 			Lastverteilungsalgorithmus, die Anzahl der DNS-Anfragen und die Anzahl der DNS-Anfragen pro
 			Sekunde. Als Lastverteilungsalgorithmus wird der Standard-Weighted-Round-Robin-Algorithmus
-			(wrr) des LVS genutzt und salbnet mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
+			(wrr) des LVS verwendet und salbnet mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
 			für den Weighted-Round-Robin-Algorithmus wurden die Werte 788, 623 und 1180 für die Nodes ib4,
 			ib6 und ib8 verwendet. Diese Werte wurden mit dem UnixBench-Benchmark \cite{unixbench}
 			ermittelt. Die vollständigen Ergebnisse sind im Anhang \ref{cha:unixbench} aufgelistet. Für
 			die DNS-Anfragen wurde ein anonymisiertes Log des Nameservers der
 			\texttt{haiti.cs.uni-potsdam.de}-Domain genutzt. Das Log enthält den Zeitraum vom 27.
-			September 2011 10:41 bis zum 2. Oktober 2011 6:25. Es wurden 1026 Sessions, dabei ist eine
+			September 2011 10:41 bis zum 2. Oktober 2011 6:25. Es wurden 1026 Sessions, dabei umfasst eine
 			Session alle Anfragen eines Users (IP-Adresse), und 1.003.149 DNS-Anfragen\footnote{Weitere
 			Statistiken zur \texttt{haiti.cs.uni-potsdam.de}-Zone und dem DNS-Log sind in Anhang
 			\ref{cha:haiti} zu finden.} registriert. Im Durchschnitt werden 2,41 Anfragen pro Sekunde
-			gestellt. Das heißt, würde das Log unverändert genutzt werden, wäre keine Überlastsituation
+			gestellt. Das heißt, würde das Log unverändert eingesetzt werden, wäre keine Überlastsituation
 			auf einem DNS-Cluster mit 3 Backend-Servern zu erwarten. Daher wurde ein 5 Minuten langer
-			Ausschnitt aus dem Log genutzt.  Der Verlauf der Anfragen pro Sekunde ist in Abbildung
+			Ausschnitt aus dem Log verwendet.  Der Verlauf der Anfragen pro Sekunde ist in Abbildung
 			\ref{fig:requests} zu sehen. Um 3 verschiedene Lastsituationen zu erzeugen, wurde das Log
-			dann vor dem Testen mit Hilfe von servload \cite{menski2012} verstärkt. Dazu wurde jede
+			dann vor dem Testen mit Hilfe von servload \cite{menski2012} verstärkt, und jede
 			Anfrage um einen bestimmten Faktor vervielfacht. Es wurden die Faktoren 400, 800 und 1600
-			gewählt. Die Entsprechenden Kennzahlen dieser Faktoren sind in Tabelle \ref{tab:multiply}
-			aufgeführt. Der Messplan mit den Anzahl der Durchläufe ist in Tabelle \ref{tab:messplan} zu
+			gewählt. Die entsprechenden Kennzahlen dieser Faktoren sind in Tabelle \ref{tab:multiply}
+			aufgeführt. Der Messplan mit der Anzahl der Durchläufe ist in Tabelle \ref{tab:messplan} zu
 			sehen.
 
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=\textwidth]{plots/requests}
-				\caption{Anfragen pro Sekunden für das Log vom 29. September 2011 von 5:55 bis 6:00}
+				\caption{Anfragen pro Sekunde für das Log vom 29. September 2011 von 5:55 bis 6:00}
 				\label{fig:requests}
 			\end{figure}
 
@@ -1803,7 +1803,7 @@
 					800 & 18.075.200 & 26.400 & 60.250,67 & 163.200 \\
 					1600 & 36.150.400 & 52.800 & 120.501,33 & 326.400 \\\hline
 				\end{tabular}
-				\caption{Kennzahlen des modifizierten Log Intervalls}
+				\caption{Kennzahlen des modifizierten Log-Intervalls}
 				\label{tab:multiply}
 			\end{table}
 
@@ -1824,13 +1824,15 @@
 		\section{Ergebnisse} % {{{
 		\label{sec:Ergebnisse}
 
-			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks genutzt. Außerdem
+		% Kursiv
+
+			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks verwendet. Außerdem
 			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
 			minütlich mit Hilfe eines Skriptes über \texttt{net-snmp} abgefragt. Erst einmal ist
 			festzuhalten, dass die Erweiterung von salbnet für UDP-Anfragen funktioniert. Während der
-			Tests kam es zu keine Ausfällen oder auffälligem Verhalten. Danach wurden die beiden
+			Tests kam es zu keinen Ausfällen oder auffälligem Verhalten. Danach wurden die beiden
 			Lastverteilungsverfahren wrr und salbnet unter den Metriken aus Abschnitt \ref{sec:system}
-			verglichen. Die Bewertung folgt dabei nach den folgenden Kriterien:
+			verglichen. Die Bewertung geschieht dabei nach den folgenden Kriterien:
 
 			\begin{itemize}
 				\item Vermeiden von verlorenen Anfragen
@@ -1841,17 +1843,21 @@
 			\end{itemize}
 
 			Die CPU-Auslastungen für die Nodes im ib-Cluster sind für den wrr-Algorithmus in Abbildung
-			\ref{fig:cpu-wrr} und für salbnet in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
+			\ref{fig:cpu-wrr}, und für salbnet in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
 			erkennen, dass die CPU-Auslastung bei salbnet wesentlich konstanter ist als bei wrr.
-			Allerdings ist sie bei der ib6 für alle Faktoren mit salbnet immer an 100\%. Dies könnte auf
-			eine ungleichmäßige Verteilung hindeuten. Hingegen liegen die Werte der ib4 und ib8 sehr nah
-			beieinander. Die Anzahl der verlorenen Anfragen (siehe Tabelle \ref{tab:timeout} und Abbildung
-			\ref{fig:ergebnis}) liegt bei salbnet immer unter der von wrr. Bei dem Faktor 400 sind es ca.
-			\nicefrac{1}{4}, bei 800 ca. \nicefrac{1}{3} und bei 1600 ca. \nicefrac{1}{2} der verlorenen
-			Anfragen von wrr. Noch deutlicher werden die Unterschiede bei der Antwortzeit (siehe Tabelle
-			\ref{tab:response} und Abbildung \ref{fig:ergebnis}) und der Verbindungszeit  (siehe Tabelle
-			\ref{tab:connect} und Abbildung \ref{fig:ergebnis}). Bei der Antwortzeit handelt es sich um
-			eine Speedup von ca. 7 und bei der Verbindungszeit von 2-4.
+			Allerdings liegt sie bei der ib6 für alle Faktoren mit salbnet immer nahe 100\%. Dies könnte
+			auf eine ungleichmäßige Verteilung hindeuten. Hingegen liegen die Werte der ib4 und ib8 sehr
+			dicht beieinander. Die Anzahl der verlorenen Anfragen (siehe Tabelle \ref{tab:timeout} und
+			Abbildung \ref{fig:ergebnis}) ist bei salbnet immer geringer als bei wrr.  Die verlorenen
+			Anfragen von salbnet entsprechen für den Faktor 400 ca. 25\%, für 800 ca. 33\% und für 1600
+			ca. 50\% der verlorenen Anfragen von wrr. Noch deutlicher werden die Unterschiede bei dem
+			Vergleich der
+			Antwortzeiten (siehe Tabelle \ref{tab:response} und Abbildung \ref{fig:ergebnis}) und der
+			Verbindungszeiten  (siehe Tabelle \ref{tab:connect} und Abbildung \ref{fig:ergebnis}).
+			So entspricht die Antwortzeit von salbnet nur ca. 15\% der von wrr und die Verbindungszeit im
+			Durchschnitt nur ca. 30\%.
+
+			% Varianz und Standardabweichung
 
 			\begin{figure}
 				\centering
@@ -1881,10 +1887,10 @@
 				\begin{tabular}{|r|c|c|}\hline
 					Faktor & wrr & salbnet \\\hline\hline
 					400 & 1273,39 (182.727,4/427,5) & 343,16 (10.444,9/102,2)\\
-					800 & 2038,53 (395551,1/628,9) & 759,86 (30.414,0/174,4)\\
-					1600 & 2910,16 (386854,5/622,0) & 1612,78 (55.845,1/236,3)\\\hline
+					800 & 2038,53 (395.551,1/628,9) & 759,86 (30.414,0/174,4)\\
+					1600 & 2910,16 (386.854,5/622,0) & 1612,78 (55.845,1/236,3)\\\hline
 				\end{tabular}
-				\caption{Anzahl der Verloren Anfragen (Varianz/Standardabweichung)}
+				\caption{Anzahl der verlorenen Anfragen (Varianz/Standardabweichung)}
 				\label{tab:timeout}
 			\end{table}
 
@@ -1918,10 +1924,10 @@
 		\label{sec:Fazit}
 
 		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von salbnet für UDP-Pakete
-		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in Tests ihrer
-		Leistungsfähigkeit unter Beweis gestellt. In allen verglichenen Metriken war salbnet dem
-		wrr-Algorithmus überlegen. Nur die CPU-Auslastung der ib6 war zu hoch im Vergleich zu den
-		anderen Backend-Servern. Dies kann an einer zu optimistischen oder zu späten Credit-Meldungen
+		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in den Tests ihre
+		Leistungsfähigkeit unter Beweis gestellt. In allen verglichenen Metriken ist salbnet dem
+		wrr-Algorithmus überlegen. Nur die CPU-Auslastung der ib6 war im Vergleich zu den
+		anderen Backend-Servern zu hoch. Dies kann an zu optimistischen oder zu späten Credit-Meldungen
 		liegen. Zusammenfassend kann aber gesagt werden, dass das Konzept und die Implementierung
 		höchstwahrscheinlich noch Verbesserungspotenzial bieten, die aktuelle Version jedoch bereits den
 		Vorteil von selbst-adaptiver Lastverteilung auch für UDP-Verkehr verdeutlicht.
@@ -1962,7 +1968,7 @@
 	\chapter{Messumgebung} % {{{
 	\label{cha:messumgebung}
 
-	Dieser Anhang stellt Informationen bezüglich der für die Messungen verwendeten System (siehe
+	Dieser Anhang liefert Informationen bezüglich der für die Messungen verwendeten Systeme (siehe
 	Abschnitt \ref{sec:Systeme}),
 	der genutzten Softwareversionen (siehe Abschnitt \ref{sec:software}) und Konfigurationen
 	(siehe Abschnitt \ref{sec:konfigurationen}).
@@ -2016,8 +2022,8 @@
 		\section{Software} % {{{
 		\label{sec:software}
 
-		Die zur Messung genutzte Software wird in diesem Abschnitt mit ihren entsprechenden Versionen
-		und gegebenenfalls der Subversion-Revision aufgelistet.
+		In diesem Abschnitt wird die zur Messung genutzte Software mit ihren entsprechenden Versionen,
+		und gegebenenfalls der Subversion-Revision, aufgelistet.
 
 		\begin{description}
 			\item[Betriebssystem:] Debian
@@ -2068,7 +2074,8 @@
 		\section{Konfigurationen} % {{{
 		\label{sec:konfigurationen}
 
-			Die verwendeten Konfigurationen salbd und BIND sind in diesem Abschnitt angehangen.
+			Die verwendeten Konfigurationen für salbd und BIND sind in diesem Abschnitt als Anhang
+			dargestellt.
 
 			\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1 (LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
 
@@ -2097,8 +2104,8 @@
 	\chapter{Haiti-Zone} % {{{
 	\label{cha:haiti}
 
-		Dieser Anhang stellt Statistiken zur \texttt{haiti.cs.uni-potsdam.de}-Zone und dem verwendeten
-		Log dar.
+	  In diesem Anhang sind Statistiken zur \texttt{haiti.cs.uni-potsdam.de}-Zone und dem verwendeten
+		Log dargestellt.
 
 		\begin{table}[h]
 			\centering
