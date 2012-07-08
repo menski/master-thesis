@@ -89,21 +89,58 @@
 			\end{tabular}\\[2\baselineskip]
 			\TitleOrt, \TitleDatum\par
 		}
-	\end{textblock*}
-	~\clearpage
+	\end{textblock*}~\clearpage{}
+	\thispagestyle{empty}
+	\noindent\begin{minipage}[t]{\textwidth}
+	\end{minipage}\par
+	\vfill
+	\noindent\begin{minipage}[b]{\textwidth}
+		{\textbf{Menski,~Sebastian}\\\texttt{menski@uni-potsdam.de}\\\TitleTitel\\\TitleTyp,~Institut für Informatik\\\TitleUni,~Juli
+		2012}
+	\end{minipage}\clearpage{}
+  \thispagestyle{empty}
+	\mbox{}\vfill
+	\subsection*{\centering Zusammenfassung}
+
+	Diese Masterarbeit befasst sich mit der Lastverteilung von DNS-Anfragen. Im Mittelpunkt steht
+	dabei die Erweiterung der selbst-adaptiven Lastverteilungslösung salbnet. Dazu wird für das System
+	eine neue Metrik für UDP-Pakete konzipiert. Infolgedessen wird die Umsetzbarkeit des entwickelten
+	Konzepts überprüft. Auf Basis dieser Ergebnisse wird für salbnet eine UDP-Erweiterung
+	implementiert. Grundlage der Erweiterung ist eine Auswertung der UDP-Receive-Queue. Bei
+	abschließenden Messungen konnte gezeigt werden, dass die Erweiterung funktionstüchtig ist und
+	salbnet im DNS-Anwendungsfall einem Standardalgorithmus überlegen ist.
+
+	\vfill\mbox{}\clearpage
 }
 
 \def \dns {Domain Name System (DNS)}
 
 % Titlepage }}}
 
-% Preamble }}}
+% Authorship {{{
+\newcommand{\makeauthorship}{
+  \chapter*{Selbständigkeitserklärung}
+  \thispagestyle{empty}
+  Hiermit erkläre ich, dass ich die vorliegende Arbeit selbständig angefertigt, nicht anderweitig zu Prüfungszwecken vorgelegt und keine anderen als die angegebenen Hilfsmittel verwendet habe. Sämtliche wissentlich
+ verwendeten Textausschnitte, Zitate oder Inhalte anderer Verfasser wurden ausdrücklich als solche gekennzeichnet.\\[2ex]
+  \iflanguage{ngerman}{\TitleOrt, den \TitleDatum\\[6ex]}{\TitleOrt, \TitleDatum\\[6ex]}
+  {\flushleft
+  \newlength\us
+  \settowidth{\us}{-\TitleAutor-}
+  \begin{tabular}{p{\us}}\hline
+  \centering\footnotesize \TitleAutor
+  \end{tabular}}
+}
 
+% Authorship }}}
+
+% Preamble }}}
 
 \begin{document}
 	 % Frontmatter {{{
 	\frontmatter
 	\maketitle{}
+	\makeauthorship{}
 	\tableofcontents{}
 	% Frontmatter }}}
 
@@ -864,6 +901,7 @@
 	% TODO: Measurement of DNS Traffic Caused by DDoS Attacks
 	% TODO: Measuring Availability in the Domain Name System
 	% TODO: Two Days in the Life of the DNS Anycast Root Servers
+	% TODO: On the Use of Anycast in DNS
 
 	% chapter Verwandte Arbeiten }}}
 
