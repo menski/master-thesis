@@ -157,7 +157,7 @@
 		\cite{rfc791} ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite
 		\cite{stevens1994}. Es dient der Vermittlung von Datenpaketen in einem Netzwerk, um dies zu
 		ermöglichen, erhält jeder Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein
-		Domain-Name ist eine Zeichenkette, welche Menschen leichter merken können als eine
+		Domain-Name ist eine Zeichenkette, welche Menschen sich leichter merken können als eine
 		Zahlenfolge.  Computersysteme hingegen arbeiten besser und schneller mit Zahlen als mit
 		Zeichenketten.  Daher ist diese Abbildung eine wichtige Voraussetzung für die einfache
 		und schnelle Nutzung eines Netzwerks, im Besonderen des Internets. Bei jedem Aufruf einer
@@ -885,6 +885,24 @@
 
 		\section{Fazit} % {{{
 		\label{sec:grundlagen-fazit}
+
+			In diesem Kaptiel wurde die Enstehung und Bedeutung des \dns{} erklärt. Es zeigt sich, dass
+			ohne DNS die heutige Art der Nutzung des Internets nicht möglich wäre. Durch DNS wird eine
+			schnelle und einfache Ermittlung von IP-Adresse realisiert. Daher muss das System jederzeit
+			verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die Informationen im DNS in
+			einer verteilten Baumstruktur gespeichert. Diese ermöglicht das einfache delegieren von
+			Verantwortungen. Allerdings führt diese spezielle Struktur dazu, dass auf dem Wurzelknoten
+			(Root-Domain) und seinen Kindknoten (TLDs) die größte Last liegt. Diese Last nimmt mit
+			steigenden Tiefe immer stärker ab. Folglich sind für die verschiedenen Ebenen des DNS
+			jeweils andere Verfahren zur Lastverteilung geeignet. Es wurden die Konzepte der
+			Server-Lastverteilung und DNS-basierte Lastverteilung vorgestellt.
+
+			Um das verwendete System salbnet in dieser Topologie einzuordnen, muss beachtet werden, dass
+			salbnet eine Server-Lastverteilung realisiert. Somit sind private Netzwerk und kleine
+			Firmennetzwerke kein Anwendungsbereich für salbnet. Bei Root-Server, TLDs und großen SLDs ist
+			es realistischer, dass DNS-Cluster genutzt werden, um die hohe Anzahl an DNS-Anfragen
+			abzuarbeiten. Dementsprechend ordnet sich salbnet bei diesen großen DNS-System ein, bei denen
+			der Einsatz eines DNS-Clusters unumgänglich ist und eine hohe Last entsteht.
 		
 			% Einordnung der Arbeit
 
