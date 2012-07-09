@@ -158,7 +158,7 @@
 			\cite{rfc791} ist eines der wichtigsten Netzwerkprotokolle der TCP/IP-Suite
 			\cite{stevens1994}. Es dient der Vermittlung von Datenpaketen in einem Netzwerk, um dies zu
 		ermöglichen, erhält jeder Netzwerkteilnehmer eine eindeutige IP-Adresse.}-Adressen. Ein
-		Domain-Name ist eine Zeichenkette, welche sich Menschen leichter einprägen können im Gegensatz
+		Domain-Name ist eine Zeichenkette, welche sich Menschen leicht einprägen können im Gegensatz
 		zu einer Zahlenfolge. Im Unterschied dazu arbeiten Computersysteme hingegen effizienter und
 		schneller  mit Zahlen als mit Zeichenketten.  Infolgedessen ist oben genannte Abbildung eine
 		wichtige Voraussetzung für die einfache und schnelle Nutzung eines Netzwerks, im Besonderen des
@@ -190,8 +190,6 @@
 			\label{fig:tree}
 		\end{figure}
 
-		%Überleitung
-
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
 		ebenfalls an viele andere Netzwerkdienste gestellt werden. Um diese Anforderungen zu erfüllen,
 		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last auf einer Ressource dadurch
@@ -210,7 +208,7 @@
 		Diese Arbeit beschäftigt sich mit dem Thema der Lastverteilung für DNS-Cluster. Dazu wird ein
 		bestehendes System \cite{zinke2007,scsczile2008,zinke2012,salbnet} zur selbst-adaptiven
 		Lastverteilung von TCP-Anfragen so erweitert, dass es ebenfalls UDP-Anfragen verarbeiten kann.
-		Dieses System ist in dem Sinne selbst-adaptiv, weil der Lastverteiler keine eigenständigen
+		Dieses System ist in dem Sinne selbst-adaptiv, dass der Lastverteiler keine eigenständigen
 		Annahmen über die Last der Backend-Server trifft. Jeder Backend-Server ermittelt eigenständig
 		eine Einschätzung der aktuellen Lastsituation, welche dem Lastverteiler über Credits
 		mitgeteilt wird. Dabei entspricht ein Credit einer weiteren Verbindung, die von dem Server
@@ -262,7 +260,7 @@
 		Kapitel \ref{cha:salbnet} beschrieben.  Im \ref{cha:konzept}. Kapitel werden das Konzept der
 		erarbeiteten Erweiterung und die dazugehörigen Vorüberlegungen aufgezeigt.  Im darauf folgenden
 		Kapitel \ref{cha:implementierung} wird die konkrete Umsetzung des vorher dargestellten Konzepts
-		beschrieben.  Es wird hierbei auf Besonderheiten und Probleme bei der Implementation
+		beschrieben.  Es wird hierbei auf Besonderheiten und Probleme bei der Implementierung
 		eingegangen.  Daran anschließend werden in Kapitel \ref{cha:messungen} die Ergebnisse einer
 		Funktionsmessung und eine Einschätzung der Implementation vorgestellt. Am Ende dieser Arbeit
 		folgen in Kapitel \ref{cha:zusammenfassung} eine Zusammenfassung, Einschätzung und Bewertung der
@@ -561,7 +559,7 @@
 
 			% subsection Aufbau }}}
 
-			\subsection{DNS-Server Software} % {{{
+			\subsection{DNS-Server-Software} % {{{
 			\label{sub:software}
 
 				In diesem Abschnitt werden mehrere Softwaresysteme vorgestellt, welche zum Betrieb eines
@@ -586,7 +584,7 @@
 						Microsoft DNS & \unit[6,24]{\%} & \unit[0,26]{\%}\\
 						NSD & \unit[0,20]{\%} & \unit[0.03]{\%} \\\hline
 					\end{tabular}
-					\caption{Verteilung von DNS-Server Software nach \cite{survey2004, survey2009}}
+					\caption{Verteilung von DNS-Server-Software nach \cite{survey2004, survey2009}}
 					\label{tab:verteilung}
 				\end{table}
 
@@ -665,7 +663,7 @@
 
 				% subsubsection Dnsmasq }}}
 
-			% subsection DNS-Server Software }}}
+			% subsection DNS-Server-Software }}}
 
 		% section Domain Name System (DNS) }}}
 
@@ -843,14 +841,14 @@
 			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet, wodurch der
 			DNS-Server seine Antwort an die geografische Position des Fragestellers anpassen kann. Der
 			Gedanke dabei ist, dass ein geografisch naher Server auch der schnellere Server ist. Dies muss
-			nicht immer der Fall sein und außerdem kann ist es möglich, dass der Client über einen DNS-Server
+			nicht immer der Fall sein und außerdem ist es möglich, dass der Client über einen DNS-Server
 			Anfragen stellt, welcher selbst nicht geografisch nah ist. Dadurch kann es zu negativen
 			Effekten kommen.
 
 			Auch Kombinationen der Server- und DNS-Lastverteilung sind möglich. Dabei wird ein
 			DNS-Server um Lastverteilungsfunktionen erweitert. So beschreibt \cite{chyuyi2003} ein
 			Verfahren, bei dem der DNS-Lastverteiler die Zeit überwacht, welche jeder Backend-Server für
-			die Abfrage einer Antwort benötigt. Dadurch kann die DNS-Antwort entsprechend der
+			die Abarbeitung einer Anfrage benötigt. Dadurch kann die DNS-Antwort entsprechend der
 			Lastsitutation angepasst werden. Einen ähnlichen Ansatz findet man in \cite{mookim2005}. Dabei
 			werden Backend-Server, die überlastet sind, aus der Round-Robin-Liste des DNS-Servers entfernt
 			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben.
@@ -889,7 +887,7 @@
 		\label{sec:grundlagen-fazit}
 
 			In diesem Kaptiel wurde die Enstehung und Bedeutung des \dns{} beschrieben. Es zeigt sich,
-			dass die heutige Art der Nutzung des Internets ohne ein System, wie DNS, nicht möglich ist.
+			dass die heutige Art der Nutzung des Internets, ohne ein System wie DNS nicht möglich ist.
 			Durch DNS wird eine schnelle und einfache Ermittlung von IP-Adressen realisiert. Infolgedessen
 			muss das System jederzeit verfügbar sein und geringe Latenzen ermöglichen. Dafür werden die
 			Informationen im DNS in einer verteilten Baumstruktur gespeichert. Diese ermöglicht das
@@ -936,7 +934,7 @@
 	wiederholte Anfragen scheinen fehlerhafte Implementationen des DNS-Standards \cite{rfc1034,
 	rfc1035} oder falsch konfigurierte Softwaresysteme zu sein. Diese fehlerhaften DNS-Anfragen
 	machen ungefähr einen Anteil von \unit[14]{\%} aus. Außerdem werden Root-Server
-	anscheinend oft für Denail of Service Angriffe genutzt. Dabei ist nicht der Root-Server das
+	anscheinend oft für Denial of Service Angriffe genutzt. Dabei ist nicht der Root-Server das
 	Ziel, sondern er wird als Reflektor verwendet und dabei werden eine große Menge an Anfragen mit
 	veränderter Absenderadresse an ihn geschickt. Diese werden dann vom Root-Server beantwortet
 	und an die falsche Absenderadresse, das Angriffsziel, gesendet. Dieses Zielsystem wird dadurch
@@ -966,7 +964,7 @@
 	jedoch nicht die richtige IP-Adresse zurückgeliefert, sondern eine Scheinadresse. Somit konnten
 	alle Anfragen an die Scheinadresse von Routern herausgefiltert und verworfen werden.
 
-	Eine zusätzlich Art der Verteilung von DNS-Anfragen sind Anycast-Adressen. Wie in
+	Eine zusätzlich Art der Verteilung von DNS-Anfragen sind Anycast-Adressen. Wie in Kapitel
 	\ref{cha:grundlagen} beschrieben, dienen sie dazu, dass ein Client eine Antwort von dem Nameserver
 	erhält, welcher ihm am nächsten ist. Dies soll möglichst geringe Antwortzeiten generieren. In \cite{sapate2005}
 	wird das Verhalten von Anycast-DNS-Servern Ende 2004 untersucht. Dazu werden die
@@ -974,7 +972,7 @@
 	Anycast-Adresse für ihre verteilten Cluster, UltraDNS hingegen nutzt zwei Anycast-Adressen für
 	alle ihre Server. Die Messungen zeigen, dass bei den Root-Servern nur \unit[15]{\%}-\unit[27]{\%}
 	der Anfragen an den geografisch nächsten Cluster gesendet wurden. Im Vergleich dazu geschah dies bei
-	UltraDNS sogar von \unit[45]{\%} bis \unit[53]{\%} der Anfragen. Allerdings zeigte sich, dass die
+	UltraDNS sogar bei \unit[45]{\%} bis \unit[53]{\%} der Anfragen. Allerdings zeigte sich, dass die
 	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend
 	ist zu sagen, dass Anycast eine sinnvolle Methode ist um DNS-Anfragen zu verteilen, aber stark von
 	den Netzwerken und BGB-Routen abhängt. Somit können Netzwerkausfälle die Routen von Anycast-Anfragen stark
@@ -983,7 +981,7 @@
 	In \cite{lietal2007} wurde eine ähnlich Analyse der Anycast-Root-Server C, F und K untersucht mit Daten
 	von Anfang 2006. Die Beobachtung fand über einen Zeitraum von 47,2 Stunden, annähernd 2 Tage,
 	statt. Es konnte gezeigt werden, das der größte Teil der DNS-Server Anfragen von geografisch nahen
-	Clients erhielt.  Allerdings gab es auch das Beispiel des F-Root-Server in Los Angeles, USA,
+	Clients stammte.  Allerdings gab es auch das Beispiel des F-Root-Server in Los Angeles, USA,
 	welcher \unit[88]{\%} seiner Anfragen aus Asien erhielt. Ein zweites Beispiel ist der K-Root-Server
 	nahe Delhi, Indien, dessen Anfragen zu über \unit[75]{\%} aus Nordamerika, Südamerika und Europa
 	stammen. Hingegen waren die Anfragen vom K-Root-Server in Tokyo, Japan, zu \unit[99,7]{\%} aus
@@ -1197,7 +1195,7 @@
 		\section{Benchmark} % {{{
 		\label{sec:Benchmark}
 
-			Um \textit{salbnet} auf Webclustern zu testen, wurde der Benchmark servprep/servload
+			Um \textit{salbnet} auf Clustern zu testen, wurde der Benchmark servprep/servload
 			\cite{habenschuss2011} entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache
 			Webservers einliest und diese modifizieren kann. So können alle Anfragen vervielfacht,
 			Spitzenlasten verstärkt oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden,
@@ -1224,12 +1222,12 @@
 			vorhandenen Meldestrategien ist vor allem der Dynamic Pressure Relieve Algorithmus zu
 			erwähnen. Dieser konnte bereits in Simulationen und Tests überzeugen.
 
-			Zusätzlich zum \textit{salbnet} wurde der Benchmark servload entwickelt, welcher in
+			Zusätzlich zu \textit{salbnet} wurde der Benchmark servload entwickelt, welcher in
 			\cite{menski2012} erweitert wurde, um DNS-Anfragen zu unterstützen. Dieser
 			Benchmark bietet sich vor allem deshalb an, weil es mit ihm möglich ist, aus realen
 			BIND-Logs eine hohe Last zu generieren, indem diese durch verschiedene Algorithmen
 			verstärkt werden. Weiterhin sind auch die ausführlichen Statistiken, welche vom
-			servload-Benchmarks generiert werden, ein wichtiger Grund für die Wahl.
+			servload-Benchmark generiert werden, ein wichtiger Grund für die Wahl.
 
 			Basierend auf diesen Informationen wird im folgenden Kapitel ein Konzept dafür erarbeitet, wie
 			sich \textit{salbnet} auf DNS-Anfragen anpassen lässt.  Dessen Umsetzung im Folgenden mit dem
@@ -1448,12 +1446,12 @@
 		\section{Fazit} % {{{
 		\label{sec:konzept-fazit}
 
-		In diesem Kaptiel sollte eine Metrik zur Bestimmung der Lastsitutation eines DNS-Servers
+		In diesem Kapitel sollte eine Metrik zur Bestimmung der Lastsitutation eines DNS-Servers
 		entworfen werden. Dazu wurden drei Ansätze evaluiert. Basierend auf den in Abschnitt \ref{sec:metrik}
 		definierten Kriterien wurde eine Metrik ausgewählt. Danach wurden alle Messwerte
 		identifiziert, welche für die gewählte Receive-Queue-Metrik benötigt werden. Mit diesen wurde
 		die Formel \ref{eq:credits} entwickelt, welche zur Credit-Berechnung genutzt wird. Im folgenden
-		Kapitel wird nun die Implementation der Metrik beschrieben.
+		Kapitel wird nun die Implementierung der Metrik beschrieben.
 
 		% section Fazit }}}
 
@@ -1637,7 +1635,7 @@
 		\section{Erweiterung von salbnet} % {{{
 		\label{sec:erweiterung}
 
-		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sec:entwurf}
+		Dieser Abschnitt stellt die konkrete Implementierung, der in Abschnitt \ref{sec:entwurf}
 		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
 		und $q_{drop}$ muss die Komponente von \textit{salbd}, welche für das Sammeln der Messwerte zuständig
@@ -2028,7 +2026,7 @@
 		\label{sec:Fazit}
 
 		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von \textit{salbnet} für UDP-Pakete
-		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in den Tests eine hohe
+		erfolgreich umgesetzt wurde. Die Implementierung funktioniert und hat in den Tests eine hohe
 		Leistungsfähigkeit bewiesen. In allen verglichenen Metriken ist \textit{salbnet} dem \textit{wrr}-Algorithmus
 		überlegen. Nur die CPU-Auslastung der ib6 war im Vergleich zu den anderen Backend-Servern zu
 		hoch. Dies kann an zu optimistischen oder zu späten Credit-Meldungen liegen. Zusammenfassend
@@ -2076,7 +2074,7 @@
 		größeren Änderungen an der Struktur vorgenommen werden. Größtenteils waren bereits alle
 		Erweiterungspunkte gut eingepflegt und mussten nur ausprogrammiert werden.
 
-		Nach der erfolgreichen Implementation wurden mehrere Messungen durchgeführt. Sie hatten zum
+		Nach der erfolgreichen Implementierung wurden mehrere Messungen durchgeführt. Sie hatten zum
 		Ziel, die Funktionstüchtigkeit der Erweiterung von \textit{salbnet} zu beweisen. Ein Vergleich mit
 		einem Standardalgorithmus sollte eine Einschätzung der Leistungsfähigkeit der neuen UDP-Metrik
 		geben.  Die Ergebnisse bestätigten sowohl die volle Funktionsfähigkeit der Erweiterung, als auch
