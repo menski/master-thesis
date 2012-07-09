@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: cpu-wrr.eps
-%%Creator: gnuplot 4.4 patchlevel 3
-%%CreationDate: Thu May 10 08:12:17 2012
+%%Creator: gnuplot 4.6 patchlevel 0
+%%CreationDate: Mon Jul  9 03:34:27 2012
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 410 302
 %%EndComments
@@ -20,10 +20,12 @@ gnudict begin
 /Level1 false def
 /Rounded false def
 /ClipToBoundingBox false def
+/SuppressPDFMark false def
 /TransparentPatterns false def
 /gnulinewidth 5.000 def
 /userlinewidth gnulinewidth def
 /Gamma 1.0 def
+/BackgroundColor {-1.000 -1.000 -1.000} def
 %
 /vshift -46 def
 /dl1 {
@@ -38,22 +40,6 @@ gnudict begin
 /vpt_ 31.5 def
 /hpt hpt_ def
 /vpt vpt_ def
-Level1 {} {
-/SDict 10 dict def
-systemdict /pdfmark known not {
-  userdict /pdfmark systemdict /cleartomark get put
-} if
-SDict begin [
-  /Title (cpu-wrr.eps)
-  /Subject (gnuplot plot)
-  /Creator (gnuplot 4.4 patchlevel 3)
-  /Author (invader)
-%  /Producer (gnuplot)
-%  /Keywords ()
-  /CreationDate (Thu May 10 08:12:17 2012)
-  /DOCINFO pdfmark
-end
-} ifelse
 /doclip {
   ClipToBoundingBox {
     newpath 50 50 moveto 410 50 lineto 410 302 lineto 50 302 lineto closepath
@@ -461,8 +447,26 @@ currentdict end definefont pop
   Blacktext {gsave 0 setgray MFshow grestore} {MFshow} ifelse } bind def
 /XYsave    { [( ) 1 2 true false 3 ()] } bind def
 /XYrestore { [( ) 1 2 true false 4 ()] } bind def
+Level1 SuppressPDFMark or 
+{} {
+/SDict 10 dict def
+systemdict /pdfmark known not {
+  userdict /pdfmark systemdict /cleartomark get put
+} if
+SDict begin [
+  /Title (cpu-wrr.eps)
+  /Subject (gnuplot plot)
+  /Creator (gnuplot 4.6 patchlevel 0)
+  /Author (menski)
+%  /Producer (gnuplot)
+%  /Keywords ()
+  /CreationDate (Mon Jul  9 03:34:27 2012)
+  /DOCINFO pdfmark
+end
+} ifelse
 end
 %%EndProlog
+%%Page: 1 1
 gnudict begin
 gsave
 doclip
@@ -471,6 +475,7 @@ doclip
 0 setgray
 newpath
 (Helvetica) findfont 140 scalefont setfont
+BackgroundColor 0 lt 3 1 roll 0 lt exch 0 lt or or not {BackgroundColor C 1.000 0 0 7200.00 5040.00 BoxColFill} if
 LCb setrgbcolor
 3600 4900 M
 [ [(Helvetica) 140.0 0.0 true true 0 (wrr)]
@@ -739,7 +744,7 @@ LCb setrgbcolor
 ] -46.7 MCshow
 LTb
 2016 4549 M
-[ [(Helvetica) 140.0 0.0 true true 0 (CPU% - Faktor 400)]
+[ [(Helvetica) 140.0 0.0 true true 0 (Faktor 400)]
 ] -46.7 MCshow
 1.000 UP
 1.000 UL
@@ -747,12 +752,12 @@ LTb
 % Begin plot #1
 1.000 UL
 LT0
-LCb setrgbcolor
+0.81 0.36 0.00 C LCb setrgbcolor
 4472 1946 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib1)]
 ] -46.7 MRshow
 LT0
-4556 1946 M
+0.81 0.36 0.00 C 4556 1946 M
 399 0 V
 686 2828 M
 333 351 V
@@ -767,12 +772,12 @@ LT0
 % Begin plot #2
 stroke
 LT1
-LCb setrgbcolor
+0.54 0.89 0.20 C LCb setrgbcolor
 4472 1806 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib4)]
 ] -46.7 MRshow
 LT1
-4556 1806 M
+0.54 0.89 0.20 C 4556 1806 M
 399 0 V
 686 2828 M
 333 526 V
@@ -787,12 +792,12 @@ LT1
 % Begin plot #3
 stroke
 LT2
-LCb setrgbcolor
+0.13 0.29 0.53 C LCb setrgbcolor
 4472 1666 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib6)]
 ] -46.7 MRshow
 LT2
-4556 1666 M
+0.13 0.29 0.53 C 4556 1666 M
 399 0 V
 686 2828 M
 333 677 V
@@ -807,12 +812,12 @@ LT2
 % Begin plot #4
 stroke
 LT3
-LCb setrgbcolor
+0.94 0.16 0.16 C LCb setrgbcolor
 4472 1526 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib8)]
 ] -46.7 MRshow
 LT3
-4556 1526 M
+0.94 0.16 0.16 C 4556 1526 M
 399 0 V
 686 2828 M
 333 659 V
@@ -1066,7 +1071,7 @@ LCb setrgbcolor
 ] -46.7 MCshow
 LTb
 5616 4549 M
-[ [(Helvetica) 140.0 0.0 true true 0 (CPU% - Faktor 800)]
+[ [(Helvetica) 140.0 0.0 true true 0 (Faktor 800)]
 ] -46.7 MCshow
 1.000 UP
 1.000 UL
@@ -1074,12 +1079,12 @@ LTb
 % Begin plot #1
 1.000 UL
 LT0
-LCb setrgbcolor
+0.81 0.36 0.00 C LCb setrgbcolor
 4472 1946 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib1)]
 ] -46.7 MRshow
 LT0
-4556 1946 M
+0.81 0.36 0.00 C 4556 1946 M
 399 0 V
 -669 882 R
 222 490 V
@@ -1098,12 +1103,12 @@ LT0
 % Begin plot #2
 stroke
 LT1
-LCb setrgbcolor
+0.54 0.89 0.20 C LCb setrgbcolor
 4472 1806 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib4)]
 ] -46.7 MRshow
 LT1
-4556 1806 M
+0.54 0.89 0.20 C 4556 1806 M
 399 0 V
 4286 2828 M
 222 774 V
@@ -1122,12 +1127,12 @@ LT1
 % Begin plot #3
 stroke
 LT2
-LCb setrgbcolor
+0.13 0.29 0.53 C LCb setrgbcolor
 4472 1666 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib6)]
 ] -46.7 MRshow
 LT2
-4556 1666 M
+0.13 0.29 0.53 C 4556 1666 M
 399 0 V
 4286 2828 M
 222 1005 V
@@ -1146,12 +1151,12 @@ LT2
 % Begin plot #4
 stroke
 LT3
-LCb setrgbcolor
+0.94 0.16 0.16 C LCb setrgbcolor
 4472 1526 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib8)]
 ] -46.7 MRshow
 LT3
-4556 1526 M
+0.94 0.16 0.16 C 4556 1526 M
 399 0 V
 4286 2828 M
 222 992 V
@@ -1457,7 +1462,7 @@ LCb setrgbcolor
 ] -46.7 MCshow
 LTb
 2016 2170 M
-[ [(Helvetica) 140.0 0.0 true true 0 (CPU% - Faktor 1600)]
+[ [(Helvetica) 140.0 0.0 true true 0 (Faktor 1600)]
 ] -46.7 MCshow
 1.000 UP
 1.000 UL
@@ -1465,12 +1470,12 @@ LTb
 % Begin plot #1
 1.000 UL
 LT0
-LCb setrgbcolor
+0.81 0.36 0.00 C LCb setrgbcolor
 4472 1946 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib1)]
 ] -46.7 MRshow
 LT0
-4556 1946 M
+0.81 0.36 0.00 C 4556 1946 M
 399 0 V
 686 448 M
 834 734 L
@@ -1494,12 +1499,12 @@ LT0
 % Begin plot #2
 stroke
 LT1
-LCb setrgbcolor
+0.54 0.89 0.20 C LCb setrgbcolor
 4472 1806 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib4)]
 ] -46.7 MRshow
 LT1
-4556 1806 M
+0.54 0.89 0.20 C 4556 1806 M
 399 0 V
 686 448 M
 834 909 L
@@ -1523,12 +1528,12 @@ LT1
 % Begin plot #3
 stroke
 LT2
-LCb setrgbcolor
+0.13 0.29 0.53 C LCb setrgbcolor
 4472 1666 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib6)]
 ] -46.7 MRshow
 LT2
-4556 1666 M
+0.13 0.29 0.53 C 4556 1666 M
 399 0 V
 686 448 M
 148 659 V
@@ -1552,12 +1557,12 @@ LT2
 % Begin plot #4
 stroke
 LT3
-LCb setrgbcolor
+0.94 0.16 0.16 C LCb setrgbcolor
 4472 1526 M
 [ [(Helvetica) 140.0 0.0 true true 0 (ib8)]
 ] -46.7 MRshow
 LT3
-4556 1526 M
+0.94 0.16 0.16 C 4556 1526 M
 399 0 V
 686 448 M
 148 633 V

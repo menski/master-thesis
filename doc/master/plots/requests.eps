@@ -1,7 +1,7 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: requests.eps
-%%Creator: gnuplot 4.4 patchlevel 3
-%%CreationDate: Thu May 10 01:05:42 2012
+%%Creator: gnuplot 4.6 patchlevel 0
+%%CreationDate: Mon Jul  9 03:32:08 2012
 %%DocumentFonts: (atend)
 %%BoundingBox: 50 50 410 302
 %%EndComments
@@ -20,10 +20,12 @@ gnudict begin
 /Level1 false def
 /Rounded false def
 /ClipToBoundingBox false def
+/SuppressPDFMark false def
 /TransparentPatterns false def
 /gnulinewidth 5.000 def
 /userlinewidth gnulinewidth def
 /Gamma 1.0 def
+/BackgroundColor {-1.000 -1.000 -1.000} def
 %
 /vshift -46 def
 /dl1 {
@@ -38,22 +40,6 @@ gnudict begin
 /vpt_ 31.5 def
 /hpt hpt_ def
 /vpt vpt_ def
-Level1 {} {
-/SDict 10 dict def
-systemdict /pdfmark known not {
-  userdict /pdfmark systemdict /cleartomark get put
-} if
-SDict begin [
-  /Title (requests.eps)
-  /Subject (gnuplot plot)
-  /Creator (gnuplot 4.4 patchlevel 3)
-  /Author (invader)
-%  /Producer (gnuplot)
-%  /Keywords ()
-  /CreationDate (Thu May 10 01:05:42 2012)
-  /DOCINFO pdfmark
-end
-} ifelse
 /doclip {
   ClipToBoundingBox {
     newpath 50 50 moveto 410 50 lineto 410 302 lineto 50 302 lineto closepath
@@ -461,8 +447,26 @@ currentdict end definefont pop
   Blacktext {gsave 0 setgray MFshow grestore} {MFshow} ifelse } bind def
 /XYsave    { [( ) 1 2 true false 3 ()] } bind def
 /XYrestore { [( ) 1 2 true false 4 ()] } bind def
+Level1 SuppressPDFMark or 
+{} {
+/SDict 10 dict def
+systemdict /pdfmark known not {
+  userdict /pdfmark systemdict /cleartomark get put
+} if
+SDict begin [
+  /Title (requests.eps)
+  /Subject (gnuplot plot)
+  /Creator (gnuplot 4.6 patchlevel 0)
+  /Author (menski)
+%  /Producer (gnuplot)
+%  /Keywords ()
+  /CreationDate (Mon Jul  9 03:32:08 2012)
+  /DOCINFO pdfmark
+end
+} ifelse
 end
 %%EndProlog
+%%Page: 1 1
 gnudict begin
 gsave
 doclip
@@ -471,6 +475,7 @@ doclip
 0 setgray
 newpath
 (Helvetica) findfont 140 scalefont setfont
+BackgroundColor 0 lt 3 1 roll 0 lt exch 0 lt or or not {BackgroundColor C 1.000 0 0 7200.00 5040.00 BoxColFill} if
 1.000 UL
 LTb
 1.000 UL
@@ -654,7 +659,7 @@ LTb
 % Begin plot #1
 1.000 UL
 LT0
-/Helvetica findfont 140 scalefont setfont
+0.54 0.89 0.20 C /Helvetica findfont 140 scalefont setfont
 686 448 M
 0 1752 V
 707 448 M
@@ -1234,8 +1239,8 @@ stroke 6384 2016 M
 % End plot #1
 % Begin plot #2
 stroke
-LT2
-/Helvetica findfont 140 scalefont setfont
+LT1
+0.80 0.00 0.00 C /Helvetica findfont 140 scalefont setfont
 686 1704 M
 63 0 V
 63 0 V

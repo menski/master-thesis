@@ -20,9 +20,9 @@
 \usepackage{xcolor}
 
 \definecolor{uniblue}{rgb}{0.062745,0.17647,0.34118}
-\definecolor{tblue}{HTML}{204A87}
-\definecolor{tgreen}{HTML}{4E9A06}
-\definecolor{tred}{HTML}{CC0000}
+\definecolor{tblue}{HTML}{729FCF}
+\definecolor{tgreen}{HTML}{8AE234}
+\definecolor{tred}{HTML}{EF2929}
 
 \lstset{
 	language=C,
@@ -371,13 +371,6 @@
 			\texttt{de} und der Root-Domain, welche meist entfällt bzw. als leere Zeichenkette
 			(\glqq{}\grqq{}) dargestellt wird.
 
-			\begin{figure}
-				\centering
-				\includegraphics[width=\textwidth]{images/dns-tree-domains}
-				\caption{Ausschnitt aus der DNS-Topologie} % TODO: schön machen
-				\label{fig:dns-tree}
-			\end{figure}
-
 			Der Vorteil der Speicherung der DNS-Informationen in einem Baum besteht darin, dass jede Subdomain
 			nur Informationen zu dem darunter liegenden Teilbaum speichern muss. Das heißt, die Subdomain
 			\texttt{de} besitzt Informationen bezüglich den Subdomains \texttt{denic} und
@@ -402,7 +395,15 @@
 				\end{itemize}
 			\end{itemize}
 
-			In der Abbildung \ref{fig:dns-tree} sind zum Beispiel die Domains \texttt{uk} und \texttt{de}
+			\begin{figure}
+				\centering
+				\includegraphics[width=\textwidth]{images/dns-tree-domains}
+				\caption{Ausschnitt aus der DNS-Topologie}
+				\label{fig:dns-tree}
+			\end{figure}
+
+
+			In der Abbildung \ref{fig:dns-tree} sind zum Beispiel die Domains \texttt{uk}, \texttt{fr} und \texttt{de}
 			ccTLDs, die Domains \texttt{com}, \texttt{org} und \texttt{net} sind uTLDs, und \texttt{mobi}
 			ist eine sTLD. Unter den TLDs folgen die sogenannten Second-Level-Domains (SLDs), welche meist
 			schon zu den eigentlichen Netzteilnehmern gehören oder noch eine weitere Einteilungsebene
@@ -422,7 +423,7 @@
 			einfacher Änderungen einzupflegen. Da ein Betreiber alle Subdomains seiner eigenen Domain
 			allein verwalten kann, spricht man dabei von einer \textit{Zone}.
 			Eine Zone umfasst alle Domains, die von diesem DNS-Betreiber administriert werden. So gehören
-			zum Beispiel alle Subdomains von \texttt{haiti.cs.uni-potsdam.de} zu einer Zone. Diese Zonen
+			alle Subdomains von \texttt{haiti.cs.uni-potsdam.de} zum Beispiel zu einer Zone. Diese Zonen
 			werden über sogenannte Master-Files \cite{rfc1035,liualb2006} konfiguriert. Listing
 			\ref{lst:master} zeigt einen Auszug aus einem Beispiel für ein Master-File. Der grundlegende
 			Aufbau ist in der Form: Domain-Name (vollständig mit abschließendem Punkt oder Subdomain),
@@ -435,6 +436,7 @@
 			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Dieses Beispiel zeigt
 			nur eine kleine Anzahl von möglichen Typen, weshalb in Tabelle \ref{tab:dns-types} die
 			wichtigsten von ihnen aufgeführt sind.
+
 
 			\begin{table}
 				\centering
@@ -508,7 +510,7 @@
 				\begin{figure}
 					\centering
 					\includegraphics[width=\textwidth]{images/request}
-					\caption{DNS-Anfragen für \texttt{www.cs.uni-potsdam.de}} % TODO: schön machen
+					\caption{DNS-Anfragen für \texttt{www.cs.uni-potsdam.de}}
 					\label{fig:bsp-request}
 				\end{figure}
 
@@ -673,7 +675,7 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=5cm]{images/internet-server}
+			\includegraphics[width=10cm]{images/internet-server}
 			\caption{Lastverteilung mit mehreren Servern}
 			\label{fig:lastverteilung}
 		\end{figure}
@@ -718,7 +720,7 @@
 			
 			\begin{figure}
 				\centering
-				\includegraphics[width=5cm]{images/loadbalancer}
+				\includegraphics[width=\textwidth]{images/loadbalancer}
 				\caption{Lastverteilung mit Hilfe eines Lastverteilers}
 				\label{fig:loadbalancer}
 			\end{figure}
@@ -792,7 +794,7 @@
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=9cm]{images/dns-loadbalancer}
+				\includegraphics[width=12cm]{images/dns-loadbalancer}
 				\caption{Lastverteilung mit Hilfe von DNS}
 				\label{fig:lastverteilung-dns}
 			\end{figure}
@@ -1974,7 +1976,7 @@
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=13cm]{plots/cpu-wrr}
+				\includegraphics[width=14cm]{plots/cpu-wrr}
 				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit wrr als
 				Lastverteilungsalgorithmus}
 				\label{fig:cpu-wrr}
@@ -1982,7 +1984,7 @@
 
 			\begin{figure}
 				\centering
-				\includegraphics[width=13cm]{plots/cpu-salbnet}
+				\includegraphics[width=14cm]{plots/cpu-salbnet}
 				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit salbnet als
 				Lastverteilungsalgorithmus}
 				\label{fig:cpu-salbnet}
