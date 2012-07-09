@@ -105,12 +105,12 @@
 	\subsection*{\centering Zusammenfassung}
 
 	Diese Masterarbeit befasst sich mit der Lastverteilung von DNS-Anfragen. Im Mittelpunkt steht
-	dabei die Erweiterung der selbst-adaptiven Lastverteilungslösung salbnet. Dazu wird für das System
+	dabei die Erweiterung der selbst-adaptiven Lastverteilungslösung \textit{salbnet}. Dazu wird für das System
 	eine neue Metrik für UDP-Pakete konzipiert. Infolgedessen wird die Umsetzbarkeit des entwickelten
-	Konzepts überprüft. Auf der Basis dieser Ergebnisse wird für salbnet eine UDP-Erweiterung
+	Konzepts überprüft. Auf der Basis dieser Ergebnisse wird für \textit{salbnet} eine UDP-Erweiterung
 	implementiert. Grundlage der Erweiterung ist eine Auswertung der UDP-Receive-Queue. Bei
 	abschließenden Messungen konnte gezeigt werden, dass die Erweiterung funktionstüchtig ist und
-	salbnet im DNS-Anwendungsfall einem Standardalgorithmus überlegen ist.
+	\textit{salbnet} im DNS-Anwendungsfall einem Standardalgorithmus überlegen ist.
 
 	\vfill\mbox{}\clearpage
 }
@@ -258,7 +258,7 @@
 		Lastverteilungsansätze.  Darüber hinaus wird eine Einordnung dieser Arbeit in die vorgestellten
 		Konzepte vorgenommen.  Anschließend werden in Kapitel \ref{cha:arbeiten} einige Arbeiten
 		aufgeführt, welche sich mit DNS-Clustern und Lastsituationen in eben diesen befassen. Das zu
-		erweiternde System zur selbst-adaptiven Lastverteilung salbnet \cite{zinke2012,salbnet} wird in
+		erweiternde System zur selbst-adaptiven Lastverteilung \textit{salbnet} \cite{zinke2012,salbnet} wird in
 		Kapitel \ref{cha:salbnet} beschrieben.  Im \ref{cha:konzept}. Kapitel werden das Konzept der
 		erarbeiteten Erweiterung und die dazugehörigen Vorüberlegungen aufgezeigt.  Im darauf folgenden
 		Kapitel \ref{cha:implementierung} wird die konkrete Umsetzung des vorher dargestellten Konzepts
@@ -442,13 +442,13 @@
 				\centering
 				\begin{tabular}{|c|l|}\hline
 					Typ & Beschreibung \\\hline\hline
-					A	& IPv4-Adresse\\
-					AAAA	& IPv6-Adresse\\
-					NS	& Nameserver\\
-					MX	& Mailserver\\
-					CNAME	& Kanonischer Name eines Alias\\
-					SOA	& Start einen Zonenautorität\\
-					PTR		& Zeiger von eine Adresse auf eine Domain\\\hline
+					A & IPv4-Adresse\\
+					AAAA & IPv6-Adresse\\
+					NS & Nameserver\\
+					MX & Mailserver\\
+					CNAME & Kanonischer Name eines Alias\\
+					SOA & Start einen Zonenautorität\\
+					PTR 	& Zeiger von eine Adresse auf eine Domain\\\hline
 				\end{tabular}
 			\caption{Die wichtigsten Eintragstypen in einem DNS-Master-File \cite{rfc1035,rfc3596}}
 			\label{tab:dns-types}
@@ -564,7 +564,7 @@
 
 			\subsection{DNS-Server Software} % {{{
 			\label{sub:software}
-			
+
 				In diesem Abschnitt werden mehrere Softwaresysteme vorgestellt, welche zum Betrieb eines
 				DNS-Server genutzt werden können. Diese wurden aufgrund von zwei Studien aus den Jahren 2004
 				und 2009 zur Verteilung von DNS-Server-Software ausgewählt. Die erste Studie
@@ -577,7 +577,7 @@
 				\ref{tab:verteilung}). Die genannten vier Systeme werden im Folgenden vorgestellt.
 				Zusätzlich wird auf den dnsmasq Server eingegangen, welcher eine sehr spezielle Form eines
 				DNS-Servers darstellt.
-				
+
 				\begin{table}
 					\centering
 					\begin{tabular}{|c|r|r|}\hline
@@ -714,10 +714,10 @@
 		Nachteile. Die Hauptanwendung für diese Systeme ist die Verteilung von HTTP-Anfragen.
 		Diese unterscheiden sich von DNS-Anfragen in mehreren Punkten, weshalb anschließend noch
 		Besonderheiten und existierende Verfahren der Lastverteilung von DNS-Verkehr erklärt werden.
-	
+
 			\subsection{Server-Lastverteilung} % {{{
 			\label{sub:Server-Lastverteilung}
-			
+
 			\begin{figure}
 				\centering
 				\includegraphics[width=\textwidth]{images/loadbalancer}
@@ -831,14 +831,14 @@
 				\centering
 				\begin{tabular}{|ccccccl|}\hline
 				 Domain & Klasse & Typ & Priorität & Gewicht & Port & Ziel \\\hline\hline
-					\_http.\_tcp.bsp.de. & IN & SRV & 0 & 2 & 80 & www.bsp.de. \\	
-					& IN & SRV & 0 & 1 & 80 & www2.bsp.de. \\	
+					\_http.\_tcp.bsp.de. & IN & SRV & 0 & 2 & 80 & www.bsp.de. \\
+					& IN & SRV & 0 & 1 & 80 & www2.bsp.de. \\
 					& IN & SRV & 1 & 0 & 80 & backup.bsp.de. \\\hline
 				\end{tabular}
 				\caption{Beispiel für einen \texttt{SRV}-Eintrag für einen Webserver}
 				\label{tab:srv}
 			\end{table}
-			
+
 			Mit Geotargeting oder auch GeoIP genannt, ist es möglich, anhand der IP-Adresse eine Aussage
 			über die ungefähre geografische Position des Inhabers zu treffen. Diese Information wird zum
 			Beispiel beim Global Server Load Balancing (GSLB) \cite{bourke2001} verwendet, wodurch der
@@ -857,7 +857,7 @@
 			und dynamisch wieder hinzugefügt, sobald sie die Überlastsitutation überwunden haben.
 
 			% subsection DNS-basierte Lastverteilung }}}
-			
+
 			\subsection{Lastverteilung von DNS-Verkehr} % {{{
 			\label{sub:lastverteilung-dns}
 
@@ -881,7 +881,7 @@
 			das sinnvoll. Es existieren insgesamt 13 Root-Server
 			(A-M) \cite{rootserver}. Von ihnen nutzen 9 (A, C, F, G, I, J, K, L und M)
 			Anycast-Adressen. Die anderen 4 Root-Server haben nur lokale Standorte in den USA.
-				
+
 			% subsection Lastverteilung von DNS-Verkehr }}}
 
 		% section Lastverteilung }}}
@@ -900,13 +900,13 @@
 			des DNS jeweils andere Verfahren zur Lastverteilung geeignet. Es wurden die Konzepte der
 			Server-Lastverteilung und DNS-basierten Lastverteilung vorgestellt.
 
-			Um das verwendete System salbnet in dieser Topologie einzuordnen, muss beachtet werden, dass
-			salbnet eine Server-Lastverteilung realisiert. Somit sind private Netzwerke und kleine
-			Firmennetzwerke kein Anwendungsbereich für salbnet. Bei Root-Servern, TLDs und großen SLDs ist
+			Um das verwendete System \textit{salbnet} in dieser Topologie einzuordnen, muss beachtet werden, dass
+			\textit{salbnet} eine Server-Lastverteilung realisiert. Somit sind private Netzwerke und kleine
+			Firmennetzwerke kein Anwendungsbereich für \textit{salbnet}. Bei Root-Servern, TLDs und großen SLDs ist
 			es realistischer, dass DNS-Cluster genutzt werden, um die hohe Anzahl an DNS-Anfragen
-			abzuarbeiten. Dementsprechend ordnet sich salbnet bei solchen großen DNS-Systemen ein, bei denen
+			abzuarbeiten. Dementsprechend ordnet sich \textit{salbnet} bei solchen großen DNS-Systemen ein, bei denen
 			der Einsatz eines DNS-Clusters unumgänglich ist und eine hohe Last entsteht.
-		
+
 			% Einordnung der Arbeit
 
 		% section Fazit }}}
@@ -974,7 +974,7 @@
 	Root-Server F und K mit TLD-Servern von UltraDNS verglichen. Die Root-Server nutzen eine
 	Anycast-Adresse für ihre verteilten Cluster, UltraDNS hingegen nutzt zwei Anycast-Adressen für
 	alle ihre Server. Die Messungen zeigen, dass bei den Root-Servern nur \unit[15]{\%}-\unit[27]{\%}
-	der Anfragen an den	geografisch nächsten Cluster gesendet wurden. Im Vergleich dazu geschah dies bei
+	der Anfragen an den geografisch nächsten Cluster gesendet wurden. Im Vergleich dazu geschah dies bei
 	UltraDNS sogar von \unit[45]{\%} bis \unit[53]{\%} der Anfragen. Allerdings zeigte sich, dass die
 	DNS-Cluster der Root-Server eine höhere Erreichbarkeit hatten. Zusammenfassend
 	ist zu sagen, dass Anycast eine sinnvolle Methode ist um DNS-Anfragen zu verteilen, aber stark von
@@ -1013,43 +1013,43 @@
 	\chapter{salbnet} % {{{
 	\label{cha:salbnet}
 
-		Dieses Kapitel beschreibt salbnet \cite{salbnet}, einen Credit-basierten
+		Dieses Kapitel beschreibt \textit{salbnet} \cite{salbnet}, einen Credit-basierten
 		Lastverteilungsansatz.  Er basiert auf Arbeiten zur selbst-adaptiven Lastverteilung von
 		TCP-Verkehr vor allem in InfiniBand-Netzwerken \cite{zinke2007, scsczile2008,
 		schneidenbach2009}. Die Besonderheit an diesem Lastverteilungsverfahren ist, dass es sowohl eine
 		Komponente auf dem Lastverteiler als auch auf den Backend-Servern gibt. Dabei werden auf den
 		Backend-Servern Credits bestimmt, welche die Verfügbarkeit des Servers wiederspiegeln sollen,
 		und an den Lastverteiler übermittelt. Der Lastverteiler wählt dann anhand der gemeldeten
-		Credits die Backend-Server aus. Dieser Aufbau von salbnet ist in Abbildung \ref{fig:salbnet} zu
-		sehen, wobei die Komponenten von salbnet blau hervorgehoben sind. Sie sollen im Folgenden kurz
+		Credits die Backend-Server aus. Dieser Aufbau von \textit{salbnet} ist in Abbildung \ref{fig:salbnet} zu
+		sehen, wobei die Komponenten von \textit{salbnet} blau hervorgehoben sind. Sie sollen im Folgenden kurz
 		vorgestellt werden.
 
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/salbnet.png}
-			\caption{Aufbau von salbnet (übernommen aus \cite{zinke2012})}
+			\caption{Aufbau von \textit{salbnet} (übernommen aus \cite{zinke2012})}
 			\label{fig:salbnet}
 		\end{figure}
 
 		\subsection*{libnetmsg} % {{{
 
-			Die libnetmsg \cite{rabweg2009} ist eine leichtgewichtige Kommunikations-Bibliothek die zur
+			Die \textit{libnetmsg} \cite{rabweg2009} ist eine leichtgewichtige Kommunikations-Bibliothek die zur
 			Übertragung sowohl UDP und TCP als auch InfiniBand unterstützt. Außerdem kann bei InfiniBand
-			die Remote Direct Memory Access (RDMA) Eigenschaft genutzt werden. In salbnet wird die
+			die Remote Direct Memory Access (RDMA) Eigenschaft genutzt werden. In \textit{salbnet} wird die
 			Bibliothek eingesetzt um die Credits von den Backend-Server an den Lastverteiler zu melden. Wird
 			InfiniBand verwendet können die neuen Credits mit Hilfe von RDMA direkt in den Kernelspeicher
 			des Lastverteilers geschrieben werden. Dieses Vorgehen ist in Abbildung \ref{fig:salbnet}
 			dargestellt.
 
 		% subsection libnetmsg }}}
-		
+
 		\subsection*{libnethook} % {{{
 
-			Mit der dynamischen Bibliothek libnethook können Funktionsaufrufe von Anwendungen überwacht
+			Mit der dynamischen Bibliothek \textit{libnethook} können Funktionsaufrufe von Anwendungen überwacht
 			werden. So kann ermittelt werden wie oft eine Funktion aufgerufen bzw. was von ihr
-			zurückgegeben wird. Im Fall von salbnet, wird der \texttt{accept}-Funktionsaufruf vom Apache
+			zurückgegeben wird. Im Fall von \textit{salbnet}, wird der \texttt{accept}-Funktionsaufruf vom Apache
 			Webserver (httpd) \cite{httpd} abgefangen und analysiert. In Abbildung \ref{fig:salbnet} ist
-			angedeutet, dass libnethook zwischen dem httpd und der libc agiert. Allgemein kann das auch
+			angedeutet, dass \textit{libnethook} zwischen dem httpd und der \textit{libc} agiert. Allgemein kann das auch
 			für alle anderen TCP-Anwendungen instrumentalisiert werden. Im TCP-Fall wird nur die Anzahl
 			der Funktionsaufrufe gezählt, um eine Neuberechnung der Credits auszulösen.
 
@@ -1057,16 +1057,16 @@
 
 		\subsection*{salbd} % {{{
 
-			Die Hauptkomponente von salbnet ist salbd, welches sowohl auf dem Backend-Server als auch auf
-			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler stellt salbd einmal ein Kernelmodul
-			bereit, das den salbnet Scheduler für LVS implementiert. Dieser wählt Round-Robin den
+			Die Hauptkomponente von \textit{salbnet} ist \textit{salbd}, welches sowohl auf dem Backend-Server als auch auf
+			dem Lastverteiler zum Einsatz kommt. Auf dem Lastverteiler stellt \textit{salbd} einmal ein Kernelmodul
+			bereit, das den \textit{salbnet} Scheduler für LVS implementiert. Dieser wählt Round-Robin den
 			nächsten Backend-Server aus allen Servern, welche noch Credits größer 0 besitzen, aus. Außerdem
-			wird salbd genutzt, um Credits von Backend-Servern zu empfangen und bei Übertragungen
-			ohne RDMA, auch um die Credits in den Kernelspace zum salbnet Scheduler zu übermitteln.  Im
-			Backend ist salbd zur Bestimmung der Credits anhand der aktuellen Last der Webserver
+			wird \textit{salbd} genutzt, um Credits von Backend-Servern zu empfangen und bei Übertragungen
+			ohne RDMA, auch um die Credits in den Kernelspace zum \textit{salbnet} Scheduler zu übermitteln.  Im
+			Backend ist \textit{salbd} zur Bestimmung der Credits anhand der aktuellen Last der Webserver
 			verantwortlich. Dazu werden verschiedene Metriken verwendet und anhand der ermittelten Werte
 			verschiedene Meldestrategien verfolgt. Dieser Ablauf ist schematisch in Abbildung
-			\ref{fig:salbd} dargestellt. Dabei überwacht salbd die ensprechende Anwendung (z.B.
+			\ref{fig:salbd} dargestellt. Dabei überwacht \textit{salbd} die ensprechende Anwendung (z.B.
 			httpd) und ermittelt dadurch Metriken, welche genutzt werden, um Credits zu berechnen. Diese
 			werden dann zum Lastverteiler übermittelt.
 
@@ -1075,15 +1075,15 @@
 		\begin{figure}
 			\centering
 			\includegraphics[width=\textwidth]{images/salbd-concept.png}
-			\caption{Konzept von salbd (übernommen aus \cite{zinke2012})}
+			\caption{Konzept von \textit{salbd} (übernommen aus \cite{zinke2012})}
 			\label{fig:salbd}
 		\end{figure}
 
 		\section{Metrik und Credits} % {{{
 		\label{sec:metrik}
 
-			In \cite{zinke2012} werden die Forschungsergebnisse über salbnet vorgestellt.  Dabei ist die
-			Idee von salbnet Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
+			In \cite{zinke2012} werden die Forschungsergebnisse über \textit{salbnet} vorgestellt.  Dabei ist die
+			Idee von \textit{salbnet} Credits zur Bewertung von Lastsitutationen zu nutzen. Das bedeutet, dass die
 			Backend-Server ihre aktuelle Last ermitteln und daraus eine Credit-Anzahl bestimmen. Diese
 			soll der Anzahl von Anfragen entsprechen, welche zum aktuellen Zeitpunkt zusätzlich vom Server
 			abgearbeitet werden könnten. Diese Anzahl an Credits werden dem Lastverteiler gemeldet. Der
@@ -1104,7 +1104,7 @@
 				\item Sie sollte auch für Dienste mit mehreren Tausend Clients skalieren.
 			\end{itemize}
 
-			Die Version von salbnet vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine
+			Die Version von \textit{salbnet} vor dieser Arbeit war auf TCP-Anfragen begrenzt. Dazu wurde eine
 			Metrik beruhend auf der TCP-Backlog des Webservers entwickelt. Die Backlog erfüllt alle
 			gestellten Anforderungen an eine gute Metrik. Sie ist einfach zu berechnen, da der aktuelle
 			Füllstand und der maximale Füllstand leicht abfragbar sind. Die Backlog des Webservers
@@ -1170,7 +1170,7 @@
 			Dynamic Report ersetzt das feste Meldeintervall des vorherigen Algorithmus durch ein dynamisch
 			berechnetes. Dabei bildet ein festes Intervall eine Untergrenze. Dies verhindert eine Meldung nach
 			jeder abgearbeitet Anfrage. Dieser Algorithmus meldet oft Credits, wenn die Backlog nur leicht
-			gefüllt ist und eine geringe Last	auf dem Server liegt. Ist die Backlog stark gefüllt und der
+			gefüllt ist und eine geringe Last auf dem Server liegt. Ist die Backlog stark gefüllt und der
 			Server mit der Abarbeitung der Anfragen beschäftigt, werden die Credits seltener gemeldet. Das
 			führt dazu, dass bei vielen Anfragen keine zusätzliche Last durch unnötige Credit-Meldungen entsteht
 			und bei geringer Last der Lastverteiler immer aktuelle Werte vom Backend-Server besitzt.
@@ -1198,7 +1198,7 @@
 		\section{Benchmark} % {{{
 		\label{sec:Benchmark}
 
-			Um salbnet auf Webclustern zu testen, wurde der Benchmark servprep/servload
+			Um \textit{salbnet} auf Webclustern zu testen, wurde der Benchmark servprep/servload
 			\cite{habenschuss2011} entwickelt. Dabei ist servprep ein Programm, welches Logs des Apache
 			Webservers einliest und diese modifizieren kann. So können alle Anfragen vervielfacht,
 			Spitzenlasten verstärkt oder über einen Bewertungsalgorithmus neue Anfragen eingefügt werden,
@@ -1216,16 +1216,16 @@
 		\section{Fazit} % {{{
 		\label{sec:salbnet-fazit}
 
-			In diesem Kapitel wurden die theoretischen Grundlagen und der Aufbau von salbnet erläutert.
-			Der selbst-adaptive Lastverteiler salbnet besteht aus den Komponenten libnetmsg, libnethook
-			und salbd. Hierbei ist salbd die Hauptkomponente und stellt ein Kernelmodul für den LVS
+			In diesem Kapitel wurden die theoretischen Grundlagen und der Aufbau von \textit{salbnet} erläutert.
+			Der selbst-adaptive Lastverteiler \textit{salbnet} besteht aus den Komponenten \textit{libnetmsg}, \textit{libnethook}
+			und \textit{salbd}. Hierbei ist \textit{salbd} die Hauptkomponente und stellt ein Kernelmodul für den LVS
 			bereit, sowie eine Client-Komponente, welche die Credits auf den Backend-Servern berechnet.
-			Zusätzlich wurden die bereits implementierten Metriken und Meldestrategien von salbnet
+			Zusätzlich wurden die bereits implementierten Metriken und Meldestrategien von \textit{salbnet}
 			erläutert. Dabei handelt es sich um die TCP-Backlog-Metrik für TCP-Anfragen. Von den
 			vorhandenen Meldestrategien ist vor allem der Dynamic Pressure Relieve Algorithmus zu
 			erwähnen. Dieser konnte bereits in Simulationen und Tests überzeugen.
 
-			Zusätzlich zum salbnet wurde der Benchmark servload entwickelt, welcher in
+			Zusätzlich zum \textit{salbnet} wurde der Benchmark servload entwickelt, welcher in
 			\cite{menski2012} erweitert wurde, um DNS-Anfragen zu unterstützen. Dieser
 			Benchmark bietet sich vor allem deshalb an, weil es mit ihm möglich ist, aus realen
 			BIND-Logs eine hohe Last zu generieren, indem diese durch verschiedene Algorithmen
@@ -1233,7 +1233,7 @@
 			servload-Benchmarks generiert werden, ein wichtiger Grund für die Wahl.
 
 			Basierend auf diesen Informationen wird im folgenden Kapitel ein Konzept dafür erarbeitet, wie
-			sich salbnet auf DNS-Anfragen anpassen lässt.  Dessen Umsetzung im Folgenden mit dem
+			sich \textit{salbnet} auf DNS-Anfragen anpassen lässt.  Dessen Umsetzung im Folgenden mit dem
 			servload-Benchmark getestet wird.
 
 		% section Fazit }}}
@@ -1243,7 +1243,7 @@
 	\chapter{Konzept} % {{{
 	\label{cha:konzept}
 
-	In diesem Kapitel sollen mögliche Konzepte zur Erweiterung von salbnet für DNS-Anfragen
+	In diesem Kapitel sollen mögliche Konzepte zur Erweiterung von \textit{salbnet} für DNS-Anfragen
 	vorgestellt werden. Anschließend wird eines der Konzepte ausgewählt und ein Entwurf zur Implementierung
 	präsentiert. Die Implementierung des gewählten Entwurfs wird dann in Kapitel
 	\ref{cha:implementierung} beschrieben.
@@ -1251,7 +1251,7 @@
 		\section{Ansätze} % {{{
 		\label{sec:ansaetze}
 
-		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist salbnet ursprünglich nur für TCP-Anwendungen
+		Wie in Kapitel \ref{cha:salbnet} beschrieben, ist \textit{salbnet} ursprünglich nur für TCP-Anwendungen
 		konzipiert und für den Apache Webserver implementiert. Dazu wurde eine Metrik über die Backlog
 		des TCP-Sockets des Webservers erstellt. Diese gibt die konkrete Anzahl der Anfragen an, welche
 		noch in der Backlog Platz finden würden. Das heißt, es sollten nicht mehr als diese Anzahl von
@@ -1266,7 +1266,7 @@
 		dass der Server an seine Grenzen geraten ist. Daher ist eine mögliche Metrik die Sammlung
 		entsprechender Last-Daten und eine anschließende Abschätzung bezüglich der verbleibenden
 		Ressourcen.
-		
+
 		% subsection Last-Metrik }}}
 
 		\subsection*{Verkehr-Metrik} % {{{
@@ -1296,7 +1296,7 @@
 		werden könnten.
 
 		% subsection Receive-Queue-Metrik }}}
-		
+
 		% section Ansätze }}}
 
 		\section{Auswahl} % {{{
@@ -1378,9 +1378,9 @@
 		% subsection Receive-Queue-Metrik }}}
 
 		Wie bereits durch die vorhergehenden Bewertungen zu erkennen ist, hat nur die Receive-Queue-Metrik die
-		Anforderung aus \cite{scsczile2008} an eine Metrik für salbnet erfüllt. Diese wird in Abschnitt
+		Anforderung aus \cite{scsczile2008} an eine Metrik für \textit{salbnet} erfüllt. Diese wird in Abschnitt
 		\ref{sec:entwurf} genauer beschrieben und in Kapitel \ref{cha:implementierung} wird die
-		konkrete Implementierung in salbnet erläutert.
+		konkrete Implementierung in \textit{salbnet} erläutert.
 
 		% section Auswahl }}}
 
@@ -1391,7 +1391,7 @@
 		nötigen Messwerte identifiziert und eine Formel entwickelt, mit der aus den Messwerten die
 		Credits des Servers berechnet werden können. Die Metrik soll den Server anhand der
 		UDP-Receive-Queue des DNS-Servers bewerten. Demnach werden folgende Messwerte benötigt: $~$\\
-		
+
 		\begin{tabular}{rl}
 			$q_{max}$		  & die maximale Kapazität der UDP-Receive-Queue\\
 			$q_{current}$ &	der aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
@@ -1409,7 +1409,7 @@
 		\end{equation}
 
 		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
-		\ref{cha:salbnet} beschrieben, existieren verschiedene Meldestrategien in salbnet. Bei den
+		\ref{cha:salbnet} beschrieben, existieren verschiedene Meldestrategien in \textit{salbnet}. Bei den
 		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve (siehe Abschnitt
 		\ref{sub:meldestrategien}) werden die Credits in dynamisch berechneten Intervallen gemeldet. Das
 		heißt, zwischen zwei Credit-Meldungen kann sich die Receive-Queue stark verändern. Die
@@ -1469,8 +1469,8 @@
 	Möglichkeiten existieren, die benötigten Messwerte zu erhalten. Außerdem werden die erhaltenen
 	Messwerte bewertet und es wird auf eventuelle Probleme oder Ungenauigkeiten dieser Werte
 	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
-	\ref{sec:erweiterung} auf die konkrete Implementierung in salbnet eingegangen. In Kapitel
-	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von salbnet mit
+	\ref{sec:erweiterung} auf die konkrete Implementierung in \textit{salbnet} eingegangen. In Kapitel
+	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von \textit{salbnet} mit
 	einem Standard-Algorithmus vergleichen.
 
 		\section{Anforderungen} %  {{{
@@ -1479,7 +1479,7 @@
 		In diesem Abschnitt sollen Möglichkeiten diskutiert werden, mit deren Hilfe die einzelnen
 		Messwerte, für die in Abschnitt \ref{sec:entwurf} beschriebene Metrik, ermittelt werden können. Es
 		werden dabei folgende Werte benötigt: $~$\\
-		
+
 		\begin{tabular}{rl}
 			$q_{max}$		  & die maximale Kapazität der UDP-Receive-Queue\\
 			$q_{current}$ &	der aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
@@ -1528,16 +1528,16 @@
 		hat einige Vorteile gegenüber dem \texttt{/proc}-Dateisystem, da nur initial ein Socket erstellt
 		werden muss, welcher danach weiterverwendet werden kann. Es können aber auch Werte gezielt
 		abgefragt werden, ohne diese aus einer Textrepräsentation extrahieren zu müssen. In der
-		Implementation von salbnet \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt, um
+		Implementation von \textit{salbnet} \cite{zinke2012,salbnet} wird ein \texttt{Netlink}-Socket genutzt, um
 		Informationen bezüglich der TCP-Backlog zu sammeln. Aus diesem Grund war es naheliegend, ein
 		ähnliches Vorgehen auch für die UDP-Receive-Queue zu evaluieren. Allerdings wurde das
-		Kernelmodul des salbnet Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne
+		Kernelmodul des \textit{salbnet} Schedulers für die Kernel-Version 2.6.18 entwickelt und kann nicht ohne
 		Anpassungen mit neueren Versionen genutzt werden. Eine Erweiterung der \texttt{Netlink}-Sockets
 		um ein UDP-Modul \cite{udpnetlink} wurde jedoch erst im Linux-Kernel 3.3 aufgenommen. Somit ist
 		die Verwendung eines \texttt{Netlink}-Sockets, zur Abfrage des aktuell belegten Speicherplatzes
-		in der UDP-Receive-Queue, in salbnet nicht möglich.
+		in der UDP-Receive-Queue, in \textit{salbnet} nicht möglich.
 
-		\lstinputlisting[float,caption={/proc/net/udp	Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
+		\lstinputlisting[float,caption={/proc/net/udp Informationen zu UDP-Sockets},label=lst:proc-udp]{listings/proc-udp.txt}
 
 		% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
@@ -1572,9 +1572,9 @@
 			\centering
 			\begin{tabular}{|c|c|}\hline
 				Receive-Queue & recvmsg \\\hline\hline
-				376 & 12-64	\\
-				504 & 65-192	\\
-				632 & 193-320	\\
+				376 & 12-64 \\
+				504 & 65-192 \\
+				632 & 193-320 \\
 				760 & 321-448 \\
 				888 &	449-576\\\hline
 			\end{tabular}
@@ -1627,7 +1627,7 @@
 		des UDP-Verkehrs erzeugt. Somit sind Drops, auch wenn diese nur systemweit angegeben werden,
 		kritisch für den DNS-Server. Zur Berechnung der Drops seit der letzten Credit-Meldung $q_{drop}$
 		muss die Differenz zum vorherigen Wert berechnet werden.
-		
+
 		\lstinputlisting[float,caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
 
 		% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
@@ -1641,13 +1641,13 @@
 		Dieser Abschnitt stellt die konkrete Implementation, der in Abschnitt \ref{sec:entwurf}
 		entworfenen Receive-Queue-Metrik, vor. Die dafür benötigten Werte werden wie in Abschnitt
 		\ref{sec:anforderungen} beschrieben ermittelt. Für die Ermittlung von $q_{max}$, $q_{current}$
-		und $q_{drop}$ muss die Komponente von salbd, welche für das Sammeln der Messwerte zuständig
+		und $q_{drop}$ muss die Komponente von \textit{salbd}, welche für das Sammeln der Messwerte zuständig
 		ist, erweitert werden. Das geschieht in der Datei \texttt{client/linux/client\_metric.c} von
-		salbd.  Um den Median der Paketgrößen zu berechnen, muss, wie beschrieben, der Funktionsaufruf
+		\textit{salbd}.  Um den Median der Paketgrößen zu berechnen, muss, wie beschrieben, der Funktionsaufruf
 		\texttt{recvmsg} vom BIND Server abgefangen werden. Dazu wird in der Datei \texttt{nethook.c}
-		der libnethook-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
-		\texttt{libc} überlagert. Abschließend müssen aus den gesammelten Werten die Credits berechnet
-		werden. Diese Berechnung findet in der Datei \texttt{client/client\_report.c} in salbd statt. Im
+		der \textit{libnethook}-Bibliothek eine neue Funktion benötigt, welche die \texttt{recvmsg}-Funktion der
+		\textit{libc} überlagert. Abschließend müssen aus den gesammelten Werten die Credits berechnet
+		werden. Diese Berechnung findet in der Datei \texttt{client/client\_report.c} in \textit{salbd} statt. Im
 		Folgenden werden die genauen Änderungen am Quellcode beschrieben.
 
 			\subsection*{Maximale Kapazität der UDP-Receive-Queue} % {{{
@@ -1657,12 +1657,12 @@
 			\texttt{rmem\_default} im Verzeichniss \texttt{/proc/sys/net/core/} zu finden. In Listing
 			\ref{lst:metric-max-udp} wird in Zeile 1 überprüft, ob die maximale Kapazität der
 			UDP-Recevie-Queue bereits ermittelt wurde.  Es wird davon ausgegangen, dass während des Betriebs von
-			salbnet nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
+			\textit{salbnet} nicht die Queue-Größen verändert werden. Somit ist ein einmaliges Auslesen der Größe
 			ausreichend. Wurde die Größe noch nicht bestimmt, wird in Zeile 2 die entsprechende Datei im
 			\texttt{/proc}-Verzeichnis geöffnet und in Zeile 7 gelesen. Dabei wird der gesuchte Wert
 			direkt in die \texttt{maximum}-Variable der Metrik gespeichert.
 
-			\lstinputlisting[firstline=32,lastline=43,caption={Bestimmung der maximalen Kapazität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-max-udp]{listings/client_metric.c}
+			\lstinputlisting[float,firstline=32,lastline=43,caption={Bestimmung der maximalen Kapazität der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus \textit{salbd})},label=lst:metric-max-udp]{listings/client_metric.c}
 
 			% subsection Maximale Kapazität der UDP-Receive-Queue }}}
 
@@ -1676,11 +1676,11 @@
 				gesucht. Dabei wird in Zeile 13 die aktuelle Zeile der Datei eingelesen. Daraufhin wird in
 				Zeile 18 die Adresse und der Port des Sockets, der eben gelesenen Zeile, in einer
 				\texttt{sockaddr\_storage}-Datenstruktur gespeichert. Diese wird in der Zeile 24 mit der in
-				salbd konfigurierten Adresse verglichen. Wenn der gesuchte Socket gefunden wurde, wird der
+				\textit{salbd} konfigurierten Adresse verglichen. Wenn der gesuchte Socket gefunden wurde, wird der
 				belegte Speicherplatz in Zeile 25 in der Variablen \texttt{current} der Metrik gespeichert
 				und die Schleife in Zeile 27 verlassen.
 
-			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatzes in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-udp-proc]{listings/client_metric.c}
+			\lstinputlisting[lastline=29,caption={Bestimmung des belegten Speicherplatzes in der UDP-Receive-Queue (\texttt{linux/client\_metric.c} aus \textit{salbd})},label=lst:metric-udp-proc]{listings/client_metric.c}
 
 			% subsection Aktuell belegter Speicherplatz in der UDP-Receive-Queue }}}
 
@@ -1688,23 +1688,24 @@
 
 				Um die Größe der DNS-Pakete in der UDP-Receive-Queue zu ermitteln, soll, wie in Abschnitt
 				\ref{sec:entwurf} beschrieben, der \texttt{recvmsg}-Funktionsaufruf des BIND Servers
-				abgefangen werden. Dafür wird die dynamische Bibliothek libnethook um eine Funktion
-				\texttt{recvmsg} erweitert. Durch das Laden der libnethook-Bibliothek vor dem Start des BIND
-				Servers überlagert die libnethook-Funktion die Standard-\texttt{libc}-Funktion und wird
+				abgefangen werden. Dafür wird die dynamische Bibliothek \textit{libnethook} um eine Funktion
+				\texttt{recvmsg} erweitert. Durch das Laden der \textit{libnethook}-Bibliothek vor dem Start des BIND
+				Servers überlagert die \textit{libnethook}-Funktion die Standard-\textit{libc}-Funktion und wird
 				somit vom BIND aufgerufen. Um dies zu realisieren, wurde zunächst die
 				\texttt{nethook\_data}-Datenstruktur in Listing \ref{lst:nethookh} um das Feld
-				\texttt{recv\_size} erweitert. Die Datenstruktur enthält die Informationen, welche von salbd
+				\texttt{recv\_size} erweitert. Die Datenstruktur enthält die Informationen, welche von \textit{salbd}
 				weiter genutzt werden. In dem neuen Feld \texttt{recv\_size} wird die Größe des DNS-Pakets
 				in Byte gespeichert. Die neue Funktion \texttt{recvmsg} ist in Listing \ref{lst:nethookc}
 				aufgeführt. In Zeile 8 wird die Speicheradresse der originalen \texttt{recvmsg}-Funktion aus
-				der \texttt{libc} ermittelt. Danach wird in Zeile 15 diese Funktion
+				der \textit{libc} ermittelt. Danach wird in Zeile 15 diese Funktion
 				aufgerufen. Der Rückgabewert entspricht der Größe des
 				DNS-Pakets, welcher anschließend in Zeile 21 in das neue Feld \texttt{recv\_size} der
 				\texttt{nethook\_data}-Datenstruktur gespeichert wird. Zum Schluss wird der Rückgabewert der
 				originalen \texttt{recvmsg}-Funktion zurückgegeben.
 
-			\lstinputlisting[caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der libnethook},label=lst:nethookh]{listings/nethook.h}
-			\lstinputlisting[caption={Teile der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der libnethook},label=lst:nethookc]{listings/nethook.c}
+			\lstinputlisting[float,caption={Datenstruktur \texttt{nethook\_data} aus \texttt{nethook.h} der \textit{libnethook}},label=lst:nethookh]{listings/nethook.h}
+
+			\lstinputlisting[float,caption={Teile der Funktion \texttt{recvmsg} aus \texttt{nethook.c} der \textit{libnethook}},label=lst:nethookc]{listings/nethook.c}
 
 			% subsection Median der Paketgrößen in der UDP-Receive-Queue }}}
 
@@ -1718,10 +1719,10 @@
 				aktuelle Anzahl der verworfenen Anfragen in die Variablen \texttt{current} der Metrik
 				gespeichert. Anschließend wird in Zeile 13 dieser Wert um 1 erhöht, um ihn von 0, also dem
 				Zustand, dass noch kein Wert gelesen wurde, zu unterscheiden. Dies wird benötigt, um zu
-				verhindern, dass beim Start von salbd 0 Credits gemeldet werden, weil bereits DNS-Pakete
+				verhindern, dass beim Start von \textit{salbd} 0 Credits gemeldet werden, weil bereits DNS-Pakete
 				systemweit verworfen wurden. Nun wird in Zeile 14 die Schleife verlassen.
 
-			\lstinputlisting[firstline=46,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus salbd)},label=lst:metric-drops-udp]{listings/client_metric.c}
+			\lstinputlisting[firstline=46,caption={Bestimmung der verworfenen Anfragen (\texttt{linux/client\_metric.c} aus \textit{salbd})},label=lst:metric-drops-udp]{listings/client_metric.c}
 
 
 			% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
@@ -1746,14 +1747,14 @@
 			Median der letzten 16 Erhebungen verwendet.
 
 			\lstinputlisting[lastline=1,caption={C-Makro zur Bestimmung des verwendeten Speicherplatzes eines DNS-Pakets in der Receive-Queue (nach Formel \ref{eq:recvmsg})},label=lst:truesize]{listings/client_report.c}
-			
-			\lstinputlisting[firstline=3,lastline=12,caption={Bestimmung der Hard- und Soft-Credits	(\texttt{client\_report.c} aus salbd)},label=lst:hard-soft-credits]{listings/client_report.c}
-			
+
+			\lstinputlisting[firstline=3,lastline=12,caption={Bestimmung der Hard- und Soft-Credits (\texttt{client\_report.c} aus \textit{salbd})},label=lst:hard-soft-credits]{listings/client_report.c}
+
 			% subsection Bestimmung der Hard- und Soft-Credits }}}
 
 			\subsection*{Unterstützung der Meldestrategien} % {{{
 
-			Um die verschiedenen Meldestrategien, welche in salbnet implementiert und in Abschnitt
+			Um die verschiedenen Meldestrategien, welche in \textit{salbnet} implementiert und in Abschnitt
 			\ref{sec:meldestrategien} vorgestellt wurden, zu unterstützen, müssen noch zwei weitere
 			Kennzahlen berechnet werden. Dabei gibt die Kennzahl \texttt{maximum} in Listing
 			\ref{lst:auslastung} an, wie oft das größte bisher verarbeitete DNS-Paket in der Receive-Queue
@@ -1762,7 +1763,7 @@
 			verarbeiteten DNS-Pakete.  Mit Hilfe dieser Werte wird anschließend, abhängig von der
 			gewählten Meldestrategie, entschieden, ob Credits an den Lastverteiler gemeldet werden müssen.
 
-			\lstinputlisting[firstline=15,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue	(\texttt{client\_report.c} aus salbd)},label=lst:auslastung]{listings/client_report.c}
+			\lstinputlisting[firstline=15,caption={Bestimmung der maximalen und aktuellen Auslastung der UDP-Receive-Queue (\texttt{client\_report.c} aus \textit{salbd})},label=lst:auslastung]{listings/client_report.c}
 
 			% subsection Bestimmung der Auslastung der Receive-Queue }}}
 
@@ -1774,16 +1775,16 @@
 		Dieses Kapitel hat die Implementierung der in Kapitel \ref{cha:konzept} entworfenen Receive-Queue-Metrik
 		beschrieben. Dazu wurden in Abschnitt \ref{sec:anforderungen} die technischen Möglichkeiten
 		besprochen, mit deren Hilfe die benötigten Messwerte der Metrik bestimmt werden können. Dabei
-		wurden auch Möglichkeiten genannt, welche durch die Bindung von salbnet an den Linux-Kernel
-		2.6.18 nicht verwendbar sind. Diese sollten aber beachtet werden, falls das salbnet
+		wurden auch Möglichkeiten genannt, welche durch die Bindung von \textit{salbnet} an den Linux-Kernel
+		2.6.18 nicht verwendbar sind. Diese sollten aber beachtet werden, falls das \textit{salbnet}
 		Kernel-Modul auf einen neueren Kernel portiert wird. Denn sie bieten Vorteile gegenüber
 		den letztendlich verwendeten Methoden. Das identifizierte Vorgehen wurde sehr nahe an den
-		vorgestellten Methoden in die bestehende Code-Basis von salbnet implementiert. Dabei wurden
+		vorgestellten Methoden in die bestehende Code-Basis von \textit{salbnet} implementiert. Dabei wurden
 		bestehenden Datenstrukturen genutzt, und es wurden nur leichte Änderungen an der Programmlogik
-		von salbnet vorgenommen. Dies war möglich, da bei der Konzeption und der Entwicklung von salbnet
+		von \textit{salbnet} vorgenommen. Dies war möglich, da bei der Konzeption und der Entwicklung von \textit{salbnet}
 		bereits der UDP-Anwendungsfall mit eingeplant war. Darum gab es an vielen Stellen im Code
 		bereits die richtigen Schnittstellen und Fallunterscheidungen. Rückblickend war die Erweiterung
-		von salbnet ohne große Probleme möglich, und die entwickelten Konzepte konnten fast direkt
+		von \textit{salbnet} ohne große Probleme möglich, und die entwickelten Konzepte konnten fast direkt
 		umgesetzt werden.
 
 		% section Fazit }}}
@@ -1796,14 +1797,21 @@
 		Die in Kaptiel \ref{cha:implementierung} beschriebene Implementierung wurde mehreren Messungen
 		unterzogen. Dieses Kaptiel orientiert sich bei der Vorstellung des Messkonzepts und der Analyse
 		der Ergebnisse an \cite{jain1991}. Das Ziel der Messung ist es, die Funktionstüchtigkeit der
-		entwickelten UDP-Erweiterung für salbnet zu beweisen, und salbnet, für den Anwendungsfall der
+		entwickelten UDP-Erweiterung für \textit{salbnet} zu beweisen, und \textit{salbnet}, für den Anwendungsfall der
 		Server-Lastverteilung für DNS-Cluster, mit einem Standardalgorithmus zu vergleichen.
+
+		\begin{figure}
+			\centering
+			\includegraphics[width=12cm]{images/test-system}
+			\caption{Aufbau des Messsystems}
+			\label{fig:messsystem}
+		\end{figure}
 
 		\section{System} % {{{
 		\label{sec:system}
 
 		Der Fokus der Messung liegt auf der Lastverteilung. Die Lastverteilung kann entweder nur vom
-		Lastverteiler aus gesteuert werden, oder, wie im salbnet-Fall, mit Hilfe zusätzlicher
+		Lastverteiler aus gesteuert werden, oder, wie im \textit{salbnet}-Fall, mit Hilfe zusätzlicher
 		Informationen von den Backend-Servern beeinflusst werden. Das Messsystem soll ein DNS-Cluster,
 		wie es bei Root-Servern, TLDs oder große SLDs vorkommt, simulieren.  Es besteht aus einem
 		Client, welcher über ein Netzwerk mit einem Lastverteiler verbunden ist. Dieser ist wiederum
@@ -1825,13 +1833,6 @@
 			\item CPU-Auslastung der Backend-Server in Prozent
 		\end{itemize}
 
-		\begin{figure}
-			\centering
-			\includegraphics[width=12cm]{images/test-system}
-			\caption{Aufbau des Messsystems}
-			\label{fig:messsystem}
-		\end{figure}
-
 		% section System }}}
 
 		\section{Experiment} % {{{
@@ -1852,6 +1853,7 @@
 						\item Andere Last auf dem Netzwerk
 						\item Andere Last auf den Servern
 					\end{itemize}
+				\item[]
 				\item Lastparameter (variabel)
 					\begin{itemize}
 						\item Größe der DNS-Zone
@@ -1867,12 +1869,12 @@
 			genutzt. Die BIND Server werden alle als iterative Nameserver betrieben, dass heißt, Anfragen
 			außerhalb der \texttt{haiti.cs.uni-potsdam.de} werden mit einem Verweis auf die Root-Server
 			beantwortet. Dies ist realistisch, da Nameserver der Root-Zone oder TLDs auch iterative
-			Nameserver nutzen, und salbnet vor allem für dieses Einsatzgebiete konzipiert ist.
+			Nameserver nutzen, und \textit{salbnet} vor allem für dieses Einsatzgebiete konzipiert ist.
 
 			Die Faktoren, welche während den Messungen variiert werden, sind der
 			Lastverteilungsalgorithmus, die Anzahl der DNS-Anfragen und die Anzahl der DNS-Anfragen pro
 			Sekunde. Als Lastverteilungsalgorithmus wird der Standard-Weighted-Round-Robin-Algorithmus
-			(wrr) des LVS verwendet und salbnet mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
+			(\textit{wrr}) des LVS verwendet und \textit{salbnet} mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
 			für den Weighted-Round-Robin-Algorithmus wurden die Werte 788, 623 und 1180 für die Nodes ib4,
 			ib6 und ib8 verwendet. Diese Werte wurden mit dem UnixBench-Benchmark \cite{unixbench}
 			ermittelt. Die vollständigen Ergebnisse sind im Anhang \ref{cha:unixbench} aufgelistet. Für
@@ -1918,8 +1920,8 @@
 				\centering
 				\begin{tabular}{|r|c|c|c||c|}\hline
 					& 400 & 800 & 1600 & Summe \\\hline
-					wrr & 51 & 51 & 51 & 153 \\
-					salbnet & 51 & 51 & 51 & 153 \\
+					\textit{wrr} & 51 & 51 & 51 & 153 \\
+					\textit{salbnet} & 51 & 51 & 51 & 153 \\
 												 & & & & 306 \\\hline
 				\end{tabular}
 				\caption{Anzahl der Messungen je Kombination aus Lastverteilungsalgorithmus und Faktor}
@@ -1931,14 +1933,12 @@
 		\section{Ergebnisse} % {{{
 		\label{sec:Ergebnisse}
 
-		% TODO: Kursiv
-
 			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks verwendet. Außerdem
 			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
 			minütlich mit Hilfe eines Skriptes über \texttt{net-snmp} abgefragt. Grundlegend ist
-			festzuhalten, dass die Erweiterung von salbnet für UDP-Anfragen funktioniert. Während der
+			festzuhalten, dass die Erweiterung von \textit{salbnet} für UDP-Anfragen funktioniert. Während der
 			Tests kam es zu keinen Ausfällen oder auffälligem Verhalten. Danach wurden die beiden
-			Lastverteilungsverfahren wrr und salbnet unter den Metriken aus Abschnitt \ref{sec:system}
+			Lastverteilungsverfahren \textit{wrr} und \textit{salbnet} unter den Metriken aus Abschnitt \ref{sec:system}
 			verglichen. Die Bewertung geschieht dabei nach den folgenden Kriterien:
 
 			\begin{itemize}
@@ -1949,25 +1949,25 @@
 				\item Gleichmäßige CPU-Auslastung aller Backend-Server
 			\end{itemize}
 
-			Die CPU-Auslastungen für die Nodes im ib-Cluster sind für den wrr-Algorithmus in Abbildung
-			\ref{fig:cpu-wrr}, und für salbnet in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
-			erkennen, dass die CPU-Auslastung bei salbnet wesentlich konstanter ist als bei wrr.
-			Allerdings liegt sie bei der ib6 für alle Faktoren mit salbnet immer nahe \unit[100]{\%}. Dies könnte
+			Die CPU-Auslastungen für die Nodes im ib-Cluster sind für den \textit{wrr}-Algorithmus in Abbildung
+			\ref{fig:cpu-wrr}, und für \textit{salbnet} in Abbildung \ref{fig:cpu-salbnet} zu sehen. Es ist zu
+			erkennen, dass die CPU-Auslastung bei \textit{salbnet} wesentlich konstanter ist als bei \textit{wrr}.
+			Allerdings liegt sie bei der ib6 für alle Faktoren mit \textit{salbnet} immer nahe \unit[100]{\%}. Dies könnte
 			auf eine ungleichmäßige Verteilung hindeuten. Hingegen liegen die Werte der ib4 und ib8 sehr
 			dicht beieinander. Die Anzahl der verlorenen Anfragen (siehe Tabelle \ref{tab:timeout} und
-			Abbildung \ref{fig:ergebnis}) ist bei salbnet immer geringer als bei wrr.  Die verlorenen
-			Anfragen von salbnet entsprechen für den Faktor 400 ca. \unit[25]{\%}, für 800 ca. \unit[33]{\%} und für 1600
-			ca. \unit[50]{\%} der verlorenen Anfragen von wrr. Noch deutlicher werden die Unterschiede bei dem
+			Abbildung \ref{fig:ergebnis}) ist bei \textit{salbnet} immer geringer als bei \textit{wrr}.  Die verlorenen
+			Anfragen von \textit{salbnet} entsprechen für den Faktor 400 ca. \unit[25]{\%}, für 800 ca. \unit[33]{\%} und für 1600
+			ca. \unit[50]{\%} der verlorenen Anfragen von \textit{wrr}. Noch deutlicher werden die Unterschiede bei dem
 			Vergleich der
 			Antwortzeiten (siehe Tabelle \ref{tab:response} und Abbildung \ref{fig:ergebnis}) und der
 			Verbindungszeiten  (siehe Tabelle \ref{tab:connect} und Abbildung \ref{fig:ergebnis}).
-			So entspricht die Antwortzeit von salbnet nur ca. \unit[15]{\%} der von wrr und die Verbindungszeit im
+			So entspricht die Antwortzeit von \textit{salbnet} nur ca. \unit[15]{\%} der von \textit{wrr} und die Verbindungszeit im
 			Durchschnitt nur ca. \unit[30]{\%}.
 
 			\begin{figure}
 				\centering
 				\includegraphics[width=14cm]{plots/cpu-wrr}
-				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit wrr als
+				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit \textit{wrr} als
 				Lastverteilungsalgorithmus}
 				\label{fig:cpu-wrr}
 			\end{figure}
@@ -1975,7 +1975,7 @@
 			\begin{figure}
 				\centering
 				\includegraphics[width=14cm]{plots/cpu-salbnet}
-				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit salbnet als
+				\caption{CPU Auslastung der Nodes ib1, ib4, ib6 und ib8 mit \textit{salbnet} als
 				Lastverteilungsalgorithmus}
 				\label{fig:cpu-salbnet}
 			\end{figure}
@@ -1983,14 +1983,14 @@
 			\begin{figure}
 				\centering
 				\includegraphics[width=13cm]{plots/servload}
-				\caption{Vergleich von wrr und salbnet für die Metriken: Verlorene Anfragen, Antwortzeit und	Verbindungszeit}
+				\caption{Vergleich von \textit{wrr} und \textit{salbnet} für die Metriken: Verlorene Anfragen, Antwortzeit und Verbindungszeit}
 				\label{fig:ergebnis}
 			\end{figure}
 
 			\begin{table}
 				\centering
 				\begin{tabular}{|r|c|c|}\hline
-					Faktor & wrr & salbnet \\\hline\hline
+					Faktor & \textit{wrr} & \textit{salbnet} \\\hline\hline
 					400 & 1273,39 (182.727,4/427,5) & 343,16 (10.444,9/102,2)\\
 					800 & 2038,53 (395.551,1/628,9) & 759,86 (30.414,0/174,4)\\
 					1600 & 2910,16 (386.854,5/622,0) & 1612,78 (55.845,1/236,3)\\\hline
@@ -2002,7 +2002,7 @@
 			\begin{table}
 				\centering
 				\begin{tabular}{|r|c|c|}\hline
-					Faktor & wrr & salbnet \\\hline\hline
+					Faktor & \textit{wrr} & \textit{salbnet} \\\hline\hline
 					400 & 4,05 (0,95/0,98) & 0,64 (0,00/0,01)\\
 					800 & 4,33 (2,50/1,58) & 0,61 (0,00/0,01)\\
 					1600 & 4,24 (2,17/1,47) & 0,60 (0,00/0,02)\\\hline
@@ -2014,7 +2014,7 @@
 			\begin{table}
 				\centering
 				\begin{tabular}{|r|c|c|}\hline
-					Faktor & wrr & salbnet \\\hline\hline
+					Faktor & \textit{wrr} & \textit{salbnet} \\\hline\hline
 					400 & 0,31 (0,00/0,05) & 0,15 (0,00/0,00)\\
 					800 & 0,57 (0,05/0,22) & 0,14 (0,00/0,01)\\
 					1600 & 0,61 (0,10/0,31) & 0,13 (0,00/0,00)\\\hline
@@ -2028,9 +2028,9 @@
 		\section{Fazit} % {{{
 		\label{sec:Fazit}
 
-		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von salbnet für UDP-Pakete
+		Als Fazit der Messungen ist zu sagen, dass die Erweiterung von \textit{salbnet} für UDP-Pakete
 		erfolgreich umgesetzt wurde. Die Implementation funktioniert und hat in den Tests eine hohe
-		Leistungsfähigkeit bewiesen. In allen verglichenen Metriken ist salbnet dem wrr-Algorithmus
+		Leistungsfähigkeit bewiesen. In allen verglichenen Metriken ist \textit{salbnet} dem \textit{wrr}-Algorithmus
 		überlegen. Nur die CPU-Auslastung der ib6 war im Vergleich zu den anderen Backend-Servern zu
 		hoch. Dies kann an zu optimistischen oder zu späten Credit-Meldungen liegen. Zusammenfassend
 		kann gesagt werden, dass das Konzept und die Implementierung höchstwahrscheinlich noch
@@ -2051,16 +2051,16 @@
 		\section{Zusammenfassung} % {{{
 		\label{sec:zusammenfassung}
 
-		Das Ziel der Arbeit war es, das bestehende selbst-adaptive Lastverteilungssystem salbnet so zu
+		Das Ziel der Arbeit war es, das bestehende selbst-adaptive Lastverteilungssystem \textit{salbnet} so zu
 		erweitern, dass auch UDP-Anwendungen unterstützt werden. Dazu wurde als Anwendungsfall der Betrieb
 		eines DNS-Clusters gewählt, weil DNS-Verkehr hauptsächlich aus UDP-Anfragen besteht. Weiterhin hat
 		das DNS durch seinen Aufbau als baumartige Struktur kritische Bereiche, die eine Lastverteilung
 		zwingend notwendig machen. So werden vor allem bei DNS-Root-Servern und Nameservern von
 		TLDs DNS-Cluster genutzt, um hohe Anfrageaufkommen abzufangen, und erfolgreich zu beantworten. Der
-		Einsatz von salbnet im DNS ist klar in den oberen Ebenen des DNS-Baumes angeordnet, da bei
+		Einsatz von \textit{salbnet} im DNS ist klar in den oberen Ebenen des DNS-Baumes angeordnet, da bei
 		kleineren Domains andere einfachere Lastverteilungsmechanismen verwendet werden.
 
-		Um salbnet auch für UDP-Anfragen nutzen zu können, musste eine repräsentative Metrik für die
+		Um \textit{salbnet} auch für UDP-Anfragen nutzen zu können, musste eine repräsentative Metrik für die
 		Auslastung des Nameservers gefunden werden. Dabei war vor allem wichtig, dass aus dieser Metrik
 		eine Credit-Berechnung erfolgen kann. Dies stellte das hauptsächliche Problem dar, zumal nicht jede
 		Lastmetrik dazu geeignet ist, die noch möglichen Verbindungen zu bestimmen. So kann an vielen
@@ -2071,18 +2071,18 @@
 		des UDP-Sockets, kann mit Hilfe einer Abschätzung über die durchschnittliche Paketgröße die
 		Credit-Berechnung erfolgreich durchgeführt werden.
 
-		Dieses Vorgehen zur Berechnung der Credits wurde anschließend in salbnet implementiert. Dabei
+		Dieses Vorgehen zur Berechnung der Credits wurde anschließend in \textit{salbnet} implementiert. Dabei
 		kam es zu keinen größeren Problemen und das vorher entwickelte Konzept konnte direkt umgesetzt
-		werden. Da bei der Konzipierung von salbnet bereits der UDP-Fall bedacht wurde, mussten keine
+		werden. Da bei der Konzipierung von \textit{salbnet} bereits der UDP-Fall bedacht wurde, mussten keine
 		größeren Änderungen an der Struktur vorgenommen werden. Größtenteils waren bereits alle
 		Erweiterungspunkte gut eingepflegt und mussten nur ausprogrammiert werden.
-		
+
 		Nach der erfolgreichen Implementation wurden mehrere Messungen durchgeführt. Sie hatten zum
-		Ziel, die Funktionstüchtigkeit der Erweiterung von salbnet zu beweisen. Ein Vergleich mit
+		Ziel, die Funktionstüchtigkeit der Erweiterung von \textit{salbnet} zu beweisen. Ein Vergleich mit
 		einem Standardalgorithmus sollte eine Einschätzung der Leistungsfähigkeit der neuen UDP-Metrik
 		geben.  Die Ergebnisse bestätigten sowohl die volle Funktionsfähigkeit der Erweiterung, als auch
 		die Konkurrenzfähigkeit gegenüber Standardalgorithmen der Lastverteilung. Das Ergebnis fiel klar
-		zu Gunsten von salbnet aus, und bestätigte die Behauptung, dass sich die selbst-adaptive
+		zu Gunsten von \textit{salbnet} aus, und bestätigte die Behauptung, dass sich die selbst-adaptive
 		gegen die statische Lastverteilung behauptet.
 
 		% section Zusammenfassung }}}
@@ -2106,7 +2106,7 @@
 
 		Weiterhin bleibt das Problem des realen Speicherplatzes eines DNS-Pakets in der Receive-Queue.
 		Die hier verwendete experimentell ermittelte Abschätzung ist stark abhängig von der
-		Kernel-Version und sollte unabhängig von dieser umgesetzt werden. Sollte salbnet für neuere
+		Kernel-Version und sollte unabhängig von dieser umgesetzt werden. Sollte \textit{salbnet} für neuere
 		Kernel-Versionen portiert werden, könnte allgemein die UDP-Erweiterung durch aktuellere Techniken
 		verbessert werden. Einige davon wurden bereits in Abschnitt \ref{sec:anforderungen} erwähnt.
 
@@ -2228,14 +2228,14 @@
 		\section{Konfigurationen} % {{{
 		\label{sec:konfigurationen}
 
-			Die verwendeten Konfigurationen für salbd und BIND sind in diesem Abschnitt als Anhang
+			Die verwendeten Konfigurationen für \textit{salbd} und BIND sind in diesem Abschnitt als Anhang
 			dargestellt.
 
-			\lstinputlisting[language=sh,caption={salbd Konfiguration für ib1 (LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
+			\lstinputlisting[language=sh,caption={\textit{salbd} Konfiguration für ib1 (LVS)},label=lst:salbd-server]{listings/salbd.conf.server}
 
-		\lstinputlisting[language=sh,caption={salbd Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
+		\lstinputlisting[language=sh,caption={\textit{salbd} Konfiguration für ib4, ib6 und ib8 (BIND)},label=lst:salbd-client]{listings/salbd.conf.client}
 
-		\lstinputlisting[language=sh,caption={salbd BIND Konfiguration für ib4, ib6 und ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
+		\lstinputlisting[language=sh,caption={\textit{salbd} BIND Konfiguration für ib4, ib6 und ib8},label=lst:salbd-bind]{listings/salbd.networks.conf.client}
 
 		\lstinputlisting[language=sh,caption={BIND Konfiguration für ib4, ib6 und ib8},label=lst:bind-conf]{listings/named.conf}
 
