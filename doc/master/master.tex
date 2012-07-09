@@ -1008,8 +1008,6 @@
 	des DNS. Aus diesem Grund hat die hier entwickelte selbst-adaptive Lastverteilung für DNS-Anfragen, bzw.
 	UDP-Anfragen im Allgemeinen, einen klaren Anwendungsfall in der Realität des DNS.
 
-	% TODO: bessere hardware ausnutzung -> weniger hardware wird benötigt / spart kosten, straom -> green it
-
 	% chapter Verwandte Arbeiten }}}
 
 	\chapter{salbnet} % {{{
@@ -1545,12 +1543,9 @@
 
 		\subsection*{Median der Paketgrößen in der UDP-Receive-Queue} % {{{
 
-		% TODO: Holt ist doof
-
 		Um den Median der Paketgrößen $q_{median}$ in der UDP-Receive-Queue bestimmen zu können, reicht
 		die Information über den belegten Speicherplatz in der UDP-Receive-Queue nicht aus, denn es ist
-		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. Holt man
-		jedoch ein Paket aus der Receive-Queue ab, wird die Größe des Pakets zurückgeliefert. In Listing
+		nicht ermittelbar, wieviele Pakete aktuell in der Receive-Queue gespeichert sind. In Listing
 		\ref{lst:strace} wurde das Programm \texttt{strace} genutzt, um die Systemcalls des BIND
 		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND
 		Servers (named) ermittelt. Anschließend wurde in Zeile 3 \texttt{strace} für diese PID gestartet
@@ -1842,8 +1837,6 @@
 		\section{Experiment} % {{{
 		\label{sec:experiment}
 
-		% TODO: heterogen realistisch
-
 			Um die Experimente festzulegen, müssen alle Parameter ermittelt werden, welche die Leistung
 			des Systems beeinflussen. Bei diesen Messungen sind die folgenden Eigenschaften entscheidend:
 
@@ -1939,9 +1932,6 @@
 		\label{sec:Ergebnisse}
 
 		% TODO: Kursiv
-		% TODO: Länger der Messung erklären
-		% TODO: min max in grafik
-		% TODO: die anderen sind bei 50% und er bei 100% salbnet macht ja vorne einfach nen roundrobin
 
 			Zur Auswertung der Messungen wurden die Ausgaben des servload-Benchmarks verwendet. Außerdem
 			wurden die Load und die Auslastung der CPU und des Arbeitsspeichers der Backend-Server
