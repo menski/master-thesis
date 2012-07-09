@@ -104,7 +104,7 @@
 	\mbox{}\vfill
 	\subsection*{\centering Zusammenfassung}
 
-	Diese Masterarbeit befasst sich mit der Lastverteilung von DNS-Anfragen. Im Mittelpunkt steht
+	Diese Masterarbeit befasst sich mit der Lastverteilung für DNS-Cluster. Im Mittelpunkt steht
 	dabei die Erweiterung der selbst-adaptiven Lastverteilungslösung \textit{salbnet}. Dazu wird für das System
 	eine neue Metrik für UDP-Pakete konzipiert. Infolgedessen wird die Umsetzbarkeit des entwickelten
 	Konzepts überprüft. Auf der Basis dieser Ergebnisse wird für \textit{salbnet} eine UDP-Erweiterung
@@ -193,7 +193,7 @@
 		%Überleitung
 
 		Ausfallsicherheit, ständige Verfügbarkeit und kurze Antwortzeiten sind Anforderungen, welche
-		ebenfalls an viele andere Netzwerk-Dienste gestellt werden. Um diese Anforderungen zu erfüllen,
+		ebenfalls an viele andere Netzwerkdienste gestellt werden. Um diese Anforderungen zu erfüllen,
 		gibt es das Konzept der Lastverteilung. Dabei wird eine hohe Last auf einer Ressource dadurch
 		verringert, dass die Gesamtlast auf mehrere identische Ressourcen verteilt wird. Auf diese Weise
 		ist die Last je Ressource geringer und besser handhabbar. Dieses Konzept wird allgemein in
@@ -207,7 +207,7 @@
 		Backend-Server weitergegeben. Diese allgemeinen Konzepte lassen sich ebenfalls für hohe
 		Lastsituationen im DNS nutzen.
 
-		Diese Arbeit beschäftigt sich mit dem Thema der Lastverteilung von DNS-Anfragen. Dazu wird ein
+		Diese Arbeit beschäftigt sich mit dem Thema der Lastverteilung für DNS-Cluster. Dazu wird ein
 		bestehendes System \cite{zinke2007,scsczile2008,zinke2012,salbnet} zur selbst-adaptiven
 		Lastverteilung von TCP-Anfragen so erweitert, dass es ebenfalls UDP-Anfragen verarbeiten kann.
 		Dieses System ist in dem Sinne selbst-adaptiv, weil der Lastverteiler keine eigenständigen
@@ -333,7 +333,7 @@
 			zuweist. Ein Beispiel für eine \texttt{/etc/hosts}-Datei ist in Listing \ref{lst:hosts} zu
 			sehen. In ihr sind 2 Namen für den lokalen Rechner (Zeile 6-7) und 2 Namen für andere Geräte
 			im Netzwerk (Zeile 8-9) definiert. Dadurch ist es dem Nutzer möglich andere
-			Netzwerk-Teilnehmer über den zugewiesenen Namen zu kontaktieren. Der Nutzer bräuchte im
+			Netzwerkteilnehmer über den zugewiesenen Namen zu kontaktieren. Der Nutzer bräuchte im
 			Beispiel nur noch den Namen \textit{router} verwenden, wenn er auf das Gerät mit der
 			IP-Adresse \texttt{192.168.1.1} zugreifen möchte. Das Betriebssystem nutzt dann die
 			\texttt{hosts}-Datei um die entsprechende IP-Adresse zu ermitteln. Ein weiterer Vorteil dieses
@@ -345,7 +345,7 @@
 			\texttt{hosts}-Dateien keine sinnvolle Lösung mehr waren. Der nächste Schritt war es ein
 			zentrales Verzeichnis bereitzustellen. Dies wurde durch die \texttt{HOSTS.TXT} realisiert,
 			welche vom Network Information Center (NIC) des Stanford Research Institute (SRI) gepflegt
-			wurde. Dieses Verzeichnis wurde zentral zur Verfügung gestellt, sodass jeder Netzwerk-Nutzer
+			wurde. Dieses Verzeichnis wurde zentral zur Verfügung gestellt, sodass jeder Netzwerknutzer
 			immer die aktuelle Version erhalten und daraus seine lokale \texttt{hosts}-Datei generieren
 			konnte.  Dieser zentrale Ansatz hatte den Vorteil, dass schnell auf Änderungen reagiert werden
 			konnte, diese leicht zu verteilen waren und Nameskonflikte verhindert wurden.  Allerdings ist
@@ -366,8 +366,8 @@
 			Informationen in einer baumartigen Struktur gespeichert werden. So ein Baum ist auszugsweise
 			in Abbildung \ref{fig:dns-tree} zu sehen. Diese Struktur des Baums, also die Knoten, sind auch
 			in den Domain-Namen zu erkennen. Ein Domain-Name besteht aus mehreren Subdomains, welche durch
-			Punkte getrennt sind und jeweils einem Knoten im Baum entsprechen. So besteht zum Beispiel die
-			Domain \texttt{cs.uni-potsdam.de} aus den Subdomains \texttt{cs}, \texttt{uni-potsdam},
+			Punkte getrennt sind und jeweils einem Knoten im Baum entsprechen. So besteht die Domain
+			\texttt{cs.uni-potsdam.de} zum Beispiel aus den Subdomains \texttt{cs}, \texttt{uni-potsdam},
 			\texttt{de} und der Root-Domain, welche meist entfällt bzw. als leere Zeichenkette
 			(\glqq{}\grqq{}) dargestellt wird.
 
@@ -436,7 +436,6 @@
 			(\texttt{CNAME}) \textit{www} für die  \textit{twix}-Domain definiert. Dieses Beispiel zeigt
 			nur eine kleine Anzahl von möglichen Typen, weshalb in Tabelle \ref{tab:dns-types} die
 			wichtigsten von ihnen aufgeführt sind.
-
 
 			\begin{table}
 				\centering
@@ -522,7 +521,7 @@
 				Adresse und sendet sie an den im Betriebssystem konfigurierten primären DNS-Server. Dabei
 				handelt es sich meist um einen rekursiven Nameserver, welcher dann selber einen Resolver
 				nutzt, um weitere Anfragen zu stellen, sofern er die Antwort nicht im Cache gespeichert hat.
-				In Abbildung \ref{fig:bsp-request} ist der Ablauf der Beispiel-Anfrage dargestellt. Der
+				In Abbildung \ref{fig:bsp-request} ist der Ablauf der Beispielanfrage dargestellt. Der
 				Resolver des Clients sendet die Anfrage (1) an den lokalen DNS-Server. Dieser ist rekursiv
 				und ermittelt deshalb nun die Antwort\footnote{Annahme: Der Cache des DNS-Servers enthält
 				keine relevanten Informationen.}. Die Anfrage (2) wird deshalb an einen Root-Nameserver
@@ -629,7 +628,7 @@
 				Der Microsoft DNS Server \cite{msdns} ist eine Implementation von Microsoft, welche mit den
 				Windows Server Produkten ausgeliefert wird. Er kann als autoritativer und rekursiver
 				Nameserver betrieben werden. Durch seinen Einsatz auf Windows Servern kommt er vor allem in
-				lokalen und Firmen-Netzwerken vor. Ein besonderes Merkmal des Microsoft DNS Servers ist,
+				lokalen und Firmennetzwerken vor. Ein besonderes Merkmal des Microsoft DNS Servers ist,
 				dass die DNS-Informationen nicht nur aus einem Master-File gelesen werden, sondern auch aus
 				einem Active Directory stammen können.
 
@@ -767,7 +766,7 @@
 			Transportprotokolle oder Portnummern) separat verteilt. Dies ist mit einer anwendungsbasierten
 			Lösung nicht ohne weiteres realisierbar.
 
-			Unabhängig von der gewählten Software-Lösung ist der gewählte Algorithmus zur Lastverteilung
+			Unabhängig von der gewählten Softwarelösung ist der gewählte Algorithmus zur Lastverteilung
 			ein entscheidendes Kriterium. Es existieren mehrere Algorithmen für dieses Problem
 			\cite{zinke2007}, wobei es von der gewählten Software abhängt, welche überhaupt zur Verfügung
 			stehen.  Die zwei bekanntesten Verfahren sind das Round-Robin-Verfahren und das
@@ -848,7 +847,7 @@
 			Anfragen stellt, welcher selbst nicht geografisch nah ist. Dadurch kann es zu negativen
 			Effekten kommen.
 
-			Auch Kombinationen der Server-Lastverteilung und DNS-Lastverteilung sind möglich. Dabei wird ein
+			Auch Kombinationen der Server- und DNS-Lastverteilung sind möglich. Dabei wird ein
 			DNS-Server um Lastverteilungsfunktionen erweitert. So beschreibt \cite{chyuyi2003} ein
 			Verfahren, bei dem der DNS-Lastverteiler die Zeit überwacht, welche jeder Backend-Server für
 			die Abfrage einer Antwort benötigt. Dadurch kann die DNS-Antwort entsprechend der
@@ -862,7 +861,7 @@
 			\label{sub:lastverteilung-dns}
 
 			Die Verteilung von DNS-Anfragen unterscheidet sich in mehreren Punkten von HTTP-Anfragen. So
-			ist das genutzte Transport-Protokoll UDP, statt TCP, und die Nachrichten dürfen nicht größer als
+			ist das genutzte Transportprotokoll UDP, statt TCP, und die Nachrichten dürfen nicht größer als
 			\unit[512]{Byte} sein \cite{rfc1035}. Weiterhin existieren beim DNS keine Client-Sessions wie bei
 			zustandsbehafteten HTTP-Anwendungen, wo ein Client während einer Session immer mit demselben Server
 			kommunizieren muss. Die Lastverteilung von DNS-Anfragen tritt jedoch wesentlich seltener auf
@@ -1026,7 +1025,7 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/salbnet.png}
+			\includegraphics[width=\textwidth]{images/salbnet}
 			\caption{Aufbau von \textit{salbnet} (übernommen aus \cite{zinke2012})}
 			\label{fig:salbnet}
 		\end{figure}
@@ -1074,7 +1073,7 @@
 
 		\begin{figure}
 			\centering
-			\includegraphics[width=\textwidth]{images/salbd-concept.png}
+			\includegraphics[width=\textwidth]{images/salbd-concept}
 			\caption{Konzept von \textit{salbd} (übernommen aus \cite{zinke2012})}
 			\label{fig:salbd}
 		\end{figure}
@@ -1180,7 +1179,7 @@
 			\paragraph{Dynamic Pressure Relieve} % {{{
 			\label{par:dynamic-pressure-relieve}
 
-			Der Dynamic Pressure Relive Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
+			Der Dynamic Pressure Relieve Algorithmus kombiniert alle vorherigen Algorithmen. Es existieren
 			wiederum Hard- und Soft-Credits. Allerdings werden die Hard-Credits spätestens nach einem
 			fixen Intervall und die Soft-Credits nach dem dynamischen Intervall aus dem Dynamic Report
 			Algorithmus gemeldet. Bei einer Meldung der Soft-Credits an den Lastverteiler werden
@@ -1411,7 +1410,7 @@
 		Diese Abschätzung gibt eine Bewertung für den aktuellen Zeitpunkt an. Wie in Kapitel
 		\ref{cha:salbnet} beschrieben, existieren verschiedene Meldestrategien in \textit{salbnet}. Bei den
 		optimierten Strategien Dynamic Report und Dynamic Pressure Relieve (siehe Abschnitt
-		\ref{sub:meldestrategien}) werden die Credits in dynamisch berechneten Intervallen gemeldet. Das
+		\ref{sec:meldestrategien}) werden die Credits in dynamisch berechneten Intervallen gemeldet. Das
 		heißt, zwischen zwei Credit-Meldungen kann sich die Receive-Queue stark verändern. Die
 		Abschätzung enthält aber keinen Faktor, welcher die Tendenz seit der letzten Credit-Berechnung
 		darstellt. Eine Lösung wäre, bei jeder Abarbeitung einer Anfrage Credits zu berechnen und diese
@@ -1471,7 +1470,7 @@
 	eingegangen. Nachdem feststeht, wie alle Messwerte ermittelt werden können, wird in Abschnitt
 	\ref{sec:erweiterung} auf die konkrete Implementierung in \textit{salbnet} eingegangen. In Kapitel
 	\ref{cha:messungen} werden Messungen vorgestellt, welche die erweiterte Version von \textit{salbnet} mit
-	einem Standard-Algorithmus vergleichen.
+	einem Standardalgorithmus vergleichen.
 
 		\section{Anforderungen} %  {{{
 		\label{sec:anforderungen}
@@ -1549,11 +1548,11 @@
 		\ref{lst:strace} wurde das Programm \texttt{strace} genutzt, um die Systemcalls des BIND
 		DNS-Servers nachvollziehen zu können. Dazu wurde in Zeile 1 zuerst die Process ID (PID) des BIND
 		Servers (named) ermittelt. Anschließend wurde in Zeile 3 \texttt{strace} für diese PID gestartet
-		und die Ausgaben aller Kindprozesse in einzelnen Dateien gespeichert. In der Ausgabe-Datei des
+		und die Ausgaben aller Kindprozesse in einzelnen Dateien gespeichert. In der Ausgabedatei des
 		Kindprozesses, welcher die Anfrage verarbeitet hat, ist in Zeile 12 zu erkennen, dass ein Paket
 		vom BIND mit Hilfe der Funktion \texttt{recvmsg} aus der Receive-Queue abgeholt wird. Der
 		Rückgabewert der Funktion gibt die Größe des Paketes in Byte an. In diesem Beispiel war das
-		DNS-Paket \unit[45]{Byte} groß. Somit ist es möglich, den Funktions-Aufruf des BIND abzufangen
+		DNS-Paket \unit[45]{Byte} groß. Somit ist es möglich, den Funktionsaufruf des BIND abzufangen
 		und die Paketgröße zu ermitteln.
 
 		\lstinputlisting[float,lastline=12,caption={strace-Ausgabe für den BIND-Server bei der Abfrage von \texttt{www.haiti.cs.uni-potsdam.de}},label=lst:strace]{listings/strace.txt}
@@ -1628,7 +1627,7 @@
 		kritisch für den DNS-Server. Zur Berechnung der Drops seit der letzten Credit-Meldung $q_{drop}$
 		muss die Differenz zum vorherigen Wert berechnet werden.
 
-		\lstinputlisting[float,caption={/proc/net/snmp Protokoll-Information für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
+		\lstinputlisting[float,caption={/proc/net/snmp Protokollinformation für SNMP-Programme},label=lst:proc-snmp]{listings/proc-snmp.txt}
 
 		% subsection Verworfene Anfragen seit der letzten Credit-Meldung }}}
 
@@ -1849,7 +1848,7 @@
 						\item Größe des Arbeitsspeichers
 						\item Performanz des Lastverteilers
 						\item Performanz des DNS-Servers
-						\item Netzwerk-Stack des Betriebssystems
+						\item Netzwerkstack des Betriebssystems
 						\item Andere Last auf dem Netzwerk
 						\item Andere Last auf den Servern
 					\end{itemize}
@@ -1874,7 +1873,7 @@
 			Die Faktoren, welche während den Messungen variiert werden, sind der
 			Lastverteilungsalgorithmus, die Anzahl der DNS-Anfragen und die Anzahl der DNS-Anfragen pro
 			Sekunde. Als Lastverteilungsalgorithmus wird der Standard-Weighted-Round-Robin-Algorithmus
-			(\textit{wrr}) des LVS verwendet und \textit{salbnet} mit der Dynamic Pressure Relive Meldestrategie. Als Gewichte
+			(\textit{wrr}) des LVS verwendet und \textit{salbnet} mit der Dynamic Pressure Relieve Meldestrategie. Als Gewichte
 			für den Weighted-Round-Robin-Algorithmus wurden die Werte 788, 623 und 1180 für die Nodes ib4,
 			ib6 und ib8 verwendet. Diese Werte wurden mit dem UnixBench-Benchmark \cite{unixbench}
 			ermittelt. Die vollständigen Ergebnisse sind im Anhang \ref{cha:unixbench} aufgelistet. Für
@@ -2308,7 +2307,7 @@
 				AXFR& 1 & \unit[0,000]{\%} \\\hline
 			\end{tabular}
 			\caption{Anzahl der DNS-Typen im BIND Log des \texttt{haiti.cs.uni-potsdam.de}-Nameserves}
-			\label{tab:log}
+			\label{tab:types}
 		\end{table}
 
 	% chapter Haiti-Zone }}}
