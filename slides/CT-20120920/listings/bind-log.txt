@@ -1,0 +1,2 @@
+19-Oct-2010 13:34:01.485 client 127.0.0.1#26332: query: heise.de IN A +
+19-Oct-2010 13:34:43.375 queries: info: client 127.0.0.1#8677: query: google.de IN A +
