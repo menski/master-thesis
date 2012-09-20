@@ -10,6 +10,10 @@
 \usepackage{graphicx}
 \usepackage{listings}
 \usepackage{units}
+\usepackage{tabularx}
+\usepackage{arydshln}
+\usepackage{caption} 
+\captionsetup{format=hang}
 
 \lstset{
 	language=C,
@@ -252,7 +256,7 @@
     \myframe[Fazit]{
         \begin{itemize}
             \item Server-Lastverteilung oft verwendeter Ansatz
-            \item Oft keine Beachtung der realen Last des Nameservers
+            \item Häufig keine Beachtung der realen Last des Nameservers
             \item Benchmarks erzeugen keine realistischen Lastsituationen
         \end{itemize}
 
@@ -285,6 +289,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=\textwidth]{images/salbnet}
+            \caption{\textit{salbnet}-Aufbau \cite{zinke2012}}
         \end{figure}
         
     }
@@ -293,6 +298,7 @@
         \begin{figure}
             \centering
             \includegraphics[width=\textwidth]{images/salbd-concept}
+            \caption{\textit{salbd}-Konzept \cite{zinke2012}}
         \end{figure}
     }
 
@@ -352,7 +358,7 @@
         \textbf{Messwerte}
             \begin{tabular}{rl}
                 $q_{max}$		  & maximale Kapazität der UDP-Receive-Queue\\
-                $q_{current}$ &	aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
+                $q_{current}$ &	aktuell belegter Speicherplatz in der UDP-Receive-Queue\\
                 $p_{median}$  & Median der Paketgrößen in der UDP-Receive-Queue\\
             \end{tabular}
         \vspace{20pt}\par
@@ -367,7 +373,7 @@
         \textbf{Messwerte}
             \begin{tabular}{rl}
                 $q_{max}$		  & maximale Kapazität der UDP-Receive-Queue\\
-                $q_{current}$ &	aktuell belegte Speicherplatz in der UDP-Receive-Queue\\
+                $q_{current}$ &	aktuell belegter Speicherplatz in der UDP-Receive-Queue\\
                 $p_{median}$  & Median der Paketgrößen in der UDP-Receive-Queue\\
                 $p_{drop}$ & verworfene Anfragen seit der letzten Creditberechnung \\
             \end{tabular}
@@ -443,7 +449,7 @@
     \myframe[Implementierung]{
         \textbf{Experiment}
         \begin{enumerate}
-            \item Sende DNS-Nachricht mit steigender Größe
+            \item Senden von DNS-Nachrichten mit steigender Größe
             \item Auslesen von \texttt{/proc/net/udp}
             \item Empfangen des Pakets mit \texttt{recvmsg}
             \item Auslesen von \texttt{/proc/net/udp}
@@ -531,7 +537,8 @@
 
   \myframe{
       \begin{itemize}
-          \item Vergleich von \textit{Weighted-Round-Robin (wrr)} und \textit{salbnet}
+          \item Vergleich von \textit{Weighted-Round-Robin (wrr)} und \textit{salbnet} mit der
+              \textit{Dynamic Pressure Relieve} Meldestrategie
           \item Benchmark: \textit{servload}
           \item Nameserver: \textit{BIND}
           \item Log:
@@ -555,14 +562,16 @@
 
   \myframe[System]{
       \begin{description}
-          \item[Client:] node015 -- Intel Xeon E5520 @ 2,27 GHz (Quad-Core)\\12 GB RAM
-          \item[Lastverteiler:] ib1 -- 2 $\times$ AMD Opteron 244 @ 1,8 GHz (Single-Core)\\4 GB RAM
+          \item[Client:] node015 -- Intel Xeon E5520 @ \unit[2,27]{GHz} (Quad-Core)\\\unit[12]{GB}
+              RAM -- Debian 5.0.9
+          \item[Lastverteiler:] ib1 -- 2 $\times$ AMD Opteron 244 @ \unit[1,8]{GHz}
+              (Single-Core)\\\unit[4]{GB} RAM -- CentOS 5.7
           \item[Backend:] 
               \begin{itemize}
-                  \item ib4 -- 2 $\times$ Opteron 244 @ 1,8 GHz (Single-Core)\\4 GB RAM\\
-                  \item ib6 -- Intel Pentium @ 2,8 GHz (Single-Core)\\4 GB RAM
-                  \item ib8 -- Intel Xeon 3040 @ 1,86 GHz (Dual-Core)\\4 GB RAM
-                  \item Receive-Queue: 25165824 Byte (24 MByte)
+                  \item ib4 -- 2 $\times$ Opteron 244 @ \unit[1,8]{GHz} (Single-Core)\\\unit[4]{GB} RAM -- CentOS 5.7
+                  \item ib6 -- Intel Pentium @ \unit[2,8]{GHz} (Single-Core)\\\unit[4]{GB} RAM -- CentOS 5.7
+                  \item ib8 -- Intel Xeon 3040 @ \unit[1,86]{GHz} (Dual-Core)\\\unit[4]{GB} RAM -- CentOS 5.7
+                  \item Receive-Queue: \unit[25165824]{Byte} (\unit[24]{MByte})
               \end{itemize}
       \end{description}
   }
@@ -580,6 +589,11 @@
           \item Gewichte für wrr (Unixbench):\\ib4 -- 788, ib6 -- 623 und ib8 -- 1180 
           \item Ablauf: 51 Messungen je Algorithmus und Modifikation
           \item Insgesamt 306 Messungen
+          \item Messwerte:
+              \begin{itemize}
+                  \item \textit{snmp}-Abfragen der ib1, ib4, ib6 und ib8
+                  \item \textit{servload}-Statistiken
+              \end{itemize}
       \end{itemize}
       \begin{table}
           \centering
@@ -676,10 +690,10 @@
         \begin{itemize}
             \item Unterstützung von DNS-Nachrichten über UDP für \textit{salbnet} und
                 \textit{servload}
-            \item \textit{salbnet} unterstütz den Nameserver \textit{BIND}
-            \item \textit{salbnet} Abschätzung der Größe von DNS-Paketen ist vermutlich auf Kernel 2.6.18
+            \item \textit{salbnet} unterstützt den Nameserver \textit{BIND}
+            \item \textit{salbnet} Abschätzung der Größe von DNS-Paketen ist wahrscheinlich auf Kernel 2.6.18
                 beschränkt
-            \item \textit{servload} unterstütz \textit{BIND}-Logs
+            \item \textit{servload} unterstützt \textit{BIND}-Logs
             \item \textit{salbnet} ist in allen Messungen \textit{wrr} überlegen
             \item \textit{servload} kann große Mengen an Anfragen abarbeiten und senden
         \end{itemize}
@@ -692,13 +706,14 @@
                     \item Kernel-Version unabhängige Abschätzung der Größe von DNS-Paketen
                     \item Verbesserung der Creditabschätzung
                     \item Unterstützung von DNS-Nachrichten über TCP
-                    \item Portierung des \textit{salbnet}-Kernelmodul
+                    \item Portierung des \textit{salbnet}-Kernelmoduls
                     \item Verwendung von \textit{Netlink}-Sockets
                 \end{itemize}         
             \item servload
                 \begin{itemize}
                     \item Unterstützung von DNS-Nachrichten über TCP
                     \item DNS-Pipelining
+                    \item DNS-Erweiterung (z.B. DNSSEC)
                 \end{itemize}
         \end{itemize}
     }
@@ -738,5 +753,67 @@
   \setcounter{framenumber}{\value{finalframe}}
 
   % }}}
+
+  \mysection{Anhang}
+  \myframe[DNS-Nachrichtenformat]{
+    \renewcommand{\arraystretch}{1.25}
+    \begin{table}
+        \centering
+        \scriptsize
+        \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|} 
+            0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\\hline\hline
+            \multicolumn{16}{|c|}{ID} \\\hline
+            QR & \multicolumn{4}{c|}{Opcode} & AA & TC & RD & RA & \multicolumn{3}{c|}{Z} &
+            \multicolumn{4}{c|}{RCODE} \\\hline
+            \multicolumn{16}{|c|}{QDCOUNT} \\\hline
+            \multicolumn{16}{|c|}{ANCOUNT} \\\hline
+            \multicolumn{16}{|c|}{NSCOUNT} \\\hline
+            \multicolumn{16}{|c|}{ARCOUNT} \\\hline
+        \end{tabularx}
+        \caption{Schematischer Aufbau des Headers einer DNS-Nachricht}
+    \end{table}
+    \renewcommand{\arraystretch}{1}
+  }
+
+  \myframe[DNS-Nachrichtenformat]{
+      \renewcommand{\arraystretch}{1.25}
+      \begin{table}
+          \centering
+          \scriptsize
+          \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|} 
+              0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\\hline\hline
+              \multicolumn{16}{|c|}{} \\
+              \multicolumn{16}{:c:}{QNAME} \\
+              \multicolumn{16}{:c:}{} \\\hline
+              \multicolumn{16}{|c|}{QTYPE} \\\hline
+              \multicolumn{16}{|c|}{QCLASS} \\\hline
+          \end{tabularx}
+          \caption{Schematischer Aufbau des \textit{Question}-Abschnitts einer DNS-Nachricht}
+      \end{table}
+      \renewcommand{\arraystretch}{1}
+  }
+
+  \myframe[DNS-Nachrichtenformat]{
+    \renewcommand{\arraystretch}{1.25} 
+    \begin{table}
+        \centering
+        \scriptsize
+        \begin{tabularx}{\linewidth}{|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|X|}
+            0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\\hline\hline
+            \multicolumn{16}{|c|}{} \\
+            \multicolumn{16}{:c:}{NAME} \\
+            \multicolumn{16}{:c:}{} \\\hline
+            \multicolumn{16}{|c|}{TYPE} \\\hline
+            \multicolumn{16}{|c|}{CLASS} \\\hline
+            \multicolumn{16}{|c|}{TTL} \\
+            \multicolumn{16}{|c|}{} \\\hline
+            \multicolumn{16}{|c|}{RDLENGTH} \\\hline
+            \multicolumn{16}{:c:}{RDATA} \\
+            \multicolumn{16}{:c:}{} \\\hline
+        \end{tabularx}
+        \caption{Schematischer Aufbau der \textit{Answer}/\textit{Authority}/\textit{Additional}-Abschnitte einer DNS-Nachricht}
+    \end{table}
+    \renewcommand{\arraystretch}{1}
+  }
 
 \end{document}
